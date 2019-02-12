@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module lipydomics.stats</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="lipydomics.html"><font color="#ffffff">lipydomics</font></a>.stats</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/DylanRoss/Desktop/lipydomics/stats.py">/Users/DylanRoss/Desktop/lipydomics/stats.py</a></font></td></tr></table>
+    <p><tt>lipydomics/stats.py<br>
+Dylan&nbsp;H.&nbsp;Ross<br>
+2019/02/03<br>
+&nbsp;<br>
+description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;set&nbsp;of&nbsp;functions&nbsp;for&nbsp;performing&nbsp;statistical&nbsp;analyses&nbsp;on&nbsp;the&nbsp;lipidomics&nbsp;data.&nbsp;Generally,&nbsp;these&nbsp;functions&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;should&nbsp;produce&nbsp;one&nbsp;or&nbsp;more&nbsp;columns&nbsp;to&nbsp;associate&nbsp;with&nbsp;the&nbsp;data,&nbsp;as&nbsp;well&nbsp;as&nbsp;a&nbsp;label&nbsp;describing&nbsp;the&nbsp;analysis<br>
+&nbsp;&nbsp;&nbsp;&nbsp;performed&nbsp;(what&nbsp;groupings&nbsp;are&nbsp;used,&nbsp;normalized&nbsp;or&nbsp;raw&nbsp;data,&nbsp;etc.).&nbsp;This&nbsp;data&nbsp;is&nbsp;added&nbsp;to&nbsp;the&nbsp;Dataset&nbsp;instance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;a&nbsp;dictionary&nbsp;called&nbsp;stats,&nbsp;where&nbsp;the&nbsp;key&nbsp;is&nbsp;the&nbsp;label&nbsp;string&nbsp;and&nbsp;the&nbsp;value&nbsp;is&nbsp;a&nbsp;numpy.ndarray&nbsp;containing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;desired&nbsp;statistic.&nbsp;Some&nbsp;functions&nbsp;will&nbsp;also&nbsp;return&nbsp;extra&nbsp;information,&nbsp;for&nbsp;example:&nbsp;when&nbsp;doing&nbsp;PCA&nbsp;analysis,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;loadings&nbsp;of&nbsp;each&nbsp;feature&nbsp;are&nbsp;added&nbsp;as&nbsp;data&nbsp;in&nbsp;Dataset.stats&nbsp;and&nbsp;projections&nbsp;for&nbsp;each&nbsp;sample&nbsp;within&nbsp;user-<br>
+&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;groups&nbsp;can&nbsp;optionally&nbsp;be&nbsp;returned.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;labels&nbsp;are&nbsp;not&nbsp;explicitly&nbsp;provided,&nbsp;they&nbsp;can&nbsp;generated&nbsp;in&nbsp;a&nbsp;systematic&nbsp;fashion:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;statistic_groups_raw-or-normed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;examples:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ANOVA_ctrl-AY-VitE-AYVitE_normed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PCA_ALL_normed<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;WARNING:&nbsp;adding&nbsp;statistics&nbsp;with&nbsp;the&nbsp;same&nbsp;label&nbsp;as&nbsp;ones&nbsp;already&nbsp;added&nbsp;to&nbsp;the&nbsp;Dataset&nbsp;object&nbsp;will&nbsp;overwrite&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;existing&nbsp;data</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-add_anova_p"><strong>add_anova_p</strong></a>(dataset, group_names, label=None, normed=False)</dt><dd><tt>add_anova_p<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adds&nbsp;a&nbsp;column&nbsp;containing&nbsp;ANOVA&nbsp;p-values&nbsp;computed&nbsp;for&nbsp;user-specified&nbsp;groups<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;groups&nbsp;to&nbsp;use&nbsp;to&nbsp;compute&nbsp;the&nbsp;ANOVA&nbsp;p-value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[label&nbsp;(str)]&nbsp;--&nbsp;label&nbsp;for&nbsp;the&nbsp;computed&nbsp;statistic&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
+ <dl><dt><a name="-add_pca3_loadings"><strong>add_pca3_loadings</strong></a>(dataset, label=None, normed=False, random_state=69)</dt><dd><tt>add_pca3_loadings<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adds&nbsp;three&nbsp;columns&nbsp;containing&nbsp;the&nbsp;loadings&nbsp;from&nbsp;a&nbsp;3-component&nbsp;PCA&nbsp;computed&nbsp;on&nbsp;all&nbsp;of&nbsp;the&nbsp;features&nbsp;in&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dataset&nbsp;to&nbsp;the&nbsp;Dataset.stats&nbsp;dict.&nbsp;Raw&nbsp;or&nbsp;normalized&nbsp;data&nbsp;can&nbsp;be&nbsp;used&nbsp;for&nbsp;the&nbsp;PCA.&nbsp;The&nbsp;PCA&nbsp;object&nbsp;is&nbsp;stored&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;Dataset.pca3_&nbsp;instance&nbsp;variable&nbsp;so&nbsp;that&nbsp;it&nbsp;can&nbsp;be&nbsp;used&nbsp;later&nbsp;on&nbsp;for&nbsp;computing&nbsp;group&nbsp;projections&nbsp;via&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_pca3_projections&nbsp;function.&nbsp;If&nbsp;the&nbsp;Dataset.pca3_&nbsp;instance&nbsp;variable&nbsp;is&nbsp;already&nbsp;present,&nbsp;then&nbsp;it&nbsp;will&nbsp;be&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;overridden&nbsp;by&nbsp;the&nbsp;new&nbsp;one&nbsp;generated&nbsp;by&nbsp;this&nbsp;function.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;loadings&nbsp;added&nbsp;to&nbsp;the&nbsp;Dataset.stats&nbsp;dictionary&nbsp;will&nbsp;have&nbsp;shape:&nbsp;(3,&nbsp;n_features)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[label&nbsp;(str)]&nbsp;--&nbsp;label&nbsp;for&nbsp;the&nbsp;computed&nbsp;statistic&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[random_state&nbsp;(int)]&nbsp;--&nbsp;pRNG&nbsp;seed&nbsp;for&nbsp;deterministic&nbsp;results&nbsp;[optional,&nbsp;default=69]</tt></dd></dl>
+ <dl><dt><a name="-get_pca3_projections"><strong>get_pca3_projections</strong></a>(dataset, group_names)</dt></dl>
+</td></tr></table>
+</body></html>

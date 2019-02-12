@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module lipydomics.data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="lipydomics.html"><font color="#ffffff">lipydomics</font></a>.data</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/DylanRoss/Desktop/lipydomics/data.py">/Users/DylanRoss/Desktop/lipydomics/data.py</a></font></td></tr></table>
+    <p><tt>lipydomics/data.py<br>
+Dylan&nbsp;H.&nbsp;Ross<br>
+2019/02/03<br>
+&nbsp;<br>
+description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;TODO</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="lipydomics.data.html#Dataset">Dataset</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Dataset">class <strong>Dataset</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Dataset">Dataset</a>(dataset_csv,&nbsp;skip_header=1)<br>
+&nbsp;<br>
+<a href="#Dataset">Dataset</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;class&nbsp;for&nbsp;encapsulating&nbsp;a&nbsp;lipidomics&nbsp;dataset,&nbsp;with&nbsp;functions&nbsp;for&nbsp;loading&nbsp;and&nbsp;storing&nbsp;the&nbsp;data<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Dataset-__init__"><strong>__init__</strong></a>(self, dataset_csv, skip_header=1)</dt><dd><tt><a href="#Dataset">Dataset</a>.__init__<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uses&nbsp;numpy.genfromtxt&nbsp;to&nbsp;load&nbsp;in&nbsp;a&nbsp;raw&nbsp;dataset,&nbsp;stored&nbsp;in&nbsp;.csv&nbsp;format.&nbsp;Stores&nbsp;two&nbsp;numpy.ndarrays&nbsp;containing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;labels&nbsp;(self.<strong>labels</strong>):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[mz,&nbsp;rt,&nbsp;dt],&nbsp;...&nbsp;]&nbsp;shape&nbsp;=&nbsp;(n_features,&nbsp;3)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;raw&nbsp;intensities&nbsp;(self.<strong>intensities</strong>):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[i0,&nbsp;i1,&nbsp;...&nbsp;],&nbsp;...&nbsp;]&nbsp;shape&nbsp;=&nbsp;(n_features,&nbsp;n_samples)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expects&nbsp;the&nbsp;input&nbsp;data&nbsp;file&nbsp;to&nbsp;be&nbsp;a&nbsp;.csv&nbsp;structured&nbsp;with&nbsp;the&nbsp;following&nbsp;columns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz,&nbsp;rt,&nbsp;dt,&nbsp;i_1,&nbsp;i_2,&nbsp;...,&nbsp;i_n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;By&nbsp;default,&nbsp;1&nbsp;header&nbsp;line&nbsp;is&nbsp;skipped<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset_csv&nbsp;(str)&nbsp;--&nbsp;filename&nbsp;of&nbsp;raw&nbsp;dataset&nbsp;in&nbsp;.csv&nbsp;format<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[skip_header&nbsp;(int)]&nbsp;--&nbsp;number&nbsp;of&nbsp;header&nbsp;lines&nbsp;in&nbsp;the&nbsp;file&nbsp;to&nbsp;skip&nbsp;when&nbsp;loading&nbsp;data,&nbsp;passed&nbsp;on&nbsp;to&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;np.genfromtxt&nbsp;[optional,&nbsp;default=1]</tt></dd></dl>
+
+<dl><dt><a name="Dataset-assign_groups"><strong>assign_groups</strong></a>(self, group_indices)</dt><dd><tt><a href="#Dataset">Dataset</a>.assign_groups<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assign&nbsp;group&nbsp;identities&nbsp;to&nbsp;a&nbsp;subset&nbsp;or&nbsp;all&nbsp;of&nbsp;the&nbsp;sample&nbsp;columns.&nbsp;Group&nbsp;identities&nbsp;are&nbsp;assigned&nbsp;using&nbsp;a&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dict&nbsp;mapping&nbsp;the&nbsp;group&nbsp;name&nbsp;to&nbsp;indices&nbsp;of&nbsp;the&nbsp;sample&nbsp;columns&nbsp;that&nbsp;are&nbsp;members&nbsp;of&nbsp;that&nbsp;group,&nbsp;e.g.:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intensities&nbsp;=&nbsp;[[i0,&nbsp;i1,&nbsp;i2,&nbsp;i3,&nbsp;i4,&nbsp;i5],&nbsp;...&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_indices&nbsp;=&nbsp;{"A":&nbsp;[0,&nbsp;1,&nbsp;2],&nbsp;"B":&nbsp;[3,&nbsp;4,&nbsp;5]}&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&gt;&nbsp;first&nbsp;three&nbsp;samples&nbsp;belong&nbsp;to&nbsp;group&nbsp;"A"&nbsp;and&nbsp;last&nbsp;three&nbsp;belong&nbsp;to&nbsp;group&nbsp;"B"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OR&nbsp;group&nbsp;indices&nbsp;=&nbsp;{"wt":&nbsp;[0,&nbsp;2],&nbsp;"ko":&nbsp;[1,&nbsp;5]}&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--&gt;&nbsp;only&nbsp;a&nbsp;subset&nbsp;are&nbsp;labeled<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;method&nbsp;may&nbsp;be&nbsp;called&nbsp;multiple&nbsp;times&nbsp;to&nbsp;esablish&nbsp;multiple&nbsp;sub-groupings&nbsp;if&nbsp;necessary,&nbsp;duplicate&nbsp;group&nbsp;names&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;override&nbsp;previous&nbsp;entries&nbsp;in&nbsp;this&nbsp;usage<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Group&nbsp;indices&nbsp;are&nbsp;stored&nbsp;in&nbsp;the&nbsp;self.<strong>group_indices</strong>&nbsp;instance&nbsp;variable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WARNING:&nbsp;validity&nbsp;of&nbsp;group&nbsp;indices&nbsp;is&nbsp;not&nbsp;checked&nbsp;here&nbsp;so&nbsp;if&nbsp;for&nbsp;instance&nbsp;the&nbsp;value&nbsp;of&nbsp;one&nbsp;of&nbsp;the&nbsp;indices&nbsp;is&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;larger&nbsp;than&nbsp;n_samples&nbsp;-&nbsp;1,&nbsp;an&nbsp;error&nbsp;will&nbsp;occur&nbsp;later&nbsp;if&nbsp;you&nbsp;try&nbsp;to&nbsp;get&nbsp;the&nbsp;data&nbsp;for&nbsp;that&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_indices&nbsp;(dict(str:list(int)))&nbsp;--&nbsp;dictionary&nbsp;of&nbsp;group&nbsp;names&nbsp;mapped&nbsp;to&nbsp;the&nbsp;indices&nbsp;of&nbsp;sample&nbsp;columns&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;belonging&nbsp;to&nbsp;each&nbsp;group</tt></dd></dl>
+
+<dl><dt><a name="Dataset-get_data_bygroup"><strong>get_data_bygroup</strong></a>(self, group_names, normed=False)</dt><dd><tt><a href="#Dataset">Dataset</a>.get_data_bygroup<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;a&nbsp;subset&nbsp;(or&nbsp;multiple&nbsp;subsets)&nbsp;of&nbsp;the&nbsp;dataset&nbsp;as&nbsp;defined&nbsp;by&nbsp;group&nbsp;names.&nbsp;The&nbsp;group&nbsp;indices&nbsp;must&nbsp;be&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;defined&nbsp;ahead&nbsp;of&nbsp;time.&nbsp;Normalized&nbsp;data&nbsp;can&nbsp;be&nbsp;fetched&nbsp;if&nbsp;<a href="#Dataset-normalize">normalize</a>()&nbsp;was&nbsp;called&nbsp;ahead&nbsp;of&nbsp;time.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(str&nbsp;OR&nbsp;list(str))&nbsp;--&nbsp;a&nbsp;single&nbsp;group&nbsp;name&nbsp;or&nbsp;list&nbsp;of&nbsp;group&nbsp;names&nbsp;to&nbsp;retrieve&nbsp;intensity&nbsp;data&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;if&nbsp;True,&nbsp;return&nbsp;the&nbsp;normalized&nbsp;intensities&nbsp;(requires&nbsp;that&nbsp;self.<a href="#Dataset-normalize">normalize</a>(...)&nbsp;be&nbsp;called&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ahead&nbsp;of&nbsp;time),&nbsp;otherwise&nbsp;return&nbsp;the&nbsp;raw&nbsp;intensities&nbsp;[optional,&nbsp;default=False]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(np.ndarray)&nbsp;--&nbsp;array&nbsp;of&nbsp;intensities&nbsp;for&nbsp;sample&nbsp;columns&nbsp;belonging&nbsp;to&nbsp;the&nbsp;specified&nbsp;group,&nbsp;shape&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(n_features,&nbsp;group_size).&nbsp;multiple&nbsp;arrays&nbsp;will&nbsp;be&nbsp;returned&nbsp;if&nbsp;multiple&nbsp;group&nbsp;names&nbsp;were&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;provided&nbsp;as&nbsp;input</tt></dd></dl>
+
+<dl><dt><a name="Dataset-normalize"><strong>normalize</strong></a>(self, norm_weights)</dt><dd><tt><a href="#Dataset">Dataset</a>.normalize<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Normalize&nbsp;sample&nbsp;intensities&nbsp;according&nbsp;to&nbsp;a&nbsp;user-supplied&nbsp;array&nbsp;of&nbsp;weights,&nbsp;stores&nbsp;normalized&nbsp;intensities&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>normed_intensities</strong><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;norm_weights&nbsp;must&nbsp;be&nbsp;a&nbsp;numpy.array&nbsp;of&nbsp;shape:&nbsp;(n_samples,)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;norm_weights&nbsp;(np.ndarray)&nbsp;--&nbsp;array&nbsp;of&nbsp;weights&nbsp;to&nbsp;use&nbsp;to&nbsp;normalize&nbsp;each&nbsp;sample,&nbsp;must&nbsp;be&nbsp;of&nbsp;shape&nbsp;(n_samples,&nbsp;)</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>
