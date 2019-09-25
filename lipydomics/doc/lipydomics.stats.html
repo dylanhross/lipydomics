@@ -45,27 +45,27 @@ description:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-add_anova_p"><strong>add_anova_p</strong></a>(dataset, group_names, label=None, normed=False)</dt><dd><tt>add_anova_p<br>
+<td width="100%"><dl><dt><a name="-add_anova_p"><strong>add_anova_p</strong></a>(dataset, group_names, normed=False)</dt><dd><tt>add_anova_p<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adds&nbsp;a&nbsp;column&nbsp;containing&nbsp;ANOVA&nbsp;p-values&nbsp;computed&nbsp;for&nbsp;user-specified&nbsp;groups<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;groups&nbsp;to&nbsp;use&nbsp;to&nbsp;compute&nbsp;the&nbsp;ANOVA&nbsp;p-value<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[label&nbsp;(str)]&nbsp;--&nbsp;label&nbsp;for&nbsp;the&nbsp;computed&nbsp;statistic&nbsp;[optional,&nbsp;default=None]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
- <dl><dt><a name="-add_pca3_loadings"><strong>add_pca3_loadings</strong></a>(dataset, label=None, normed=False, random_state=69)</dt><dd><tt>add_pca3_loadings<br>
+ <dl><dt><a name="-add_pca3"><strong>add_pca3</strong></a>(dataset, normed=False, random_state=69)</dt><dd><tt>add_pca3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adds&nbsp;three&nbsp;columns&nbsp;containing&nbsp;the&nbsp;loadings&nbsp;from&nbsp;a&nbsp;3-component&nbsp;PCA&nbsp;computed&nbsp;on&nbsp;all&nbsp;of&nbsp;the&nbsp;features&nbsp;in&nbsp;the&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dataset&nbsp;to&nbsp;the&nbsp;Dataset.stats&nbsp;dict.&nbsp;Raw&nbsp;or&nbsp;normalized&nbsp;data&nbsp;can&nbsp;be&nbsp;used&nbsp;for&nbsp;the&nbsp;PCA.&nbsp;The&nbsp;PCA&nbsp;object&nbsp;is&nbsp;stored&nbsp;in<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;Dataset.pca3_&nbsp;instance&nbsp;variable&nbsp;so&nbsp;that&nbsp;it&nbsp;can&nbsp;be&nbsp;used&nbsp;later&nbsp;on&nbsp;for&nbsp;computing&nbsp;group&nbsp;projections&nbsp;via&nbsp;the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get_pca3_projections&nbsp;function.&nbsp;If&nbsp;the&nbsp;Dataset.pca3_&nbsp;instance&nbsp;variable&nbsp;is&nbsp;already&nbsp;present,&nbsp;then&nbsp;it&nbsp;will&nbsp;be&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;overridden&nbsp;by&nbsp;the&nbsp;new&nbsp;one&nbsp;generated&nbsp;by&nbsp;this&nbsp;function.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;loadings&nbsp;added&nbsp;to&nbsp;the&nbsp;Dataset.stats&nbsp;dictionary&nbsp;will&nbsp;have&nbsp;shape:&nbsp;(3,&nbsp;n_features)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes&nbsp;a&nbsp;3-component&nbsp;PCA&nbsp;from&nbsp;all&nbsp;features&nbsp;in&nbsp;the&nbsp;Dataset&nbsp;(using&nbsp;either&nbsp;raw&nbsp;or&nbsp;normalized&nbsp;intensities)&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adds&nbsp;the&nbsp;relevant&nbsp;information&nbsp;(feature&nbsp;loadings,&nbsp;projections)&nbsp;to&nbsp;the&nbsp;Dataset.&nbsp;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;fitted&nbsp;PCA&nbsp;object&nbsp;is&nbsp;added&nbsp;as&nbsp;an&nbsp;instance&nbsp;variable&nbsp;(Dataset.pca3_).&nbsp;The&nbsp;feature&nbsp;loadings&nbsp;(3,&nbsp;n_features)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;PCA&nbsp;projections&nbsp;(n_samples,&nbsp;3)&nbsp;are&nbsp;added&nbsp;to&nbsp;Dataset.stats&nbsp;with&nbsp;the&nbsp;labels&nbsp;'PCA3_loadings_{raw/normed}'&nbsp;and&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PCA3_projections_{raw/normed}',&nbsp;respectively.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;the&nbsp;Dataset.pca3_&nbsp;instance&nbsp;variable&nbsp;is&nbsp;already&nbsp;present,&nbsp;then&nbsp;it&nbsp;will&nbsp;be&nbsp;overridden&nbsp;by&nbsp;the&nbsp;new&nbsp;one&nbsp;generated&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by&nbsp;this&nbsp;function.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[label&nbsp;(str)]&nbsp;--&nbsp;label&nbsp;for&nbsp;the&nbsp;computed&nbsp;statistic&nbsp;[optional,&nbsp;default=None]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[random_state&nbsp;(int)]&nbsp;--&nbsp;pRNG&nbsp;seed&nbsp;for&nbsp;deterministic&nbsp;results&nbsp;[optional,&nbsp;default=69]</tt></dd></dl>
- <dl><dt><a name="-get_pca3_projections"><strong>get_pca3_projections</strong></a>(dataset, group_names)</dt></dl>
 </td></tr></table>
 </body></html>
