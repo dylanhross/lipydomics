@@ -12,7 +12,7 @@ import os
 import numpy as np
 
 from lipydomics.data import Dataset
-from lipydomics.stats import add_anova_p, add_pca3
+from lipydomics.stats import add_anova_p, add_pca3, add_plsda
 
 
 def addanovap_mock1():
@@ -53,6 +53,31 @@ addpca3_mock1
     if dset.stats['PCA3_projections_raw'].shape != (6, 3):
         m = 'addpca3_mock1: PCA3_projections_raw should have shape (6, 3), has shape: {}'
         raise RuntimeError(m.format(dset.stats['PCA3_projections_raw'].shape))
+
+    return True
+
+
+def addplsda_mock1():
+    """
+addplsda_mock1
+    description:
+        Uses the raw data from mock_data_1.csv to perform PLS-DA.
+
+        Test fails if there are any errors or if the shapes of the following stats entries are incorrect:
+            dset.stats['PLS-DA_A-B_loadings_raw'].shape = (5, 2)
+            dset.stats['PLS-DA_A-B_projections_raw'].shape = (6, 2)
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'mock_data_1.csv'))
+    dset.assign_groups({'A': [0, 2, 4], 'B': [1, 3, 5]})
+    add_plsda(dset, ['A', 'B'])
+    if dset.stats['PLS-DA_A-B_loadings_raw'].shape != (5, 2):
+        m = 'addplsda_mock1: PCA3_loadings_raw should have shape (5, 2), has shape: {}'
+        raise RuntimeError(m.format(dset.stats['PLS-DA_A-B_loadings_raw'].shape))
+    if dset.stats['PLS-DA_A-B_projections_raw'].shape != (6, 2):
+        m = 'addplsda_mock1: PCA3_projections_raw should have shape (6, 2), has shape: {}'
+        raise RuntimeError(m.format(dset.stats['PLS-DA_A-B_projections_raw'].shape))
 
     return True
 
