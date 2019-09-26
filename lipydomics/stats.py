@@ -26,6 +26,7 @@
 import numpy as np
 from scipy.stats import f_oneway
 from sklearn.decomposition import PCA
+from sklearn.cross_decomposition import PLSRegression
 
 
 def add_anova_p(dataset, group_names, normed=False):
@@ -60,8 +61,8 @@ add_pca3
         and PCA projections (n_samples, 3) are added to Dataset.stats with the labels 'PCA3_loadings_{raw/normed}' and 
         'PCA3_projections_{raw/normed}', respectively.
         
-        If the Dataset.pca3_ instance variable is already present, then it will be overridden by the new one generated 
-        by this function.
+        If the Dataset.pca3_ instance variable or either of the Dataset.stats entries are already present, then they 
+        will be overridden.
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
@@ -69,6 +70,7 @@ add_pca3
 """
     # initialize the PCA object, add it to the Dataset
     dataset.pca3_ = PCA(n_components=3, random_state=random_state)
+
     # fit the PCA to the data
     if normed:
         nrm = 'normed'
@@ -79,7 +81,56 @@ add_pca3
         # need to transpose the intensities array to shape: (n_samples, n_features) for PCA
         use_data = dataset.intensities.T
     dataset.pca3_.fit(use_data)
-    # add the statistic into the Dataset
+
+    # add the statistics into the Dataset
     dataset.stats['PCA3_loadings_{}'.format(nrm)] = dataset.pca3_.components_
     dataset.stats['PCA3_projections_{}'.format(nrm)] = dataset.pca3_.transform(use_data)
+
+
+def add_plsda(dataset, group_names, normed=False):
+    """
+add_plsda
+    description:
+        Performs PLS-DA using two specified groups (e.g. groups A and B).
+
+        Uses the PLSRegression class from sklearn with the target variable being simply 1 for group A or -1 for group B
+        which effectively converts the task from regression to calssification. The fitted PLSRegression object is stored 
+        in an instance variable (Dataset.plsr_). The feature loadings (n_features, 2) and projections (n_samples, 2) are 
+        added to Dataset.stats with the labels 'PLS-DA_A-B_loadings_{raw/normed}' and 
+        'PLS-DA_A-B_projections_{raw/normed}', respectively.
+    
+        If the Dataset.plsr_ instance variable or either of the Dataset.stats entries are already present, then they 
+        will be overridden.
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- groups to use to compute the PLS-DA, only 2 groups allowed
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+"""
+    if len(group_names) != 2:
+        m = 'add_plsda: 2 group names must be specified for PLS-DA, {} group names specified'
+        raise ValueError(m.format(len(group_names)))
+
+    # get the group data, reshape and concatenate -> X 
+    X = np.concatenate([_.T for _ in dataset.get_data_bygroup(group_names, normed=normed)])
+    # target variable is just 1 for group A and -1 for group b
+    n_A = len(dataset.group_indices[group_names[0]])
+    n_B = len(dataset.group_indices[group_names[1]])
+    y = np.array([1 for _ in range(n_A)] + [-1 for _ in range(n_B)])
+
+    # initialize the PLSRegression object, add to the Dataset, fit the group data
+    dataset.plsr_ = PLSRegression()
+    dataset.plsr_.fit(X, y)
+
+    if normed:
+        nrm = 'normed'
+    else:
+        nrm = 'raw'
+
+    # add the statistics into the Dataset
+    dataset.stats['PLS-DA_{}_loadings_{}'.format('-'.join(group_names), nrm)] = dataset.plsr_.x_loadings_
+    dataset.stats['PLS-DA_{}_projections_{}'.format('-'.join(group_names), nrm)] = dataset.plsr_.transform(X)
+
+
+    
+
 
