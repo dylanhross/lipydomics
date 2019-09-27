@@ -78,6 +78,51 @@ barplot_feature_bygroup
         ax.set_title('mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz, rt, ccs), fontsize=8)
 
         plt.tight_layout()
-        plt.savefig(fig_path, dpi=200, bbox_inches='tight')
+        plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+
+
+def scatter_PCA3_projections_bygroup(dataset, group_names, path, normed=False):
+    """
+scatter_PCA3_projections_bygroup
+    description:
+        generates a scatter plot of the PCA projections for a specified set of groups and saves the image to a 
+        specified directory. The filename of the image is:
+            'PCA3_projections_{group_name1}-{group_name2}-{etc.}_{raw or normed}.png'
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- pick groups to plot against
+        path (str) -- path to save the image under
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+"""
+    # generate the path to save the figure under
+    if normed:
+        nrm = 'normed'
+    else: 
+        nrm = 'raw'
+    fig_name = 'PCA3_projections_{}_{}.png'.format('-'.join(group_names), nrm)
+    fig_path = os.path.join(path, fig_name)
+
+    # make the plot
+    fig = plt.figure(figsize=(3, 3))
+    ax = fig.add_subplot(111)
+
+    ax.axvline(lw=0.5, c='k', zorder=0)
+    ax.axhline(lw=0.5, c='k', zorder=0)
+
+    for group_name, c in zip(group_names, ['r', 'b', '#ffa600', 'purple', 'green', 'm']):
+
+        d = np.array([dataset.stats['PCA3_projections_{}'.format(nrm)][i][:2] for i in dataset.group_indices[group_name]]).T
+        ax.scatter(*d, marker='.', s=24, c=c, label=group_name)
+
+    for d in ['top', 'right', 'bottom', 'left']:
+        ax.spines[d].set_visible(False)
+    ax.set_xlabel('PC1 ({:.1f} %)'.format(100. * dataset.pca3_.explained_variance_ratio_[0]), fontsize=8)
+    ax.set_ylabel('PC2 ({:.1f} %)'.format(100. * dataset.pca3_.explained_variance_ratio_[1]), fontsize=8)
+    ax.set_title('3 component PCA', fontsize=8)
+
+    ax.legend(fontsize=8, borderpad=0.5)
+
+    plt.tight_layout()
+    plt.savefig(fig_path, dpi=300, bbox_inches='tight')
 
 
