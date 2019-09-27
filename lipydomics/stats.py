@@ -24,7 +24,7 @@
 
 
 import numpy as np
-from scipy.stats import f_oneway
+from scipy.stats import f_oneway, pearsonr
 from sklearn.decomposition import PCA
 from sklearn.cross_decomposition import PLSRegression
 
@@ -112,7 +112,7 @@ add_plsda
 
     # get the group data, reshape and concatenate -> X 
     X = np.concatenate([_.T for _ in dataset.get_data_bygroup(group_names, normed=normed)])
-    # target variable is just 1 for group A and -1 for group b
+    # target variable is just 1 for group A and -1 for group B
     n_A = len(dataset.group_indices[group_names[0]])
     n_B = len(dataset.group_indices[group_names[1]])
     y = np.array([1 for _ in range(n_A)] + [-1 for _ in range(n_B)])
@@ -131,6 +131,57 @@ add_plsda
     dataset.stats['PLS-DA_{}_projections_{}'.format('-'.join(group_names), nrm)] = dataset.plsr_.transform(X)
 
 
+def add_2group_corr(dataset, group_names, normed=False):
+    """
+add_2group_corr
+    description:
+        Computes Pearson correlation coefficient between two specified groups (e.g. groups A and B) for all features.
+
+        The Pearson correlation coefficients (n_features,) are added to Dataset.stats with the label 
+        '2-group-corr_A-B_{raw/normed}'. These correlation coefficients can be combined with the loadings from a PLS-DA
+        computed on the same groups in order to generate the familiar S-plot.
     
+        * To use these data with the loadings from PLS-DA, the same group names must be specified in the same order *
 
+        If the Dataset.stats entry is already present, then it will be overridden.
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- groups to use to compute the PLS-DA, only 2 groups allowed
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+"""
+    if len(group_names) != 2:
+        m = 'add_2group_corr: 2 group names must be specified for correlation, {} group names specified'
+        raise ValueError(m.format(len(group_names)))
 
+    # get the group data, reshape and concatenate -> X 
+    Y = np.concatenate([_.T for _ in dataset.get_data_bygroup(group_names, normed=normed)]).T
+    # target variable is just 1 for group A and -1 for group B
+    n_A = len(dataset.group_indices[group_names[0]])
+    n_B = len(dataset.group_indices[group_names[1]])
+    x = np.array([1 for _ in range(n_A)] + [-1 for _ in range(n_B)])
+
+    # compute correlation coefficients for each feature
+    """
+    corr = []
+    for y in Y:
+        c = 0.
+        for _ in y:
+            # if x is all 0s then dont bother computing the correlation coefficient, it just causes a warning
+            if _ > 0:
+                c = pearsonr(x, y)[0]
+                break
+        corr.append(c)
+
+    # convert corr to a numpy array
+    corr = np.array(corr)
+    """
+    corr = np.array([pearsonr(x, y)[0] for y in Y])
+
+    if normed:
+        nrm = 'normed'
+    else:
+        nrm = 'raw'
+
+    # add the statistic into the Dataset
+    dataset.stats['2-group-corr_{}_{}'.format('-'.join(group_names), nrm)] = corr
+   

@@ -45,15 +45,17 @@ description:<br>
 <font color="#000000" face="helvetica, arial"><a name="Dataset">class <strong>Dataset</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Dataset">Dataset</a>(dataset_csv,&nbsp;skip_header=1)<br>
+<td colspan=2><tt><a href="#Dataset">Dataset</a>(dataset_csv,&nbsp;skip_header=1,&nbsp;esi_mode=None)<br>
 &nbsp;<br>
 <a href="#Dataset">Dataset</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;class&nbsp;for&nbsp;encapsulating&nbsp;a&nbsp;lipidomics&nbsp;dataset,&nbsp;with&nbsp;functions&nbsp;for&nbsp;loading&nbsp;and&nbsp;storing&nbsp;the&nbsp;data<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="Dataset-__init__"><strong>__init__</strong></a>(self, dataset_csv, skip_header=1)</dt><dd><tt><a href="#Dataset">Dataset</a>.__init__<br>
+<dl><dt><a name="Dataset-__init__"><strong>__init__</strong></a>(self, dataset_csv, skip_header=1, esi_mode=None)</dt><dd><tt><a href="#Dataset">Dataset</a>.__init__<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loads&nbsp;a&nbsp;dataset&nbsp;from&nbsp;.csv&nbsp;file<br>
+&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uses&nbsp;numpy.genfromtxt&nbsp;to&nbsp;load&nbsp;in&nbsp;a&nbsp;raw&nbsp;dataset,&nbsp;stored&nbsp;in&nbsp;.csv&nbsp;format.&nbsp;Stores&nbsp;two&nbsp;numpy.ndarrays&nbsp;containing<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;labels&nbsp;(self.<strong>labels</strong>):<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[mz,&nbsp;rt,&nbsp;dt],&nbsp;...&nbsp;]&nbsp;shape&nbsp;=&nbsp;(n_features,&nbsp;3)<br>
@@ -65,7 +67,9 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset_csv&nbsp;(str)&nbsp;--&nbsp;filename&nbsp;of&nbsp;raw&nbsp;dataset&nbsp;in&nbsp;.csv&nbsp;format<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[skip_header&nbsp;(int)]&nbsp;--&nbsp;number&nbsp;of&nbsp;header&nbsp;lines&nbsp;in&nbsp;the&nbsp;file&nbsp;to&nbsp;skip&nbsp;when&nbsp;loading&nbsp;data,&nbsp;passed&nbsp;on&nbsp;to&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;np.genfromtxt&nbsp;[optional,&nbsp;default=1]</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;np.genfromtxt&nbsp;[optional,&nbsp;default=1]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[esi_mode&nbsp;(str)]&nbsp;--&nbsp;electrospray&nbsp;ionization&nbsp;mode,&nbsp;can&nbsp;be&nbsp;used&nbsp;for&nbsp;identification,&nbsp;either&nbsp;'neg',&nbsp;'pos'&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;unspecified&nbsp;[optional,&nbsp;default=None]</tt></dd></dl>
 
 <dl><dt><a name="Dataset-assign_groups"><strong>assign_groups</strong></a>(self, group_indices)</dt><dd><tt><a href="#Dataset">Dataset</a>.assign_groups<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>

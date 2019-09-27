@@ -18,10 +18,12 @@ Dataset
         A class for encapsulating a lipidomics dataset, with functions for loading and storing the data
 """
 
-    def __init__(self, dataset_csv, skip_header=1):
+    def __init__(self, dataset_csv, skip_header=1, esi_mode=None):
         """
 Dataset.__init__
     description:
+        Loads a dataset from .csv file
+
         Uses numpy.genfromtxt to load in a raw dataset, stored in .csv format. Stores two numpy.ndarrays containing
         the labels (self.labels):
             [[mz, rt, dt], ... ] shape = (n_features, 3)
@@ -34,6 +36,8 @@ Dataset.__init__
         dataset_csv (str) -- filename of raw dataset in .csv format
         [skip_header (int)] -- number of header lines in the file to skip when loading data, passed on to 
                                 np.genfromtxt [optional, default=1]
+        [esi_mode (str)] -- electrospray ionization mode, can be used for identification, either 'neg', 'pos' or None
+                            for unspecified [optional, default=None]
 """
         mz, rt, dt, *intensities = np.genfromtxt(dataset_csv, delimiter=',', unpack=True, skip_header=skip_header)
         self.labels, self.intensities = np.array([mz, rt, dt]).T, np.array(intensities).T
@@ -44,6 +48,8 @@ Dataset.__init__
         self.normed_intensities = None
         # statistics can be added in later
         self.stats = {}
+        # ESI mode used for identification purposes
+        self.esi_mode = esi_mode
 
     def assign_groups(self, group_indices):
         """
