@@ -82,3 +82,22 @@ addplsda_mock1
     return True
 
 
+def addplsda_3groups_mock1():
+    """
+addplsda_3groups_mock1
+    description:
+        Uses the raw data from mock_data_1.csv to perform PLS-DA trying to use 3 groups
+
+        Test fails if there are any unexpected errors or if the expected ValueError does not occur
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'mock_data_1.csv'))
+    dset.assign_groups({'A': [0, 2, 4], 'B': [1, 3, 5]})
+    try:
+        add_plsda(dset, ['A', 'B', 'C'])
+    except ValueError:
+        return True
+    
+    return False
+

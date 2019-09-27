@@ -44,6 +44,16 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;feature&nbsp;(tuple(float))&nbsp;--&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;ccs&nbsp;of&nbsp;feature<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[tolerance&nbsp;(tuple(float))]&nbsp;--&nbsp;tolerance&nbsp;to&nbsp;use&nbsp;for&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;ccs&nbsp;search&nbsp;[optional,&nbsp;default=(0.01,&nbsp;0.1,&nbsp;1.)]</tt></dd></dl>
+ <dl><dt><a name="-scatter_PCA3_projections_bygroup"><strong>scatter_PCA3_projections_bygroup</strong></a>(dataset, group_names, path, normed=False)</dt><dd><tt>scatter_PCA3_projections_bygroup<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;scatter&nbsp;plot&nbsp;of&nbsp;the&nbsp;PCA&nbsp;projections&nbsp;for&nbsp;a&nbsp;specified&nbsp;set&nbsp;of&nbsp;groups&nbsp;and&nbsp;saves&nbsp;the&nbsp;image&nbsp;to&nbsp;a&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PCA3_projections_{group_name1}-{group_name2}-{etc.}_{raw&nbsp;or&nbsp;normed}.png'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;pick&nbsp;groups&nbsp;to&nbsp;plot&nbsp;against<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;(str)&nbsp;--&nbsp;path&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

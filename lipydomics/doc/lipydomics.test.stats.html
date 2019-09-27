@@ -47,5 +47,21 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset.stats['PCA3_projections_raw'].shape&nbsp;=&nbsp;(6,&nbsp;3)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;test&nbsp;pass&nbsp;(True)&nbsp;or&nbsp;fail&nbsp;(False)</tt></dd></dl>
+ <dl><dt><a name="-addplsda_3groups_mock1"><strong>addplsda_3groups_mock1</strong></a>()</dt><dd><tt>addplsda_3groups_mock1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uses&nbsp;the&nbsp;raw&nbsp;data&nbsp;from&nbsp;mock_data_1.csv&nbsp;to&nbsp;perform&nbsp;PLS-DA&nbsp;trying&nbsp;to&nbsp;use&nbsp;3&nbsp;groups<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;fails&nbsp;if&nbsp;there&nbsp;are&nbsp;any&nbsp;unexpected&nbsp;errors&nbsp;or&nbsp;if&nbsp;the&nbsp;expected&nbsp;ValueError&nbsp;does&nbsp;not&nbsp;occur<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;test&nbsp;pass&nbsp;(True)&nbsp;or&nbsp;fail&nbsp;(False)</tt></dd></dl>
+ <dl><dt><a name="-addplsda_mock1"><strong>addplsda_mock1</strong></a>()</dt><dd><tt>addplsda_mock1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uses&nbsp;the&nbsp;raw&nbsp;data&nbsp;from&nbsp;mock_data_1.csv&nbsp;to&nbsp;perform&nbsp;PLS-DA.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;fails&nbsp;if&nbsp;there&nbsp;are&nbsp;any&nbsp;errors&nbsp;or&nbsp;if&nbsp;the&nbsp;shapes&nbsp;of&nbsp;the&nbsp;following&nbsp;stats&nbsp;entries&nbsp;are&nbsp;incorrect:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset.stats['PLS-DA_A-B_loadings_raw'].shape&nbsp;=&nbsp;(5,&nbsp;2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset.stats['PLS-DA_A-B_projections_raw'].shape&nbsp;=&nbsp;(6,&nbsp;2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;test&nbsp;pass&nbsp;(True)&nbsp;or&nbsp;fail&nbsp;(False)</tt></dd></dl>
 </td></tr></table>
 </body></html>
