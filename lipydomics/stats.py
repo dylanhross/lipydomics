@@ -87,7 +87,7 @@ add_pca3
     dataset.stats['PCA3_projections_{}'.format(nrm)] = dataset.pca3_.transform(use_data)
 
 
-def add_plsda(dataset, group_names, normed=False):
+def add_plsda(dataset, group_names, normed=False, scaled=False):
     """
 add_plsda
     description:
@@ -105,6 +105,7 @@ add_plsda
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- groups to use to compute the PLS-DA, only 2 groups allowed
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+        [scaled (bool)] -- whether to let the PLSRegression scale the X data [optional, default=False]
 """
     if len(group_names) != 2:
         m = 'add_plsda: 2 group names must be specified for PLS-DA, {} group names specified'
@@ -118,7 +119,7 @@ add_plsda
     y = np.array([1 for _ in range(n_A)] + [-1 for _ in range(n_B)])
 
     # initialize the PLSRegression object, add to the Dataset, fit the group data
-    dataset.plsr_ = PLSRegression()
+    dataset.plsr_ = PLSRegression(scale=scaled)
     dataset.plsr_.fit(X, y)
 
     if normed:
@@ -158,10 +159,10 @@ add_2group_corr
     # target variable is just 1 for group A and -1 for group B
     n_A = len(dataset.group_indices[group_names[0]])
     n_B = len(dataset.group_indices[group_names[1]])
-    x = np.array([1 for _ in range(n_A)] + [-1 for _ in range(n_B)])
+    # set so that the direction is the same as in PLS-DA
+    x = np.array([-1 for _ in range(n_A)] + [1 for _ in range(n_B)])
 
     # compute correlation coefficients for each feature
-    """
     corr = []
     for y in Y:
         c = 0.
@@ -174,8 +175,6 @@ add_2group_corr
 
     # convert corr to a numpy array
     corr = np.array(corr)
-    """
-    corr = np.array([pearsonr(x, y)[0] for y in Y])
 
     if normed:
         nrm = 'normed'

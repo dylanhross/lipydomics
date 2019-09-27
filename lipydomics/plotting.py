@@ -75,15 +75,15 @@ barplot_feature_bygroup
         for d in ['top', 'right']:
             ax.spines[d].set_visible(False)
         ax.set_ylabel('intensity')
-        ax.set_title('mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz, rt, ccs), fontsize=8)
+        ax.set_title('mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz, rt, ccs), fontsize=8, fontweight='bold')
 
         plt.tight_layout()
         plt.savefig(fig_path, dpi=300, bbox_inches='tight')
 
 
-def scatter_PCA3_projections_bygroup(dataset, group_names, path, normed=False):
+def scatter_pca3_projections_bygroup(dataset, group_names, path, normed=False):
     """
-scatter_PCA3_projections_bygroup
+scatter_pca3_projections_bygroup
     description:
         generates a scatter plot of the PCA projections for a specified set of groups and saves the image to a 
         specified directory. The filename of the image is:
@@ -118,7 +118,60 @@ scatter_PCA3_projections_bygroup
         ax.spines[d].set_visible(False)
     ax.set_xlabel('PC1 ({:.1f} %)'.format(100. * dataset.pca3_.explained_variance_ratio_[0]), fontsize=8)
     ax.set_ylabel('PC2 ({:.1f} %)'.format(100. * dataset.pca3_.explained_variance_ratio_[1]), fontsize=8)
-    ax.set_title('3 component PCA', fontsize=8)
+    ax.set_title('3 component PCA', fontsize=8, fontweight='bold')
+
+    ax.ticklabel_format(style='sci', scilimits=(0, 0))
+
+    ax.legend(fontsize=8, borderpad=0.5)
+
+    plt.tight_layout()
+    plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+
+
+def scatter_plsda_projections_bygroup(dataset, group_names, path, normed=False):
+    """
+scatter_plsda_projections_bygroup
+    description:
+        generates a scatter plot of the PLS-DA projections for a specified set of groups and saves the image to a 
+        specified directory. The filename of the image is:
+            'PLS-DA_projections_{group_A}-{group_B}_{raw or normed}.png'
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- pick groups to plot against
+        path (str) -- path to save the image under
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+"""
+    if len(group_names) != 2:
+        m = 'scatter_plsda_projections_bygroup: 2 group names must be specified for PLS-DA, {} group names specified'
+        raise ValueError(m.format(len(group_names)))
+
+    # generate the path to save the figure under
+    if normed:
+        nrm = 'normed'
+    else: 
+        nrm = 'raw'
+    fig_name = 'PLS-DA_projections_{}_{}.png'.format('-'.join(group_names), nrm)
+    fig_path = os.path.join(path, fig_name)
+
+    # make the plot
+    fig = plt.figure(figsize=(3, 3))
+    ax = fig.add_subplot(111)
+
+    ax.axvline(lw=0.5, c='k', zorder=0)
+    ax.axhline(lw=0.5, c='k', zorder=0)
+
+    for group_name, c in zip(group_names, ['r', 'b', '#ffa600', 'purple', 'green', 'm']):
+
+        d = np.array([dataset.stats['PLS-DA_{}_projections_{}'.format('-'.join(group_names), nrm)][i][:2] for i in dataset.group_indices[group_name]]).T
+        ax.scatter(*d, marker='.', s=24, c=c, label=group_name)
+
+    for d in ['top', 'right', 'bottom', 'left']:
+        ax.spines[d].set_visible(False)
+    ax.set_xlabel('scores[0]', fontsize=8)
+    ax.set_ylabel('scores[1]', fontsize=8)
+    ax.set_title('PLS-DA', fontsize=8, fontweight='bold')
+
+    ax.ticklabel_format(style='sci', scilimits=(0, 0))
 
     ax.legend(fontsize=8, borderpad=0.5)
 
