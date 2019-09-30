@@ -8,15 +8,7 @@
         should produce one or more columns to associate with the data, as well as a label describing the analysis
         performed (what groupings are used, normalized or raw data, etc.). This data is added to the Dataset instance
         into a dictionary called stats, where the key is the label string and the value is a numpy.ndarray containing
-        the desired statistic. Some functions will also return extra information, for example: when doing PCA analysis,
-        the loadings of each feature are added as data in Dataset.stats and projections for each sample within user-
-        specified groups can optionally be returned.
-
-        if labels are not explicitly provided, they can generated in a systematic fashion:
-            statistic_groups_raw-or-normed
-        examples:
-            ANOVA_ctrl-AY-VitE-AYVitE_normed
-            PCA_ALL_normed
+        the desired statistic. 
 
         WARNING: adding statistics with the same label as ones already added to the Dataset object will overwrite the 
         existing data
@@ -34,6 +26,9 @@ def add_anova_p(dataset, group_names, normed=False):
 add_anova_p
     description:
         adds a column containing ANOVA p-values computed for user-specified groups
+
+        The p-values (n_features,) are added to Dataset.stats with the label:
+            'ANOVA_{group_name1}-{group_name2}-{etc.}_{raw/normed}'
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- groups to use to compute the ANOVA p-value
@@ -116,7 +111,7 @@ add_plsda
     # target variable is just 1 for group A and -1 for group B
     n_A = len(dataset.group_indices[group_names[0]])
     n_B = len(dataset.group_indices[group_names[1]])
-    y = np.array([1 for _ in range(n_A)] + [-1 for _ in range(n_B)])
+    y = np.array([-1 for _ in range(n_A)] + [1 for _ in range(n_B)])
 
     # initialize the PLSRegression object, add to the Dataset, fit the group data
     dataset.plsr_ = PLSRegression(scale=scaled)

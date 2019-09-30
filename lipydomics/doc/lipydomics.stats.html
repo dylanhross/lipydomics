@@ -18,15 +18,7 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;should&nbsp;produce&nbsp;one&nbsp;or&nbsp;more&nbsp;columns&nbsp;to&nbsp;associate&nbsp;with&nbsp;the&nbsp;data,&nbsp;as&nbsp;well&nbsp;as&nbsp;a&nbsp;label&nbsp;describing&nbsp;the&nbsp;analysis<br>
 &nbsp;&nbsp;&nbsp;&nbsp;performed&nbsp;(what&nbsp;groupings&nbsp;are&nbsp;used,&nbsp;normalized&nbsp;or&nbsp;raw&nbsp;data,&nbsp;etc.).&nbsp;This&nbsp;data&nbsp;is&nbsp;added&nbsp;to&nbsp;the&nbsp;Dataset&nbsp;instance<br>
 &nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;a&nbsp;dictionary&nbsp;called&nbsp;stats,&nbsp;where&nbsp;the&nbsp;key&nbsp;is&nbsp;the&nbsp;label&nbsp;string&nbsp;and&nbsp;the&nbsp;value&nbsp;is&nbsp;a&nbsp;numpy.ndarray&nbsp;containing<br>
-&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;desired&nbsp;statistic.&nbsp;Some&nbsp;functions&nbsp;will&nbsp;also&nbsp;return&nbsp;extra&nbsp;information,&nbsp;for&nbsp;example:&nbsp;when&nbsp;doing&nbsp;PCA&nbsp;analysis,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;loadings&nbsp;of&nbsp;each&nbsp;feature&nbsp;are&nbsp;added&nbsp;as&nbsp;data&nbsp;in&nbsp;Dataset.stats&nbsp;and&nbsp;projections&nbsp;for&nbsp;each&nbsp;sample&nbsp;within&nbsp;user-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;groups&nbsp;can&nbsp;optionally&nbsp;be&nbsp;returned.<br>
-&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;labels&nbsp;are&nbsp;not&nbsp;explicitly&nbsp;provided,&nbsp;they&nbsp;can&nbsp;generated&nbsp;in&nbsp;a&nbsp;systematic&nbsp;fashion:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;statistic_groups_raw-or-normed<br>
-&nbsp;&nbsp;&nbsp;&nbsp;examples:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ANOVA_ctrl-AY-VitE-AYVitE_normed<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PCA_ALL_normed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;desired&nbsp;statistic.&nbsp;<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;WARNING:&nbsp;adding&nbsp;statistics&nbsp;with&nbsp;the&nbsp;same&nbsp;label&nbsp;as&nbsp;ones&nbsp;already&nbsp;added&nbsp;to&nbsp;the&nbsp;Dataset&nbsp;object&nbsp;will&nbsp;overwrite&nbsp;the&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;existing&nbsp;data</tt></p>
@@ -63,6 +55,9 @@ description:<br>
  <dl><dt><a name="-add_anova_p"><strong>add_anova_p</strong></a>(dataset, group_names, normed=False)</dt><dd><tt>add_anova_p<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adds&nbsp;a&nbsp;column&nbsp;containing&nbsp;ANOVA&nbsp;p-values&nbsp;computed&nbsp;for&nbsp;user-specified&nbsp;groups<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;p-values&nbsp;(n_features,)&nbsp;are&nbsp;added&nbsp;to&nbsp;Dataset.stats&nbsp;with&nbsp;the&nbsp;label:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'ANOVA_{group_name1}-{group_name2}-{etc.}_{raw/normed}'<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;groups&nbsp;to&nbsp;use&nbsp;to&nbsp;compute&nbsp;the&nbsp;ANOVA&nbsp;p-value<br>
