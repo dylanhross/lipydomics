@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module lipydomics.plotting</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="lipydomics.html"><font color="#ffffff">lipydomics</font></a>.plotting</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/DylanRoss/Documents/GitHub/lipydomics/lipydomics/plotting.py">/Users/DylanRoss/Documents/GitHub/lipydomics/lipydomics/plotting.py</a></font></td></tr></table>
+    <p><tt>lipydomics/plotting.py<br>
+Dylan&nbsp;H.&nbsp;Ross<br>
+2019/09/23<br>
+&nbsp;<br>
+description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;set&nbsp;of&nbsp;functions&nbsp;for&nbsp;generating&nbsp;plots&nbsp;of&nbsp;various&nbsp;features,&nbsp;statistical&nbsp;analyses,&nbsp;etc.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="matplotlib.pyplot.html">matplotlib.pyplot</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-barplot_feature_bygroup"><strong>barplot_feature_bygroup</strong></a>(dataset, group_names, path, feature, normed=False, tolerance=(0.01, 0.1, 1.0))</dt><dd><tt>barplot_feature_bygroup<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;bar&nbsp;plot&nbsp;of&nbsp;the&nbsp;specified&nbsp;feature,&nbsp;comparing&nbsp;the&nbsp;mean&nbsp;intensities&nbsp;of&nbsp;the&nbsp;specified&nbsp;groups&nbsp;and&nbsp;saves<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;image&nbsp;to&nbsp;a&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'bar_{mz}-{rt}-{ccs}_{group_name1}-{group_name2}-{etc.}_{raw&nbsp;or&nbsp;normed}.png'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;pick&nbsp;groups&nbsp;to&nbsp;plot&nbsp;against<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;(str)&nbsp;--&nbsp;path&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;feature&nbsp;(tuple(float))&nbsp;--&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;ccs&nbsp;of&nbsp;feature<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[tolerance&nbsp;(tuple(float))]&nbsp;--&nbsp;tolerance&nbsp;to&nbsp;use&nbsp;for&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;ccs&nbsp;search&nbsp;[optional,&nbsp;default=(0.01,&nbsp;0.1,&nbsp;1.)]</tt></dd></dl>
+ <dl><dt><a name="-scatter_pca3_projections_bygroup"><strong>scatter_pca3_projections_bygroup</strong></a>(dataset, group_names, path, normed=False)</dt><dd><tt>scatter_pca3_projections_bygroup<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;scatter&nbsp;plot&nbsp;of&nbsp;the&nbsp;PCA&nbsp;projections&nbsp;for&nbsp;a&nbsp;specified&nbsp;set&nbsp;of&nbsp;groups&nbsp;and&nbsp;saves&nbsp;the&nbsp;image&nbsp;to&nbsp;a&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PCA3_{group_name1}-{group_name2}-{etc.}_projections_{raw&nbsp;or&nbsp;normed}.png'<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;The&nbsp;same&nbsp;group&nbsp;names&nbsp;(in&nbsp;the&nbsp;same&nbsp;order)&nbsp;as&nbsp;were&nbsp;used&nbsp;in&nbsp;the&nbsp;call&nbsp;to&nbsp;add_pca3(...)&nbsp;must&nbsp;be&nbsp;used.&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;pick&nbsp;groups&nbsp;used&nbsp;to&nbsp;calculate&nbsp;the&nbsp;PCA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;(str)&nbsp;--&nbsp;path&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
+ <dl><dt><a name="-scatter_plsda_projections_bygroup"><strong>scatter_plsda_projections_bygroup</strong></a>(dataset, group_names, path, normed=False)</dt><dd><tt>scatter_plsda_projections_bygroup<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;scatter&nbsp;plot&nbsp;of&nbsp;the&nbsp;PLS-DA&nbsp;projections&nbsp;for&nbsp;a&nbsp;specified&nbsp;set&nbsp;of&nbsp;groups&nbsp;and&nbsp;saves&nbsp;the&nbsp;image&nbsp;to&nbsp;a&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PLS-DA_projections_{group_A}-{group_B}_{raw&nbsp;or&nbsp;normed}.png'<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;The&nbsp;same&nbsp;group&nbsp;names&nbsp;(in&nbsp;the&nbsp;same&nbsp;order)&nbsp;as&nbsp;were&nbsp;used&nbsp;in&nbsp;the&nbsp;call&nbsp;to&nbsp;add_plsda(...)&nbsp;must&nbsp;be&nbsp;used.&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;pick&nbsp;groups&nbsp;to&nbsp;plot&nbsp;against<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;(str)&nbsp;--&nbsp;path&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
+ <dl><dt><a name="-splot_plsda_pcorr_bygroup"><strong>splot_plsda_pcorr_bygroup</strong></a>(dataset, group_names, path, normed=False)</dt><dd><tt>splot_plsda_pcorr_bygroup<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generate&nbsp;an&nbsp;S-Plot&nbsp;using&nbsp;x_loadings&nbsp;from&nbsp;PLS-DA&nbsp;and&nbsp;Pearson&nbsp;correlation&nbsp;coefficients,&nbsp;and&nbsp;save&nbsp;the&nbsp;image&nbsp;to&nbsp;a&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'S-plot_{group_A}-{group_B}_{raw&nbsp;or&nbsp;normed}.png'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;pick&nbsp;groups&nbsp;to&nbsp;plot&nbsp;against<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;(str)&nbsp;--&nbsp;path&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>rcParams</strong> = RcParams({'_internal.classic_mode': False,
+     ...nor.width': 0.6,
+          'ytick.right': False})</td></tr></table>
+</body></html>
