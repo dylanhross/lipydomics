@@ -62,14 +62,15 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;groups&nbsp;to&nbsp;use&nbsp;to&nbsp;compute&nbsp;the&nbsp;ANOVA&nbsp;p-value<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
- <dl><dt><a name="-add_pca3"><strong>add_pca3</strong></a>(dataset, normed=False, random_state=69)</dt><dd><tt>add_pca3<br>
+ <dl><dt><a name="-add_pca3"><strong>add_pca3</strong></a>(dataset, group_names, normed=False, random_state=69)</dt><dd><tt>add_pca3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes&nbsp;a&nbsp;3-component&nbsp;PCA&nbsp;from&nbsp;all&nbsp;features&nbsp;in&nbsp;the&nbsp;Dataset&nbsp;(using&nbsp;either&nbsp;raw&nbsp;or&nbsp;normalized&nbsp;intensities)&nbsp;and<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adds&nbsp;the&nbsp;relevant&nbsp;information&nbsp;(feature&nbsp;loadings,&nbsp;projections)&nbsp;to&nbsp;the&nbsp;Dataset.&nbsp;<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;fitted&nbsp;PCA&nbsp;object&nbsp;is&nbsp;added&nbsp;as&nbsp;an&nbsp;instance&nbsp;variable&nbsp;(Dataset.pca3_).&nbsp;The&nbsp;feature&nbsp;loadings&nbsp;(3,&nbsp;n_features)&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;PCA&nbsp;projections&nbsp;(n_samples,&nbsp;3)&nbsp;are&nbsp;added&nbsp;to&nbsp;Dataset.stats&nbsp;with&nbsp;the&nbsp;labels&nbsp;'PCA3_loadings_{raw/normed}'&nbsp;and&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PCA3_projections_{raw/normed}',&nbsp;respectively.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;PCA&nbsp;projections&nbsp;(n_samples,&nbsp;3)&nbsp;are&nbsp;added&nbsp;to&nbsp;Dataset.stats&nbsp;with&nbsp;the&nbsp;labels&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PCA3_{group1}-{group2}-{etc.}_loadings_{raw/normed}'&nbsp;and&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PCA3_{group1}-{group2}-{etc.}_projections_{raw/normed}',&nbsp;respectively.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;the&nbsp;Dataset.pca3_&nbsp;instance&nbsp;variable&nbsp;or&nbsp;either&nbsp;of&nbsp;the&nbsp;Dataset.stats&nbsp;entries&nbsp;are&nbsp;already&nbsp;present,&nbsp;then&nbsp;they&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;overridden.<br>

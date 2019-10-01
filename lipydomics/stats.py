@@ -45,7 +45,7 @@ add_anova_p
     dataset.stats[label] = anova_p
 
 
-def add_pca3(dataset, normed=False, random_state=69):
+def add_pca3(dataset, group_names, normed=False, random_state=69):
     """
 add_pca3
     description:
@@ -53,8 +53,9 @@ add_pca3
         adds the relevant information (feature loadings, projections) to the Dataset. 
 
         The fitted PCA object is added as an instance variable (Dataset.pca3_). The feature loadings (3, n_features) 
-        and PCA projections (n_samples, 3) are added to Dataset.stats with the labels 'PCA3_loadings_{raw/normed}' and 
-        'PCA3_projections_{raw/normed}', respectively.
+        and PCA projections (n_samples, 3) are added to Dataset.stats with the labels 
+        'PCA3_{group1}-{group2}-{etc.}_loadings_{raw/normed}' and 
+        'PCA3_{group1}-{group2}-{etc.}_projections_{raw/normed}', respectively.
         
         If the Dataset.pca3_ instance variable or either of the Dataset.stats entries are already present, then they 
         will be overridden.
@@ -69,17 +70,16 @@ add_pca3
     # fit the PCA to the data
     if normed:
         nrm = 'normed'
-        # need to transpose the intensities array to shape: (n_samples, n_features) for PCA
-        use_data = dataset.normed_intensities.T
     else:
         nrm = 'raw'
-        # need to transpose the intensities array to shape: (n_samples, n_features) for PCA
-        use_data = dataset.intensities.T
-    dataset.pca3_.fit(use_data)
+
+    # get the group data, reshape and concatenate -> X 
+    X = np.concatenate([_.T for _ in dataset.get_data_bygroup(group_names, normed=normed)])
+    dataset.pca3_.fit(X)
 
     # add the statistics into the Dataset
-    dataset.stats['PCA3_loadings_{}'.format(nrm)] = dataset.pca3_.components_
-    dataset.stats['PCA3_projections_{}'.format(nrm)] = dataset.pca3_.transform(use_data)
+    dataset.stats['PCA3_{}_loadings_{}'.format('-'.join(group_names), nrm)] = dataset.pca3_.components_
+    dataset.stats['PCA3_{}_projections_{}'.format('-'.join(group_names), nrm)] = dataset.pca3_.transform(X)
 
 
 def add_plsda(dataset, group_names, normed=False, scaled=False):

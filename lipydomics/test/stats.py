@@ -46,12 +46,12 @@ addpca3_mock1
 """
     dset = Dataset(os.path.join(os.path.dirname(__file__), 'mock_data_1.csv'))
     dset.assign_groups({'A': [0, 2, 4], 'B': [1, 3, 5]})
-    add_pca3(dset)
-    if dset.stats['PCA3_loadings_raw'].shape != (3, 5):
-        m = 'addpca3_mock1: PCA3_loadings_raw should have shape (3, 5), has shape: {}'
+    add_pca3(dset, ['A', 'B'])
+    if dset.stats['PCA3_A-B_loadings_raw'].shape != (3, 5):
+        m = 'addpca3_mock1: PCA3_A-B_loadings_raw should have shape (3, 5), has shape: {}'
         raise RuntimeError(m.format(dset.stats['PCA3_loadings_raw'].shape))
-    if dset.stats['PCA3_projections_raw'].shape != (6, 3):
-        m = 'addpca3_mock1: PCA3_projections_raw should have shape (6, 3), has shape: {}'
+    if dset.stats['PCA3_A-B_projections_raw'].shape != (6, 3):
+        m = 'addpca3_mock1: PCA3_A-B_projections_raw should have shape (6, 3), has shape: {}'
         raise RuntimeError(m.format(dset.stats['PCA3_projections_raw'].shape))
 
     return True

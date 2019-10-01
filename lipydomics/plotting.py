@@ -87,10 +87,12 @@ scatter_pca3_projections_bygroup
     description:
         generates a scatter plot of the PCA projections for a specified set of groups and saves the image to a 
         specified directory. The filename of the image is:
-            'PCA3_projections_{group_name1}-{group_name2}-{etc.}_{raw or normed}.png'
+            'PCA3_{group_name1}-{group_name2}-{etc.}_projections_{raw or normed}.png'
+
+        * The same group names (in the same order) as were used in the call to add_pca3(...) must be used. *
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
-        group_names (list(str)) -- pick groups to plot against
+        group_names (list(str)) -- pick groups used to calculate the PCA
         path (str) -- path to save the image under
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
 """
@@ -99,7 +101,7 @@ scatter_pca3_projections_bygroup
         nrm = 'normed'
     else: 
         nrm = 'raw'
-    fig_name = 'PCA3_projections_{}_{}.png'.format('-'.join(group_names), nrm)
+    fig_name = 'PCA3_{}_projections_{}.png'.format('-'.join(group_names), nrm)
     fig_path = os.path.join(path, fig_name)
 
     # make the plot
@@ -111,7 +113,7 @@ scatter_pca3_projections_bygroup
 
     for group_name, c in zip(group_names, ['r', 'b', '#ffa600', 'purple', 'green', 'm']):
 
-        d = np.array([dataset.stats['PCA3_projections_{}'.format(nrm)][i][:2] for i in dataset.group_indices[group_name]]).T
+        d = np.array([dataset.stats['PCA3_{}_projections_{}'.format('-'.join(group_names), nrm)][i][:2] for i in dataset.group_indices[group_name]]).T
         ax.scatter(*d, marker='.', s=24, c=c, label=group_name)
 
     for d in ['top', 'right', 'bottom', 'left']:
@@ -135,6 +137,8 @@ scatter_plsda_projections_bygroup
         generates a scatter plot of the PLS-DA projections for a specified set of groups and saves the image to a 
         specified directory. The filename of the image is:
             'PLS-DA_projections_{group_A}-{group_B}_{raw or normed}.png'
+
+        * The same group names (in the same order) as were used in the call to add_plsda(...) must be used. *
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- pick groups to plot against
@@ -162,7 +166,7 @@ scatter_plsda_projections_bygroup
 
     for group_name, c in zip(group_names, ['r', 'b', '#ffa600', 'purple', 'green', 'm']):
 
-        d = np.array([dataset.stats['PLS-DA_{}_projections_{}'.format('-'.join(group_names), nrm)][i][:2] for i in dataset.group_indices[group_name]]).T
+        d = np.array([dataset.stats['PLS-DA_{}_projections_{}'.format('-'.join(group_names), nrm)][i] for i in dataset.group_indices[group_name]]).T
         ax.scatter(*d, marker='.', s=24, c=c, label=group_name)
 
     for d in ['top', 'right', 'bottom', 'left']:
