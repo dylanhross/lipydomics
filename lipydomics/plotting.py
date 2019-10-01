@@ -209,6 +209,14 @@ splot_plsda_pcorr_bygroup
     x = dataset.stats['PLS-DA_{}_loadings_{}'.format('-'.join(group_names), nrm)].T[0]
     y = dataset.stats['2-group-corr_{}_{}'.format('-'.join(group_names), nrm)]
 
+    # color the positive and negative values differently
+    c = []
+    for _y in y:
+        if _y > 0:
+            c.append('b')
+        else:
+            c.append('r')
+
     # make the plot
     fig = plt.figure(figsize=(3, 3))
     ax = fig.add_subplot(111)
@@ -216,7 +224,7 @@ splot_plsda_pcorr_bygroup
     ax.axvline(lw=0.5, c='k', ls='--', zorder=0)
     ax.axhline(lw=0.5, c='k', ls='--', zorder=0)
     
-    ax.scatter(x, y, c='b', s=1)
+    ax.scatter(x, y, c=c, s=1)
 
     ax.set_ylim([-1, 1])
     ax.set_xlabel('x loadings', fontsize=8)
