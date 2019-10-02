@@ -18,7 +18,7 @@ from matplotlib import rcParams
 rcParams['font.size'] = 8
 
 
-def barplot_feature_bygroup(dataset, group_names, path, feature, normed=False, tolerance=(0.01, 0.1, 1.)):
+def barplot_feature_bygroup(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 1.)):
     """
 barplot_feature_bygroup
     description:
@@ -28,7 +28,7 @@ barplot_feature_bygroup
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- pick groups to plot against
-        path (str) -- path to save the image under
+        img_dir (str) -- directory to save the image under
         feature (tuple(float)) -- m/z, rt, and ccs of feature
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
         [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search [optional, default=(0.01, 0.1, 1.)] 
@@ -57,7 +57,7 @@ barplot_feature_bygroup
         else: 
             nrm = 'raw'
         fig_name = 'bar_{:.4f}-{:.2f}-{:.1f}_'.format(mz, rt, ccs) + '-'.join(group_names) + '_{}.png'.format(nrm)
-        fig_path = os.path.join(path, fig_name)
+        fig_path = os.path.join(img_dir, fig_name)
 
         group_data = np.array([_[i] for _ in dataset.get_data_bygroup(group_names, normed=normed)])
 
@@ -81,7 +81,7 @@ barplot_feature_bygroup
         plt.savefig(fig_path, dpi=300, bbox_inches='tight')
 
 
-def scatter_pca3_projections_bygroup(dataset, group_names, path, normed=False):
+def scatter_pca3_projections_bygroup(dataset, group_names, img_dir, normed=False):
     """
 scatter_pca3_projections_bygroup
     description:
@@ -93,7 +93,7 @@ scatter_pca3_projections_bygroup
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- pick groups used to calculate the PCA
-        path (str) -- path to save the image under
+        img_dir (str) -- directory to save the image under
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
 """
     # generate the path to save the figure under
@@ -102,7 +102,7 @@ scatter_pca3_projections_bygroup
     else: 
         nrm = 'raw'
     fig_name = 'PCA3_{}_projections_{}.png'.format('-'.join(group_names), nrm)
-    fig_path = os.path.join(path, fig_name)
+    fig_path = os.path.join(img_dir, fig_name)
 
     # make the plot
     fig = plt.figure(figsize=(3, 3))
@@ -124,13 +124,13 @@ scatter_pca3_projections_bygroup
 
     ax.ticklabel_format(style='sci', scilimits=(0, 0))
 
-    ax.legend(fontsize=8, borderpad=0.5)
+    ax.legend(fontsize=6, borderpad=0.2)
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
 
 
-def scatter_plsda_projections_bygroup(dataset, group_names, path, normed=False):
+def scatter_plsda_projections_bygroup(dataset, group_names, img_dir, normed=False):
     """
 scatter_plsda_projections_bygroup
     description:
@@ -142,7 +142,7 @@ scatter_plsda_projections_bygroup
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- pick groups to plot against
-        path (str) -- path to save the image under
+        img_dir (str) -- directory to save the image under
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
 """
     if len(group_names) != 2:
@@ -155,7 +155,7 @@ scatter_plsda_projections_bygroup
     else: 
         nrm = 'raw'
     fig_name = 'PLS-DA_projections_{}_{}.png'.format('-'.join(group_names), nrm)
-    fig_path = os.path.join(path, fig_name)
+    fig_path = os.path.join(img_dir, fig_name)
 
     # make the plot
     fig = plt.figure(figsize=(3, 3))
@@ -177,13 +177,13 @@ scatter_plsda_projections_bygroup
 
     ax.ticklabel_format(style='sci', scilimits=(0, 0))
 
-    ax.legend(fontsize=8, borderpad=0.5)
+    ax.legend(fontsize=6, borderpad=0.2)
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
 
 
-def splot_plsda_pcorr_bygroup(dataset, group_names, path, normed=False):
+def splot_plsda_pcorr_bygroup(dataset, group_names, img_dir, normed=False):
     """
 splot_plsda_pcorr_bygroup
     description:
@@ -193,7 +193,7 @@ splot_plsda_pcorr_bygroup
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- pick groups to plot against
-        path (str) -- path to save the image under
+        img_dir (str) -- directory to save the image under
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]   
 """
     if len(group_names) != 2:
@@ -206,7 +206,7 @@ splot_plsda_pcorr_bygroup
     else: 
         nrm = 'raw'
     fig_name = 'S-Plot_{}_{}.png'.format('-'.join(group_names), nrm)
-    fig_path = os.path.join(path, fig_name)
+    fig_path = os.path.join(img_dir, fig_name)
 
     
     # get the data
