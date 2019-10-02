@@ -12,8 +12,11 @@ import os
 import numpy as np
 
 from lipydomics.data import Dataset
-from lipydomics.stats import add_pca3
-from lipydomics.plotting import barplot_feature_bygroup, scatter_pca3_projections_bygroup
+from lipydomics.stats import add_pca3, add_plsda, add_2group_corr
+from lipydomics.plotting import (
+    barplot_feature_bygroup, scatter_pca3_projections_bygroup, scatter_plsda_projections_bygroup, 
+    splot_plsda_pcorr_bygroup
+)
 
 
 def barplot_feature_bygroup_mock1():
@@ -84,5 +87,68 @@ scatter_pca3_projections_bygroup_mock1
         # delete the image file 
         os.remove(img_path)
 
+    return True
+
+
+def scatter_plsda_projections_bygroup_mock1():
+    """
+scatter_plsda_projections_bygroup_mock1
+    description:
+        Using the normalized data from mock_data_1.csv, perform PLS-DA and plot the projections 
+        Image file is saved in the lipydomics/test directory, then deleted. 
+
+        Test fails if there are any errors, or if the image file is not produced
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'mock_data_1.csv'))
+    dset.assign_groups({'A': [0, 1, 2], 'B': [3, 4, 5]})
+    dset.normalize(np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6]))
+    group_names = ['A', 'B']
+    add_plsda(dset, group_names, normed=True)
+
+    img_dir = os.path.dirname(__file__)
+    img_path = os.path.join(img_dir, 'PLS-DA_projections_{}_normed.png'.format('-'.join(group_names)))
+
+    scatter_plsda_projections_bygroup(dset, group_names, img_dir, normed=True)
+    if not os.path.isfile(img_path):
+        m = 'scatter_plsda_projections_bygroup_mock1: image file {} not found'
+        raise RuntimeError(m.format(img_path))
+    else:
+        # delete the image file 
+        os.remove(img_path)
+
+    return True
+
+
+def splot_plsda_pcorr_bygroup_mock1():
+    """
+splot_plsda_pcorr_bygroup_mock1
+    description:
+        Using the normalized data from mock_data_1.csv, perform PLS-DA and correlation analyses then generate an S-plot 
+        Image file is saved in the lipydomics/test directory, then deleted. 
+
+        Test fails if there are any errors, or if the image file is not produced
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'mock_data_1.csv'))
+    dset.assign_groups({'A': [0, 1, 2], 'B': [3, 4, 5]})
+    dset.normalize(np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6]))
+    group_names = ['A', 'B']
+    add_plsda(dset, group_names, normed=True)
+    add_2group_corr(dset, group_names, normed=True)
+
+    img_dir = os.path.dirname(__file__)
+    img_path = os.path.join(img_dir, 'S-plot_{}_normed.png'.format('-'.join(group_names)))
+
+    splot_plsda_pcorr_bygroup(dset, group_names, img_dir, normed=True)
+    if not os.path.isfile(img_path):
+        m = 'scatter_plsda_projections_bygroup_mock1: image file {} not found'
+        raise RuntimeError(m.format(img_path))
+    else:
+        # delete the image file 
+        os.remove(img_path)
+        
     return True
 

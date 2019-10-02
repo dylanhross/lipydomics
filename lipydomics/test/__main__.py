@@ -16,7 +16,10 @@ import os
 
 from lipydomics.test.data import dataset_init_mock1, dataset_normalize_mock1, dataset_getgroup_mock1
 from lipydomics.test.stats import addanovap_mock1, addpca3_mock1, addplsda_mock1, addplsda_3groups_mock1
-from lipydomics.test.plotting import barplot_feature_bygroup_mock1, scatter_pca3_projections_bygroup_mock1
+from lipydomics.test.plotting import (
+    barplot_feature_bygroup_mock1, scatter_pca3_projections_bygroup_mock1, scatter_plsda_projections_bygroup_mock1,
+    splot_plsda_pcorr_bygroup_mock1
+)
 
 
 def run_all_tests():
@@ -36,7 +39,9 @@ run_all_tests
         addplsda_mock1,
         addplsda_3groups_mock1,
         barplot_feature_bygroup_mock1,
-        scatter_pca3_projections_bygroup_mock1
+        scatter_pca3_projections_bygroup_mock1,
+        scatter_plsda_projections_bygroup_mock1,
+        splot_plsda_pcorr_bygroup_mock1
     ]
     # run the tests
     failed = False

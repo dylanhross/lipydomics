@@ -124,7 +124,7 @@ scatter_pca3_projections_bygroup
 
     ax.ticklabel_format(style='sci', scilimits=(0, 0))
 
-    ax.legend(fontsize=8, borderpad=0.5)
+    ax.legend(fontsize=6, borderpad=0.2)
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
@@ -177,7 +177,7 @@ scatter_plsda_projections_bygroup
 
     ax.ticklabel_format(style='sci', scilimits=(0, 0))
 
-    ax.legend(fontsize=8, borderpad=0.5)
+    ax.legend(fontsize=6, borderpad=0.2)
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
