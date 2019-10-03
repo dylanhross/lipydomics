@@ -9,6 +9,7 @@
 
 
 import numpy as np
+import pickle
 
 
 class Dataset:
@@ -50,6 +51,35 @@ Dataset.__init__
         self.stats = {}
         # ESI mode used for identification purposes
         self.esi_mode = esi_mode
+
+    @staticmethod
+    def load_bin(bin_file):
+        """
+Dataset.load_bin
+    description:
+        Loads a Dataset instance from a serialized binary file (.pickle)
+
+        This is a static method, so rather than using a Dataset instance, the uninitialized class is used e.g. :
+            from lipydomics.data import Dataset
+            dset = Dataset.load_bin('saved_dataset.pickle')
+    parameters:
+        bin_file (str) -- filename of the serialized binary fie
+    returns:
+        (Dataset) -- the dataset instance
+"""
+        with open(bin_file, 'rb') as pf:
+            return pickle.load(pf)
+
+    def save_bin(self, bin_file):
+        """
+Dataset.save_bin
+    description:
+        Saves this Dataset instance into a serialized binary format (.pickle) that can be reloaded again later
+    parameters:
+        bin_file (str) -- filename (and path) of the serialized binary fie
+"""
+        with open(bin_file, 'wb') as pf:
+            pickle.dump(self, pf)
 
     def assign_groups(self, group_indices):
         """

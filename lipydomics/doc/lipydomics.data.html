@@ -23,7 +23,8 @@ description:<br>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
-</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+</td><td width="25%" valign=top><a href="pickle.html">pickle</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -109,6 +110,26 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;norm_weights&nbsp;must&nbsp;be&nbsp;a&nbsp;numpy.array&nbsp;of&nbsp;shape:&nbsp;(n_samples,)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;norm_weights&nbsp;(np.ndarray)&nbsp;--&nbsp;array&nbsp;of&nbsp;weights&nbsp;to&nbsp;use&nbsp;to&nbsp;normalize&nbsp;each&nbsp;sample,&nbsp;must&nbsp;be&nbsp;of&nbsp;shape&nbsp;(n_samples,&nbsp;)</tt></dd></dl>
+
+<dl><dt><a name="Dataset-save_bin"><strong>save_bin</strong></a>(self, bin_file)</dt><dd><tt><a href="#Dataset">Dataset</a>.save_bin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Saves&nbsp;this&nbsp;<a href="#Dataset">Dataset</a>&nbsp;instance&nbsp;into&nbsp;a&nbsp;serialized&nbsp;binary&nbsp;format&nbsp;(.pickle)&nbsp;that&nbsp;can&nbsp;be&nbsp;reloaded&nbsp;again&nbsp;later<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bin_file&nbsp;(str)&nbsp;--&nbsp;filename&nbsp;(and&nbsp;path)&nbsp;of&nbsp;the&nbsp;serialized&nbsp;binary&nbsp;fie</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Dataset-load_bin"><strong>load_bin</strong></a>(bin_file)</dt><dd><tt><a href="#Dataset">Dataset</a>.load_bin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loads&nbsp;a&nbsp;<a href="#Dataset">Dataset</a>&nbsp;instance&nbsp;from&nbsp;a&nbsp;serialized&nbsp;binary&nbsp;file&nbsp;(.pickle)<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;a&nbsp;static&nbsp;method,&nbsp;so&nbsp;rather&nbsp;than&nbsp;using&nbsp;a&nbsp;<a href="#Dataset">Dataset</a>&nbsp;instance,&nbsp;the&nbsp;uninitialized&nbsp;class&nbsp;is&nbsp;used&nbsp;e.g.&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;lipydomics.data&nbsp;import&nbsp;<a href="#Dataset">Dataset</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;=&nbsp;<a href="#Dataset">Dataset</a>.<a href="#Dataset-load_bin">load_bin</a>('saved_dataset.pickle')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bin_file&nbsp;(str)&nbsp;--&nbsp;filename&nbsp;of&nbsp;the&nbsp;serialized&nbsp;binary&nbsp;fie<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a href="#Dataset">Dataset</a>)&nbsp;--&nbsp;the&nbsp;dataset&nbsp;instance</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
