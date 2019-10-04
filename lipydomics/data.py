@@ -170,3 +170,35 @@ Dataset.normalize
         # apply normalization
         self.normed_intensities = np.multiply(self.intensities, norm_weights)
 
+    def __repr__(self):
+        """
+Dataset.__repr__
+    description:
+        Prodces a string representation of this Dataset instance that provides information on the data contained and
+        the stats analyses that have been performed.
+    returns:
+        (str) -- string representation of this Dataset instance
+"""
+        s = 'Dataset(\n'
+        s += '\tcsv="{}",\n'.format(self.csv)
+        s += '\tesi_mode="{}",\n'.format(self.esi_mode)
+        s += '\tsamples={},\n'.format(self.n_samples)
+        s += '\tfeatures={},\n'.format(self.n_features)
+        s += '\tnormalized={},\n'.format(self.normed_intensities is not None)
+        if self.group_indices is not None:
+            s += '\tgroup_indices={\n'
+            for name in self.group_indices:
+                s += '\t\t"{}": {}\n'.format(name, self.group_indices[name])
+            s += '\t},\n'
+        else:
+            s += '\tgroup_indices=None,\n'
+        if not self.stats:
+            s += '\tstats={}\n'
+        else:    
+            s += '\tstats={\n'
+            for stat in self.stats:
+                s += '\t\t"{}"\n'.format(stat)
+            s += '\t}\n'
+        s += ')'
+        return s
+
