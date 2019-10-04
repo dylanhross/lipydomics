@@ -9,6 +9,7 @@
 
 
 import numpy as np
+import pickle
 
 
 class Dataset:
@@ -39,6 +40,8 @@ Dataset.__init__
         [esi_mode (str)] -- electrospray ionization mode, can be used for identification, either 'neg', 'pos' or None
                             for unspecified [optional, default=None]
 """
+        # store the name of the .csv file 
+        self.csv = dataset_csv
         mz, rt, dt, *intensities = np.genfromtxt(dataset_csv, delimiter=',', unpack=True, skip_header=skip_header)
         self.labels, self.intensities = np.array([mz, rt, dt]).T, np.array(intensities).T
         # store the number of features and samples in convenient
@@ -50,6 +53,35 @@ Dataset.__init__
         self.stats = {}
         # ESI mode used for identification purposes
         self.esi_mode = esi_mode
+
+    @staticmethod
+    def load_bin(bin_path):
+        """
+Dataset.load_bin
+    description:
+        Loads a Dataset instance from a serialized binary file (.pickle)
+
+        This is a static method, so rather than using a Dataset instance, the uninitialized class is used e.g. :
+            from lipydomics.data import Dataset
+            dset = Dataset.load_bin('saved_dataset.pickle')
+    parameters:
+        bin_path (str) -- path to the serialized binary file
+    returns:
+        (Dataset) -- the dataset instance
+"""
+        with open(bin_path, 'rb') as pf:
+            return pickle.load(pf)
+
+    def save_bin(self, bin_path):
+        """
+Dataset.save_bin
+    description:
+        Saves this Dataset instance into a serialized binary format (.pickle) that can be reloaded again later
+    parameters:
+        bin_path (str) -- path to save the serialized binary file under
+"""
+        with open(bin_path, 'wb') as pf:
+            pickle.dump(self, pf)
 
     def assign_groups(self, group_indices):
         """
