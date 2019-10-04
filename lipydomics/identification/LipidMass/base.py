@@ -80,7 +80,7 @@ Lipid.monoiso
     returns:
         (float) -- monoisotopic mass
 """
-        return formula_mass(self.formula)
+        return round(formula_mass(self.formula), 6)
 
     def ms_adduct_monoiso(self, adduct):
         """
@@ -92,7 +92,24 @@ Lipid.ms_adduct_monoiso
     returns:
         (float) -- monoisotopic mass
 """
-        return ms_adduct_mass(self.monoiso(), adduct)
+        return round(ms_adduct_mass(self.monoiso(), adduct), 6)
+
+    def name(self):
+        """
+Lipid.name
+    description:
+        returns a short name for this Lipid instance
+    returns:
+        (str) -- lipid short name 
+"""
+        nc, nu = self.sum_composition
+        lc = self.lipid_class
+        if hasattr(self, 'fa_mod'):
+            fa_mod = self.fa_mod
+        if fa_mod:
+            return '{}({}{}:{})'.format(lc, fa_mod, nc, nu)
+        else:
+            return '{}({}:{})'.format(lc, nc, nu)
 
 
 class Glycerolipid(Lipid):
@@ -177,8 +194,8 @@ Glycerophospholipid.__init__
                 self.add_to_formula({'O': -1, 'H': 2})
             elif fa_mod == 'p':
                 # remove 1 oxygen, make sure there is at least 1 unsaturation
+                self.add_to_formula({'O': -1})
                 if sum_unsaturation < 1:
-                    self.add_to_formula({'O': -1})
                     msg = 'Glycerophospholipid: __init__: sum composition ({}:{}) is unusual for plasmalogen'
                     warn(msg.format(sum_carbon, sum_unsaturation))
 

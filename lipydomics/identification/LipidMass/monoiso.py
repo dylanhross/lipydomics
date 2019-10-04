@@ -75,6 +75,7 @@ Lipid.ms_adduct_mass
         '[M+H-H2O]+': {'H': -1, 'O': -1},
         '[M-H]-': {'H': -1},
         '[M+HCOO]-': {'H': 1, 'C': 1, 'O': 2},
+        '[M+CH3COO]-': {'H': 3, 'C': 2, 'O': 2},
         '[M-2H]2-': {'H': -2}
     }
     if adduct not in adduct_to_m:
@@ -90,6 +91,7 @@ Lipid.ms_adduct_mass
         '[M+H-H2O]+': 1,
         '[M-H]-': -1,
         '[M+HCOO]-': -1,
+        '[M+CH3COO]-': -1,
         '[M-2H]2-': -2
     }
     return (formula_mass(adduct_to_m[adduct]) + neutral_mass) / abs(adduct_to_z[adduct])
