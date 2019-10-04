@@ -59,11 +59,11 @@ description:<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uses&nbsp;numpy.genfromtxt&nbsp;to&nbsp;load&nbsp;in&nbsp;a&nbsp;raw&nbsp;dataset,&nbsp;stored&nbsp;in&nbsp;.csv&nbsp;format.&nbsp;Stores&nbsp;two&nbsp;numpy.ndarrays&nbsp;containing<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;labels&nbsp;(self.<strong>labels</strong>):<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[mz,&nbsp;rt,&nbsp;dt],&nbsp;...&nbsp;]&nbsp;shape&nbsp;=&nbsp;(n_features,&nbsp;3)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[mz,&nbsp;rt,&nbsp;ccs],&nbsp;...&nbsp;]&nbsp;shape&nbsp;=&nbsp;(n_features,&nbsp;3)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;raw&nbsp;intensities&nbsp;(self.<strong>intensities</strong>):<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[i0,&nbsp;i1,&nbsp;...&nbsp;],&nbsp;...&nbsp;]&nbsp;shape&nbsp;=&nbsp;(n_features,&nbsp;n_samples)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expects&nbsp;the&nbsp;input&nbsp;data&nbsp;file&nbsp;to&nbsp;be&nbsp;a&nbsp;.csv&nbsp;structured&nbsp;with&nbsp;the&nbsp;following&nbsp;columns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz,&nbsp;rt,&nbsp;dt,&nbsp;i_1,&nbsp;i_2,&nbsp;...,&nbsp;i_n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz,&nbsp;rt,&nbsp;ccs,&nbsp;i_1,&nbsp;i_2,&nbsp;...,&nbsp;i_n<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;By&nbsp;default,&nbsp;1&nbsp;header&nbsp;line&nbsp;is&nbsp;skipped<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset_csv&nbsp;(str)&nbsp;--&nbsp;filename&nbsp;of&nbsp;raw&nbsp;dataset&nbsp;in&nbsp;.csv&nbsp;format<br>
@@ -71,6 +71,13 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;np.genfromtxt&nbsp;[optional,&nbsp;default=1]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[esi_mode&nbsp;(str)]&nbsp;--&nbsp;electrospray&nbsp;ionization&nbsp;mode,&nbsp;can&nbsp;be&nbsp;used&nbsp;for&nbsp;identification,&nbsp;either&nbsp;'neg',&nbsp;'pos'&nbsp;or&nbsp;None<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;unspecified&nbsp;[optional,&nbsp;default=None]</tt></dd></dl>
+
+<dl><dt><a name="Dataset-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt><a href="#Dataset">Dataset</a>.__repr__<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prodces&nbsp;a&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;<a href="#Dataset">Dataset</a>&nbsp;instance&nbsp;that&nbsp;provides&nbsp;information&nbsp;on&nbsp;the&nbsp;data&nbsp;contained&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;stats&nbsp;analyses&nbsp;that&nbsp;have&nbsp;been&nbsp;performed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str)&nbsp;--&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;<a href="#Dataset">Dataset</a>&nbsp;instance</tt></dd></dl>
 
 <dl><dt><a name="Dataset-assign_groups"><strong>assign_groups</strong></a>(self, group_indices)</dt><dd><tt><a href="#Dataset">Dataset</a>.assign_groups<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>

@@ -27,11 +27,11 @@ Dataset.__init__
 
         Uses numpy.genfromtxt to load in a raw dataset, stored in .csv format. Stores two numpy.ndarrays containing
         the labels (self.labels):
-            [[mz, rt, dt], ... ] shape = (n_features, 3)
+            [[mz, rt, ccs], ... ] shape = (n_features, 3)
         and raw intensities (self.intensities):
             [[i0, i1, ... ], ... ] shape = (n_features, n_samples)
         Expects the input data file to be a .csv structured with the following columns:
-            mz, rt, dt, i_1, i_2, ..., i_n
+            mz, rt, ccs, i_1, i_2, ..., i_n
         By default, 1 header line is skipped
     parameters:
         dataset_csv (str) -- filename of raw dataset in .csv format
@@ -42,8 +42,8 @@ Dataset.__init__
 """
         # store the name of the .csv file 
         self.csv = dataset_csv
-        mz, rt, dt, *intensities = np.genfromtxt(dataset_csv, delimiter=',', unpack=True, skip_header=skip_header)
-        self.labels, self.intensities = np.array([mz, rt, dt]).T, np.array(intensities).T
+        mz, rt, ccs, *intensities = np.genfromtxt(dataset_csv, delimiter=',', unpack=True, skip_header=skip_header)
+        self.labels, self.intensities = np.array([mz, rt, ccs]).T, np.array(intensities).T
         # store the number of features and samples in convenient
         self.n_features, self.n_samples = self.intensities.shape
         # group assignments and normalization can be done at some point
