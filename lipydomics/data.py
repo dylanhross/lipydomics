@@ -44,6 +44,8 @@ Dataset.__init__
         self.csv = dataset_csv
         mz, rt, ccs, *intensities = np.genfromtxt(dataset_csv, delimiter=',', unpack=True, skip_header=skip_header)
         self.labels, self.intensities = np.array([mz, rt, ccs]).T, np.array(intensities).T
+        # identifications can be added later
+        self.identifications = None
         # store the number of features and samples in convenient
         self.n_features, self.n_samples = self.intensities.shape
         # group assignments and normalization can be done at some point
@@ -185,6 +187,7 @@ Dataset.__repr__
         s += '\tsamples={},\n'.format(self.n_samples)
         s += '\tfeatures={},\n'.format(self.n_features)
         s += '\tnormalized={},\n'.format(self.normed_intensities is not None)
+        s += '\tidentified={},\n'.format(self.identifications is not None)
         if self.group_indices is not None:
             s += '\tgroup_indices={\n'
             for name in self.group_indices:
