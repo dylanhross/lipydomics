@@ -21,7 +21,7 @@ PA
          R  =  --H
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 PA.__init__
     description:
@@ -29,8 +29,10 @@ PA.__init__
     parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
+                                    respectively) or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a PA is an --H
         self.add_to_formula({'H': 1})
         # the lipid class is PA
@@ -49,7 +51,7 @@ PC
                     |
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 PC.__init__
     description:
@@ -57,8 +59,10 @@ PC.__init__
     Parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
+                                    respectively) or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a PC is a choline, because of the permanent charge on the choline group, 1 H must be
         # subtracted from the formula to account for a negative charge on the phosphate group to make the lipid
         # have an overall neutral charge
@@ -79,7 +83,7 @@ PE
 
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 PE.__init__
     description:
@@ -87,8 +91,10 @@ PE.__init__
     Parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
+                                    respectively) or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a PE is an ethanolamine (C2H6N)
         self.add_to_formula({'C': 2, 'H': 6, 'N': 1})
         # the lipid class is PE
@@ -108,7 +114,7 @@ PG
               HO
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 PG.__init__
     description:
@@ -116,8 +122,10 @@ PG.__init__
     Parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
+                                    respectively) or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a PG is an glycerol (C3H7O2)
         self.add_to_formula({'C': 3, 'H': 7, 'O': 2})
         # the lipid class is PG
@@ -141,7 +149,7 @@ PI
                HO     OH
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 PI.__init__
     description:
@@ -149,8 +157,10 @@ PI.__init__
     Parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
+                                    respectively) or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a PI is an inositol (C6H11O5)
         self.add_to_formula({'C': 6, 'H': 11, 'O': 5})
         # the lipid class is PI
@@ -172,7 +182,7 @@ PS
                  OH
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 PS.__init__
     description:
@@ -180,8 +190,10 @@ PS.__init__
     Parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
+                                    respectively) or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a PS is a serine (C3H6O2N)
         self.add_to_formula({'C': 3, 'H': 6, 'O': 2, 'N': 1})
         # the lipid class is PS

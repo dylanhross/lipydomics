@@ -8,7 +8,7 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="LipidMass.html"><font color="#ffffff">LipidMass</font></a>.base</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/DylanRoss/Documents/DHR20190722_lipid_mass/LipidMass/base.py">/Users/DylanRoss/Documents/DHR20190722_lipid_mass/LipidMass/base.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/DylanRoss/Documents/GitHub/lipydomics/lipydomics/identification/LipidMass/base.py">/Users/DylanRoss/Documents/GitHub/lipydomics/lipydomics/identification/LipidMass/base.py</a></font></td></tr></table>
     <p><tt>LipidMass/base.py<br>
 Dylan&nbsp;H.&nbsp;Ross<br>
 2019/07/22<br>
@@ -127,7 +127,7 @@ Data descriptors inherited from <a href="LipidMass.base.html#Lipid">Lipid</a>:<b
 <font color="#000000" face="helvetica, arial"><a name="Glycerophospholipid">class <strong>Glycerophospholipid</strong></a>(<a href="LipidMass.base.html#Lipid">Lipid</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Glycerophospholipid">Glycerophospholipid</a>(sum_carbon,&nbsp;sum_unsaturation)<br>
+<td colspan=2><tt><a href="#Glycerophospholipid">Glycerophospholipid</a>(sum_carbon,&nbsp;sum_unsaturation,&nbsp;fa_mod=None)<br>
 &nbsp;<br>
 <a href="#Glycerophospholipid">Glycerophospholipid</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
@@ -145,7 +145,9 @@ Data descriptors inherited from <a href="LipidMass.base.html#Lipid">Lipid</a>:<b
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ac2<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;by&nbsp;default&nbsp;the&nbsp;phosphate&nbsp;is&nbsp;protonated,&nbsp;this&nbsp;can&nbsp;be&nbsp;adjusted&nbsp;in&nbsp;head&nbsp;groups&nbsp;with&nbsp;permanent&nbsp;charges&nbsp;by<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtracting&nbsp;a&nbsp;single&nbsp;H&nbsp;in&nbsp;order&nbsp;to&nbsp;make&nbsp;the&nbsp;lipid&nbsp;neutral&nbsp;*<br>&nbsp;</tt></td></tr>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subtracting&nbsp;a&nbsp;single&nbsp;H&nbsp;in&nbsp;order&nbsp;to&nbsp;make&nbsp;the&nbsp;lipid&nbsp;neutral&nbsp;*<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;ether&nbsp;or&nbsp;plasmalogen&nbsp;derivatives&nbsp;may&nbsp;be&nbsp;specified&nbsp;with&nbsp;the&nbsp;'o'&nbsp;or&nbsp;'p'&nbsp;fa_mod,&nbsp;respectively&nbsp;*<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="LipidMass.base.html#Glycerophospholipid">Glycerophospholipid</a></dd>
@@ -154,12 +156,14 @@ Data descriptors inherited from <a href="LipidMass.base.html#Lipid">Lipid</a>:<b
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="Glycerophospholipid-__init__"><strong>__init__</strong></a>(self, sum_carbon, sum_unsaturation)</dt><dd><tt><a href="#Glycerophospholipid">Glycerophospholipid</a>.__init__<br>
+<dl><dt><a name="Glycerophospholipid-__init__"><strong>__init__</strong></a>(self, sum_carbon, sum_unsaturation, fa_mod=None)</dt><dd><tt><a href="#Glycerophospholipid">Glycerophospholipid</a>.__init__<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets&nbsp;the&nbsp;core&nbsp;formula&nbsp;for&nbsp;Glycerophospholipids&nbsp;and&nbsp;determines&nbsp;the&nbsp;formula&nbsp;contribution&nbsp;from&nbsp;the&nbsp;acyl&nbsp;chains<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_carbon&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;acyl&nbsp;carbons<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;acyl&nbsp;unsaturations</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;acyl&nbsp;unsaturations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[fa_mod&nbsp;(None&nbsp;or&nbsp;str)]&nbsp;--&nbsp;fatty&nbsp;acid&nbsp;modifier&nbsp;to&nbsp;indicate&nbsp;plasmalogen&nbsp;or&nbsp;ether&nbsp;lipids&nbsp;('p'&nbsp;and&nbsp;'o',&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;respectively)&nbsp;or&nbsp;None&nbsp;[optional,&nbsp;default=None]</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="LipidMass.base.html#Lipid">Lipid</a>:<br>

@@ -148,9 +148,11 @@ Glycerophospholipid
 
     * by default the phosphate is protonated, this can be adjusted in head groups with permanent charges by
       subtracting a single H in order to make the lipid neutral *
+
+    * ether or plasmalogen derivatives may be specified with the 'o' or 'p' fa_mod, respectively *
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 Glycerophospholipid.__init__
     description:
@@ -158,6 +160,8 @@ Glycerophospholipid.__init__
     parameters:
         sum_carbon (int) -- sum acyl carbons
         sum_unsaturation (int) -- sum acyl unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
+                                    respectively) or None [optional, default=None]
 """
         # formula is initially set to the core formula (only partial head group, no fatty acid tails)
         self.formula = {'C': 5, 'H': 6, 'O': 8, 'P': 1}
@@ -166,6 +170,17 @@ Glycerophospholipid.__init__
         self.add_to_formula(acyl_formula)
         # store the sum composition
         self.sum_composition = (sum_carbon, sum_unsaturation)
+        self.fa_mod = fa_mod
+        if fa_mod:
+            if fa_mod == 'o':
+                # remove 1 O and add 2 H, otherwise behavior is the same
+                self.add_to_formula({'O': -1, 'H': 2})
+            elif fa_mod == 'p':
+                # remove 1 oxygen, make sure there is at least 1 unsaturation
+                if sum_unsaturation < 1:
+                    self.add_to_formula({'O': -1})
+                    msg = 'Glycerophospholipid: __init__: sum composition ({}:{}) is unusual for plasmalogen'
+                    warn(msg.format(sum_carbon, sum_unsaturation))
 
 
 class Lysoglycerophospholipid(Lipid):
