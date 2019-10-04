@@ -186,8 +186,8 @@ Dataset.__repr__
         s += '\tesi_mode="{}",\n'.format(self.esi_mode)
         s += '\tsamples={},\n'.format(self.n_samples)
         s += '\tfeatures={},\n'.format(self.n_features)
-        s += '\tnormalized={},\n'.format(self.normed_intensities is not None)
         s += '\tidentified={},\n'.format(self.identifications is not None)
+        s += '\tnormalized={},\n'.format(self.normed_intensities is not None)
         if self.group_indices is not None:
             s += '\tgroup_indices={\n'
             for name in self.group_indices:
