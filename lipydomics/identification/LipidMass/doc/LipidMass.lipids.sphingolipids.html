@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module LipidMass.lipids.sphingolipids</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="LipidMass.html"><font color="#ffffff">LipidMass</font></a>.<a href="LipidMass.lipids.html"><font color="#ffffff">lipids</font></a>.sphingolipids</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/DylanRoss/Documents/DHR20190722_lipid_mass/LipidMass/lipids/sphingolipids.py">/Users/DylanRoss/Documents/DHR20190722_lipid_mass/LipidMass/lipids/sphingolipids.py</a></font></td></tr></table>
+    <p><tt>LipidMass/lipids/sphingolipids.py<br>
+Dylan&nbsp;H.&nbsp;Ross<br>
+2019/07/23<br>
+&nbsp;<br>
+description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Define&nbsp;individual&nbsp;sphingolipid&nbsp;classes</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="LipidMass.base.html#Sphingolipid">LipidMass.base.Sphingolipid</a>(<a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="LipidMass.lipids.sphingolipids.html#Cer">Cer</a>
+</font></dt><dt><font face="helvetica, arial"><a href="LipidMass.lipids.sphingolipids.html#HexCer">HexCer</a>
+</font></dt><dt><font face="helvetica, arial"><a href="LipidMass.lipids.sphingolipids.html#SM">SM</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Cer">class <strong>Cer</strong></a>(<a href="LipidMass.base.html#Sphingolipid">LipidMass.base.Sphingolipid</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Cer">Cer</a>(sum_carbon,&nbsp;sum_unsaturation)<br>
+&nbsp;<br>
+<a href="#Cer">Cer</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ceramide&nbsp;lipid&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="LipidMass.base.html#Sphingolipid">Sphingolipid</a>&nbsp;with&nbsp;R-group&nbsp;=<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;=&nbsp;&nbsp;--H<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="LipidMass.lipids.sphingolipids.html#Cer">Cer</a></dd>
+<dd><a href="LipidMass.base.html#Sphingolipid">LipidMass.base.Sphingolipid</a></dd>
+<dd><a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Cer-__init__"><strong>__init__</strong></a>(self, sum_carbon, sum_unsaturation)</dt><dd><tt><a href="#Cer">Cer</a>.__init__<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initializes&nbsp;an&nbsp;instance&nbsp;of&nbsp;a&nbsp;<a href="#Cer">Cer</a>&nbsp;lipid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_carbon&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;carbons<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;unsaturations</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a>:<br>
+<dl><dt><a name="Cer-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Lipid.__repr__<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;a&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;Lipid&nbsp;instance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str)&nbsp;--&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;Lipid&nbsp;instance</tt></dd></dl>
+
+<dl><dt><a name="Cer-add_to_formula"><strong>add_to_formula</strong></a>(self, formula)</dt><dd><tt>Lipid.add_to_formula<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds&nbsp;atom&nbsp;counts&nbsp;from&nbsp;a&nbsp;specified&nbsp;chemical&nbsp;formula&nbsp;to&nbsp;this&nbsp;Lipid's&nbsp;chemical&nbsp;formula<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;formula&nbsp;(dict(str:int))&nbsp;--&nbsp;chemical&nbsp;formula&nbsp;to&nbsp;add</tt></dd></dl>
+
+<dl><dt><a name="Cer-gen_acyl_formula"><strong>gen_acyl_formula</strong></a>(self, n_acyl, n_carbon, n_unsaturation)</dt><dd><tt>Lipid.gen_acyl_formula<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generate&nbsp;a&nbsp;combined&nbsp;chemical&nbsp;formula&nbsp;to&nbsp;account&nbsp;for&nbsp;acyl&nbsp;chains&nbsp;using&nbsp;sum&nbsp;composition<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_acyl&nbsp;(int)&nbsp;--&nbsp;number&nbsp;of&nbsp;acyl&nbsp;chains<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_carbon&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;carbons<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;unsaturations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dict(str:int))&nbsp;--&nbsp;combined&nbsp;chemical&nbsp;formula&nbsp;for&nbsp;the&nbsp;fatty&nbsp;acyl&nbsp;tails</tt></dd></dl>
+
+<dl><dt><a name="Cer-monoiso"><strong>monoiso</strong></a>(self)</dt><dd><tt>Lipid.monoiso<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;the&nbsp;monoisotopic&nbsp;mass&nbsp;with&nbsp;high&nbsp;precision&nbsp;(6&nbsp;decimal&nbsp;places)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(float)&nbsp;--&nbsp;monoisotopic&nbsp;mass</tt></dd></dl>
+
+<dl><dt><a name="Cer-ms_adduct_monoiso"><strong>ms_adduct_monoiso</strong></a>(self, adduct)</dt><dd><tt>Lipid.ms_adduct_monoiso<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;the&nbsp;monoisotopic&nbsp;mass&nbsp;with&nbsp;high&nbsp;precision&nbsp;(6&nbsp;decimal&nbsp;places)&nbsp;of&nbsp;a&nbsp;specified&nbsp;MS&nbsp;adduct<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adduct&nbsp;(str)&nbsp;--&nbsp;MS&nbsp;adduct<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(float)&nbsp;--&nbsp;monoisotopic&nbsp;mass</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HexCer">class <strong>HexCer</strong></a>(<a href="LipidMass.base.html#Sphingolipid">LipidMass.base.Sphingolipid</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#HexCer">HexCer</a>(sum_carbon,&nbsp;sum_unsaturation)<br>
+&nbsp;<br>
+<a href="#HexCer">HexCer</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hexosyl-Ceramide&nbsp;lipid&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="LipidMass.base.html#Sphingolipid">Sphingolipid</a>&nbsp;with&nbsp;R-group&nbsp;=<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OH<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\____/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;=&nbsp;&nbsp;__/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\__OH<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;O____/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\__OH<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="LipidMass.lipids.sphingolipids.html#HexCer">HexCer</a></dd>
+<dd><a href="LipidMass.base.html#Sphingolipid">LipidMass.base.Sphingolipid</a></dd>
+<dd><a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HexCer-__init__"><strong>__init__</strong></a>(self, sum_carbon, sum_unsaturation)</dt><dd><tt><a href="#HexCer">HexCer</a>.__init__<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initializes&nbsp;an&nbsp;instance&nbsp;of&nbsp;a&nbsp;<a href="#HexCer">HexCer</a>&nbsp;lipid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_carbon&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;carbons<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;unsaturations</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a>:<br>
+<dl><dt><a name="HexCer-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Lipid.__repr__<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;a&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;Lipid&nbsp;instance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str)&nbsp;--&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;Lipid&nbsp;instance</tt></dd></dl>
+
+<dl><dt><a name="HexCer-add_to_formula"><strong>add_to_formula</strong></a>(self, formula)</dt><dd><tt>Lipid.add_to_formula<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds&nbsp;atom&nbsp;counts&nbsp;from&nbsp;a&nbsp;specified&nbsp;chemical&nbsp;formula&nbsp;to&nbsp;this&nbsp;Lipid's&nbsp;chemical&nbsp;formula<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;formula&nbsp;(dict(str:int))&nbsp;--&nbsp;chemical&nbsp;formula&nbsp;to&nbsp;add</tt></dd></dl>
+
+<dl><dt><a name="HexCer-gen_acyl_formula"><strong>gen_acyl_formula</strong></a>(self, n_acyl, n_carbon, n_unsaturation)</dt><dd><tt>Lipid.gen_acyl_formula<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generate&nbsp;a&nbsp;combined&nbsp;chemical&nbsp;formula&nbsp;to&nbsp;account&nbsp;for&nbsp;acyl&nbsp;chains&nbsp;using&nbsp;sum&nbsp;composition<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_acyl&nbsp;(int)&nbsp;--&nbsp;number&nbsp;of&nbsp;acyl&nbsp;chains<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_carbon&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;carbons<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;unsaturations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dict(str:int))&nbsp;--&nbsp;combined&nbsp;chemical&nbsp;formula&nbsp;for&nbsp;the&nbsp;fatty&nbsp;acyl&nbsp;tails</tt></dd></dl>
+
+<dl><dt><a name="HexCer-monoiso"><strong>monoiso</strong></a>(self)</dt><dd><tt>Lipid.monoiso<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;the&nbsp;monoisotopic&nbsp;mass&nbsp;with&nbsp;high&nbsp;precision&nbsp;(6&nbsp;decimal&nbsp;places)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(float)&nbsp;--&nbsp;monoisotopic&nbsp;mass</tt></dd></dl>
+
+<dl><dt><a name="HexCer-ms_adduct_monoiso"><strong>ms_adduct_monoiso</strong></a>(self, adduct)</dt><dd><tt>Lipid.ms_adduct_monoiso<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;the&nbsp;monoisotopic&nbsp;mass&nbsp;with&nbsp;high&nbsp;precision&nbsp;(6&nbsp;decimal&nbsp;places)&nbsp;of&nbsp;a&nbsp;specified&nbsp;MS&nbsp;adduct<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adduct&nbsp;(str)&nbsp;--&nbsp;MS&nbsp;adduct<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(float)&nbsp;--&nbsp;monoisotopic&nbsp;mass</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SM">class <strong>SM</strong></a>(<a href="LipidMass.base.html#Sphingolipid">LipidMass.base.Sphingolipid</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SM">SM</a>(sum_carbon,&nbsp;sum_unsaturation)<br>
+&nbsp;<br>
+<a href="#SM">SM</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sphingomyelin&nbsp;lipid&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="LipidMass.base.html#Sphingolipid">Sphingolipid</a>&nbsp;with&nbsp;R-group&nbsp;=<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;O(-)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;=&nbsp;&nbsp;--P==O<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;O__&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\__N(+)__<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="LipidMass.lipids.sphingolipids.html#SM">SM</a></dd>
+<dd><a href="LipidMass.base.html#Sphingolipid">LipidMass.base.Sphingolipid</a></dd>
+<dd><a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="SM-__init__"><strong>__init__</strong></a>(self, sum_carbon, sum_unsaturation)</dt><dd><tt><a href="#SM">SM</a>.__init__<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initializes&nbsp;an&nbsp;instance&nbsp;of&nbsp;a&nbsp;<a href="#SM">SM</a>&nbsp;lipid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_carbon&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;carbons<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;unsaturations</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a>:<br>
+<dl><dt><a name="SM-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Lipid.__repr__<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;a&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;Lipid&nbsp;instance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str)&nbsp;--&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;Lipid&nbsp;instance</tt></dd></dl>
+
+<dl><dt><a name="SM-add_to_formula"><strong>add_to_formula</strong></a>(self, formula)</dt><dd><tt>Lipid.add_to_formula<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds&nbsp;atom&nbsp;counts&nbsp;from&nbsp;a&nbsp;specified&nbsp;chemical&nbsp;formula&nbsp;to&nbsp;this&nbsp;Lipid's&nbsp;chemical&nbsp;formula<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;formula&nbsp;(dict(str:int))&nbsp;--&nbsp;chemical&nbsp;formula&nbsp;to&nbsp;add</tt></dd></dl>
+
+<dl><dt><a name="SM-gen_acyl_formula"><strong>gen_acyl_formula</strong></a>(self, n_acyl, n_carbon, n_unsaturation)</dt><dd><tt>Lipid.gen_acyl_formula<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generate&nbsp;a&nbsp;combined&nbsp;chemical&nbsp;formula&nbsp;to&nbsp;account&nbsp;for&nbsp;acyl&nbsp;chains&nbsp;using&nbsp;sum&nbsp;composition<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_acyl&nbsp;(int)&nbsp;--&nbsp;number&nbsp;of&nbsp;acyl&nbsp;chains<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_carbon&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;carbons<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;FA&nbsp;composition&nbsp;unsaturations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dict(str:int))&nbsp;--&nbsp;combined&nbsp;chemical&nbsp;formula&nbsp;for&nbsp;the&nbsp;fatty&nbsp;acyl&nbsp;tails</tt></dd></dl>
+
+<dl><dt><a name="SM-monoiso"><strong>monoiso</strong></a>(self)</dt><dd><tt>Lipid.monoiso<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;the&nbsp;monoisotopic&nbsp;mass&nbsp;with&nbsp;high&nbsp;precision&nbsp;(6&nbsp;decimal&nbsp;places)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(float)&nbsp;--&nbsp;monoisotopic&nbsp;mass</tt></dd></dl>
+
+<dl><dt><a name="SM-ms_adduct_monoiso"><strong>ms_adduct_monoiso</strong></a>(self, adduct)</dt><dd><tt>Lipid.ms_adduct_monoiso<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;the&nbsp;monoisotopic&nbsp;mass&nbsp;with&nbsp;high&nbsp;precision&nbsp;(6&nbsp;decimal&nbsp;places)&nbsp;of&nbsp;a&nbsp;specified&nbsp;MS&nbsp;adduct<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adduct&nbsp;(str)&nbsp;--&nbsp;MS&nbsp;adduct<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(float)&nbsp;--&nbsp;monoisotopic&nbsp;mass</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="LipidMass.base.html#Lipid">LipidMass.base.Lipid</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>
