@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 """
-    fill_db_from_src.py
+    fill_measured_from_src.py
     Dylan H. Ross
     2018/10/04
 
-        Initializes the lipids.db Sqlite3 database, filling it with values from the the cleaned datasets.
-        After this script runs, the database will contain only RELEVANT information contained in the 
-        original source datasets (name, adduct, mz, ccs, and smi if provided).
+        Fills the 'measured' table in lipids.db with values from the the cleaned reference datasets.
+        After this script runs, the database will contain only relevant data on the measurements of these lipids, along
+        with some metadata describining how they were measured
 """
 
 
@@ -55,9 +55,7 @@ add_src_dataset
             smi = cmpd["smi"]
         
         # use rt if included
-        rt = None
-        if 'rt' in cmpd:
-            rt = cmpd['rt']
+        rt = cmpd['rt'] if 'rt' in cmpd else None
 
         # add lipid class and FA composition information in by parsing the name
         parsed = parse_lipid(cmpd['name'])
@@ -65,9 +63,7 @@ add_src_dataset
             print('name: {} from src_tag: {} not parsed as a lipid'.format(cmpd['name'], src_tag))
         l_cl, l_nc, l_nu = parsed['lipid_class'], parsed['n_carbon'], parsed['n_unsat']
         
-        fa_mod = None
-        if 'fa_mod' in parsed:
-            fa_mod = parsed['fa_mod']
+        fa_mod = parsed['fa_mod'] if 'fa_mod' in parsed else None
 
         # CCS metadata
         ccs_type, ccs_method = metadata["type"], metadata["method"]

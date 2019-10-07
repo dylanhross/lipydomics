@@ -80,6 +80,38 @@ enumerate_all_lipids
     for l in enumerate_lipid_class(MGDG, (12, 22), (0, 6), mgdg_adducts):
         yield l
 
-    # diacyl-glycerophospholipids
+    # diacyl-glycerophospholipids (with plasmalogen and ether derivatives)
+    diagpls = [PA, PC, PE, PG, PI, PS]
+    diagpl_adducts = ['[M+H]+', '[M+Na]+', '[M+NH4]+', '[M-H]-', '[M+HCOO]-', '[M+K]+', '[M+CH3COO]-']
+    for lc in diagpls:
+        for fa_mod in [None, 'p', 'o']:
+            # for plasmalogen lipids, minimum unsaturation must be 1
+            diacyl_nu_ = (1, 12) if fa_mod == 'p' else diacyl_nu
+            for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu_, diagpl_adducts, fa_mod=fa_mod):
+                yield l
+
+    # AcylPG and CL
+    for l in enumerate_lipid_class(AcylPG, (24, 64), (0, 18), ['[M-H]-', '[M+Na]+']):
+        yield l
+    for l in enumerate_lipid_class(CL, (36, 72), (0, 12), ['[M-2H]2-', '[M+2K]2+']):
+        yield l
+
+    # (monoacyl) lysoglycerophospholipids
+    lgpls = [LPA, LPC, LPE, LPG, LPI, LPS]
+    lgpl_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-']
+    for lc in lgpls:
+        for l in enumerate_lipid_class(lc, (12, 22), (0, 6), lgpl_adducts):
+            yield l
+
+    # sphingolipids (Cer, HexCer, SM)
+    sls = [Cer, HexCer, SM]
+    sls_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-', '[M+K]+']
+    for lc in sls:
+        for l in enumerate_lipid_class(lc, (30, 40), (1, 7), sls_adducts):
+            yield l
+
+    # fatty acids
+    for l in enumerate_lipid_class(FA, (12, 22), (0, 6), ['[M-H]-']):
+        yield l
 
 
