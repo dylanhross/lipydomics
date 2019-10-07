@@ -8,21 +8,24 @@
 """
 
 
-"""
 from LipidMass.lipids.glycerolipids import DG, DGDG, GlcADG, MGDG, TG
 from LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PS
 from LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS
 from LipidMass.lipids.sphingolipids import Cer, HexCer, SM
 from LipidMass.lipids.misc import FA
-"""
 
 
-def enumerate_lipid_class(lipid_class_obj, n_carbon_bounds, n_unsat_bounds, adducts, fa_mod=None, even_nc_only=False):
+
+def enumerate_lipid_class(lipid_class_obj, n_carbon_bounds, n_unsat_bounds, adducts, fa_mod=None, limit_nu=True):
     """
 enumerate_lipid_class
     description:
         Generates an exhaustive enumeration of lipid monoisotopic masses corresponding to a single lipid class with
-        bounds on the number of carbons and unsaturations as well as a list of MS adducts to cover.
+        bounds on the number of carbons and unsaturations as well as a list of MS adducts to cover. The number of
+        unsaturations to consider is bounded by carbon chain length:
+                  nc < 36 -> max nu = 6
+            36 <= nc < 54 -> max nu = 12
+            54 <= nc      -> max nu = 18
     parameters:
         lipid_class_obj (LipidMass.Lipid) -- reference to uninitialized lipid class object
         n_carbon_bounds (tuple(int)) -- upper and lower bonds (inclusive) of total carbon number to include
@@ -30,14 +33,53 @@ enumerate_lipid_class
         adducts (list(str)) -- all MS adducts to include
         [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
                                     respectively) or None [optional, default=None]
+        [limit_nu (bool)] -- apply the bounds discussed above to the maximum number of unsaturations on the basis of 
+                                carbon count [optional, default=True]
     yields:
         (str, str, float) -- name, adduct, monoisotopic mass
 """
     nc_min, nc_max = n_carbon_bounds
     nu_min, nu_max = n_unsat_bounds
     for nc in range(nc_min, nc_max + 1):
-        for nu in range(nu_min, nu_max + 1):
+        # apply upper limit on unsaturations based on number of carbons
+        if limit_nu:
+            nu_max_ = min(nu_max, 6) if nc < 36 else (min(nu_max, 12) if nc < 54 else min(nu_max, 18))
+        else:
+            nu_max_ = nu_max
+        for nu in range(nu_min, (nu_max_ + 1)):
             for adduct in adducts:
                 lipid = lipid_class_obj(nc, nu, fa_mod=fa_mod) if fa_mod else lipid_class_obj(nc, nu)
                 yield lipid.name(), adduct, lipid.ms_adduct_monoiso(adduct)
+
+
+def enumerate_all_lipids():
+    """
+enumerate_all_lipids
+    description:
+        Uses enumerate_lipid_class on all implemented lipid classes to generate all possible lipid masses within a 
+        set of constraints on number of carbons and unsaturations
+    yields:
+        (str, str, float) -- name, adduct, monoisotopic mass
+"""
+    # general carbon count bounds for diacyl lipids 12,12 to 22,22
+    diacyl_nc = (24, 44)
+    # general unsaturation bounds for diacyl lipids :0 to :12
+    diacyl_nu = (0, 12)
+
+    # diacyl-glyerolipids (DG, DGDG, and GlcADG)
+    diagls = [DG, DGDG, GlcADG]
+    diagl_adducts = ['[M+NH4]+', '[M+Na]+', '[M+K]+', '[M-H]-', '[M+CH3COO]-', '[M+Cl]-', '[M+H-H2O]+']
+    for lc in diagls:
+        for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu, diagl_adducts):
+            yield l
+
+    # MGDG and TG
+    for l in enumerate_lipid_class(TG, (24, 64), (0, 18), ['[M+NH4]+', '[M+Na]+', '[M+K]+']):
+        yield l
+    mgdg_adducts = ['[M+NH4]+', '[M+Na]+', '[M+K]+', '[M-H]-', '[M+CH3COO]-', '[M+Cl]-']
+    for l in enumerate_lipid_class(MGDG, (12, 22), (0, 6), mgdg_adducts):
+        yield l
+
+    # diacyl-glycerophospholipids
+
 

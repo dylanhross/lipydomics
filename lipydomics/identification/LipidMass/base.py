@@ -104,8 +104,7 @@ Lipid.name
 """
         nc, nu = self.sum_composition
         lc = self.lipid_class
-        if hasattr(self, 'fa_mod'):
-            fa_mod = self.fa_mod
+        fa_mod = self.fa_mod if hasattr(self, 'fa_mod') else None
         if fa_mod:
             return '{}({}{}:{})'.format(lc, fa_mod, nc, nu)
         else:
