@@ -45,7 +45,7 @@ Dataset.__init__
         mz, rt, ccs, *intensities = np.genfromtxt(dataset_csv, delimiter=',', unpack=True, skip_header=skip_header)
         self.labels, self.intensities = np.array([mz, rt, ccs]).T, np.array(intensities).T
         # identifications can be added later
-        self.identifications = None
+        self.ids, self,id_levels = None, None
         # store the number of features and samples in convenient
         self.n_features, self.n_samples = self.intensities.shape
         # group assignments and normalization can be done at some point
