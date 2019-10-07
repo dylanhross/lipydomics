@@ -9,6 +9,7 @@
 
 
 from sqlite3 import connect
+import os
 
 
 def id_feat_any(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode):
@@ -49,7 +50,23 @@ id_feat_theo_mz
     returns:
         (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
 """
-    return '', ''
+    qry = 'SELECT name, adduct FROM theoretical_mz WHERE mz BETWEEN ? AND ?'
+    if esi_mode == 'pos':
+        qry += ' AND adduct LIKE "%+"'
+    elif esi_mode == 'neg':
+        qry += ' AND adduct LIKE "%-"'
+
+    mz_min = mz - tol_mz
+    mz_max = mz + tol_mz
+
+    putative_ids = []
+    for name, adduct in cursor.execute(qry, (mz_min, mz_max)).fetchall():
+        putative_ids.append('{}_{}'.format(name, adduct))
+
+    if putative_ids:
+        return putative_ids, 'theo_mz'
+    else:
+        return '', ''
 
 
 def id_feat_meas_mz_rt_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode):
@@ -69,7 +86,28 @@ id_feat_theo_meas_mz_rt_ccs
     returns:
         (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
 """
-    return '', ''
+    qry = 'SELECT name, adduct FROM measured WHERE mz BETWEEN ? AND ? AND rt BETWEEN ? and ? AND ccs BETWEEN ? and ?'
+    if esi_mode == 'pos':
+        qry += ' AND adduct LIKE "%+"'
+    elif esi_mode == 'neg':
+        qry += ' AND adduct LIKE "%-"'
+
+    mz_min = mz - tol_mz
+    mz_max = mz + tol_mz
+    rt_min = rt - tol_rt
+    rt_max = rt + tol_rt
+    ccs_min = ccs - tol_ccs
+    ccs_max = ccs + tol_ccs
+
+    putative_ids = []
+    qdata = (mz_min, mz_max, rt_min, rt_max, ccs_min, ccs_max)
+    for name, adduct in cursor.execute(qry, qdata).fetchall():
+        putative_ids.append('{}_{}'.format(name, adduct))
+
+    if putative_ids:
+        return putative_ids, 'meas_mz_rt_ccs'
+    else:
+        return '', ''
 
 
 def add_feature_ids(dataset, tol, level='any'):
@@ -123,8 +161,9 @@ add_feature_ids
     # ESI mode from Dataset
     esi = dataset.esi_mode
 
-    # initialize connection to lipids.db
-    cur = None
+    # initialize connection to lipids.db (stored within the lipydomics package)
+    con = connect(os.path.join(os.path.dirname(__file__), 'lipids.db'))
+    cur = con.cursor()
 
     feat_ids, feat_id_levels = [], []
     for mz, rt, ccs in dataset.labels:
@@ -145,4 +184,6 @@ add_feature_ids
     dataset.feat_ids = feat_ids
     dataset.feat_id_levels = feat_id_levels
 
+    # close the database connection
+    con.close()
 
