@@ -22,131 +22,100 @@ description:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Package Contents</strong></big></font></td></tr>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="lipydomics.identification.LipidMass.html"><strong>LipidMass</strong>&nbsp;(package)</a><br>
+<a href="lipydomics.identification.fill_measured_from_src.html">fill_measured_from_src</a><br>
+</td><td width="25%" valign=top><a href="lipydomics.identification.fill_theo_mz_from_gen.html">fill_theo_mz_from_gen</a><br>
+<a href="lipydomics.identification.generation.html">generation</a><br>
+</td><td width="25%" valign=top><a href="lipydomics.identification.lipid_parser.html">lipid_parser</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-add_identifications"><strong>add_identifications</strong></a>(dataset)</dt><dd><tt>add_identifications<br>
+<td width="100%"><dl><dt><a name="-add_feature_ids"><strong>add_feature_ids</strong></a>(dataset, tol, level='any')</dt><dd><tt>add_feature_ids<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Goes&nbsp;through&nbsp;the&nbsp;list&nbsp;of&nbsp;features&nbsp;(mz,&nbsp;rt,&nbsp;ccs)&nbsp;in&nbsp;Dataset.labels&nbsp;and&nbsp;provides&nbsp;an&nbsp;identification&nbsp;for&nbsp;each,&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storing&nbsp;the&nbsp;identifications&nbsp;in&nbsp;Dataset.identifications.&nbsp;If&nbsp;a&nbsp;feature&nbsp;is&nbsp;unable&nbsp;to&nbsp;be&nbsp;identified&nbsp;using&nbsp;the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;criteria,&nbsp;then&nbsp;it&nbsp;is&nbsp;given&nbsp;a&nbsp;generic&nbsp;fixed-width&nbsp;feature&nbsp;name&nbsp;based&nbsp;on&nbsp;mz,&nbsp;rt,&nbsp;and&nbsp;CCS:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'UNK_{:09.4f}_{:05.2f}_{:06.2f}'.format(mz,&nbsp;rt,&nbsp;ccs)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Goes&nbsp;through&nbsp;the&nbsp;list&nbsp;of&nbsp;features&nbsp;(mz,&nbsp;rt,&nbsp;ccs)&nbsp;in&nbsp;Dataset.labels&nbsp;and&nbsp;provides&nbsp;an&nbsp;identification&nbsp;for&nbsp;each.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;a&nbsp;feature&nbsp;is&nbsp;unable&nbsp;to&nbsp;be&nbsp;identified&nbsp;using&nbsp;the&nbsp;specified&nbsp;criteria,&nbsp;then&nbsp;it&nbsp;is&nbsp;given&nbsp;a&nbsp;generic&nbsp;fixed-width&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;feature&nbsp;name&nbsp;based&nbsp;on&nbsp;mz,&nbsp;rt,&nbsp;and&nbsp;CCS:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'UNK_{:09.4f}_{:05.2f}_{:06.2f}'.format(mz,&nbsp;rt,&nbsp;ccs)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;the&nbsp;associated&nbsp;id_level&nbsp;is&nbsp;''<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;method&nbsp;for&nbsp;making&nbsp;identifications&nbsp;is&nbsp;specified&nbsp;by&nbsp;the&nbsp;`level`&nbsp;param:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(low)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'theo_mz'&nbsp;--&nbsp;simple&nbsp;matching&nbsp;based&nbsp;on&nbsp;theoretical&nbsp;m/z<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'meas_mz_rt_ccs'&nbsp;--&nbsp;match&nbsp;on&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;CCS&nbsp;for&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(high)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'any'&nbsp;--&nbsp;start&nbsp;at&nbsp;the&nbsp;highest&nbsp;level,&nbsp;then&nbsp;work&nbsp;downward<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;identifications&nbsp;are&nbsp;stored&nbsp;in&nbsp;`Dataset.feat_ids`&nbsp;and&nbsp;the&nbsp;associated&nbsp;identification&nbsp;levels&nbsp;are&nbsp;stored&nbsp;in&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`Dataset.feat_id_levels`<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;each&nbsp;feature,&nbsp;the&nbsp;identification&nbsp;is&nbsp;either&nbsp;a&nbsp;single&nbsp;string&nbsp;if&nbsp;there&nbsp;is&nbsp;only&nbsp;one&nbsp;identification&nbsp;(e.g.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'UNK_0123.4567_01.23_123.45')&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;strings&nbsp;with&nbsp;all&nbsp;possible&nbsp;identifications&nbsp;(e.g.&nbsp;['PC(40:3)_[M+H]+',&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PE(42:2)_[M+H]+',&nbsp;'PC(p36:1)_[M+Na]+']).&nbsp;The&nbsp;corresponding&nbsp;identification&nbsp;level&nbsp;is&nbsp;always&nbsp;a&nbsp;single<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;(e.g.&nbsp;''&nbsp;and&nbsp;'meas_mass_rt_ccs',&nbsp;respectively,&nbsp;for&nbsp;the&nbsp;above&nbsp;examples)&nbsp;<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;same&nbsp;tolerances&nbsp;are&nbsp;used&nbsp;for&nbsp;all&nbsp;levels&nbsp;of&nbsp;identification.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Potential&nbsp;identifications&nbsp;are&nbsp;automatically&nbsp;restricted&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;electrospray&nbsp;ionization&nbsp;mode&nbsp;(taken&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dataset.esi_mode)&nbsp;if&nbsp;it&nbsp;is&nbsp;set&nbsp;to&nbsp;'pos'&nbsp;or&nbsp;'neg'<br>
+&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;if&nbsp;identifications&nbsp;have&nbsp;already&nbsp;been&nbsp;made,&nbsp;subsequent&nbsp;calls&nbsp;to&nbsp;this&nbsp;function&nbsp;will&nbsp;override&nbsp;previous&nbsp;results&nbsp;*<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset</tt></dd></dl>
- <dl><dt><a name="-array"><strong>array</strong></a>(...)</dt><dd><tt><a href="#-array">array</a>(object,&nbsp;dtype=None,&nbsp;copy=True,&nbsp;order='K',&nbsp;subok=False,&nbsp;ndmin=0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol&nbsp;(tuple(float,&nbsp;float,&nbsp;float))&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;CCS,&nbsp;respectively&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[level&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;the&nbsp;level&nbsp;of&nbsp;identification&nbsp;[optional,&nbsp;default='all']</tt></dd></dl>
+ <dl><dt><a name="-connect"><strong>connect</strong></a>(...)</dt><dd><tt><a href="#-connect">connect</a>(database[,&nbsp;timeout,&nbsp;detect_types,&nbsp;isolation_level,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;check_same_thread,&nbsp;factory,&nbsp;cached_statements,&nbsp;uri])<br>
 &nbsp;<br>
-Create&nbsp;an&nbsp;array.<br>
-&nbsp;<br>
-Parameters<br>
-----------<br>
-object&nbsp;:&nbsp;array_like<br>
-&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;array,&nbsp;any&nbsp;object&nbsp;exposing&nbsp;the&nbsp;array&nbsp;interface,&nbsp;an&nbsp;object&nbsp;whose<br>
-&nbsp;&nbsp;&nbsp;&nbsp;__array__&nbsp;method&nbsp;returns&nbsp;an&nbsp;array,&nbsp;or&nbsp;any&nbsp;(nested)&nbsp;sequence.<br>
-dtype&nbsp;:&nbsp;data-type,&nbsp;optional<br>
-&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;desired&nbsp;data-type&nbsp;for&nbsp;the&nbsp;array.&nbsp;&nbsp;If&nbsp;not&nbsp;given,&nbsp;then&nbsp;the&nbsp;type&nbsp;will<br>
-&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;determined&nbsp;as&nbsp;the&nbsp;minimum&nbsp;type&nbsp;required&nbsp;to&nbsp;hold&nbsp;the&nbsp;objects&nbsp;in&nbsp;the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;sequence.&nbsp;&nbsp;This&nbsp;argument&nbsp;can&nbsp;only&nbsp;be&nbsp;used&nbsp;to&nbsp;'upcast'&nbsp;the&nbsp;array.&nbsp;&nbsp;For<br>
-&nbsp;&nbsp;&nbsp;&nbsp;downcasting,&nbsp;use&nbsp;the&nbsp;.astype(t)&nbsp;method.<br>
-copy&nbsp;:&nbsp;bool,&nbsp;optional<br>
-&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;true&nbsp;(default),&nbsp;then&nbsp;the&nbsp;object&nbsp;is&nbsp;copied.&nbsp;&nbsp;Otherwise,&nbsp;a&nbsp;copy&nbsp;will<br>
-&nbsp;&nbsp;&nbsp;&nbsp;only&nbsp;be&nbsp;made&nbsp;if&nbsp;__array__&nbsp;returns&nbsp;a&nbsp;copy,&nbsp;if&nbsp;obj&nbsp;is&nbsp;a&nbsp;nested&nbsp;sequence,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;if&nbsp;a&nbsp;copy&nbsp;is&nbsp;needed&nbsp;to&nbsp;satisfy&nbsp;any&nbsp;of&nbsp;the&nbsp;other&nbsp;requirements<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(`dtype`,&nbsp;`order`,&nbsp;etc.).<br>
-order&nbsp;:&nbsp;{'K',&nbsp;'A',&nbsp;'C',&nbsp;'F'},&nbsp;optional<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Specify&nbsp;the&nbsp;memory&nbsp;layout&nbsp;of&nbsp;the&nbsp;array.&nbsp;If&nbsp;object&nbsp;is&nbsp;not&nbsp;an&nbsp;array,&nbsp;the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;newly&nbsp;created&nbsp;array&nbsp;will&nbsp;be&nbsp;in&nbsp;C&nbsp;order&nbsp;(row&nbsp;major)&nbsp;unless&nbsp;'F'&nbsp;is<br>
-&nbsp;&nbsp;&nbsp;&nbsp;specified,&nbsp;in&nbsp;which&nbsp;case&nbsp;it&nbsp;will&nbsp;be&nbsp;in&nbsp;Fortran&nbsp;order&nbsp;(column&nbsp;major).<br>
-&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;object&nbsp;is&nbsp;an&nbsp;array&nbsp;the&nbsp;following&nbsp;holds.<br>
-&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;=====&nbsp;=========&nbsp;===================================================<br>
-&nbsp;&nbsp;&nbsp;&nbsp;order&nbsp;&nbsp;no&nbsp;copy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copy=True<br>
-&nbsp;&nbsp;&nbsp;&nbsp;=====&nbsp;=========&nbsp;===================================================<br>
-&nbsp;&nbsp;&nbsp;&nbsp;'K'&nbsp;&nbsp;&nbsp;unchanged&nbsp;F&nbsp;&amp;&nbsp;C&nbsp;order&nbsp;preserved,&nbsp;otherwise&nbsp;most&nbsp;similar&nbsp;order<br>
-&nbsp;&nbsp;&nbsp;&nbsp;'A'&nbsp;&nbsp;&nbsp;unchanged&nbsp;F&nbsp;order&nbsp;if&nbsp;input&nbsp;is&nbsp;F&nbsp;and&nbsp;not&nbsp;C,&nbsp;otherwise&nbsp;C&nbsp;order<br>
-&nbsp;&nbsp;&nbsp;&nbsp;'C'&nbsp;&nbsp;&nbsp;C&nbsp;order&nbsp;&nbsp;&nbsp;C&nbsp;order<br>
-&nbsp;&nbsp;&nbsp;&nbsp;'F'&nbsp;&nbsp;&nbsp;F&nbsp;order&nbsp;&nbsp;&nbsp;F&nbsp;order<br>
-&nbsp;&nbsp;&nbsp;&nbsp;=====&nbsp;=========&nbsp;===================================================<br>
-&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;``copy=False``&nbsp;and&nbsp;a&nbsp;copy&nbsp;is&nbsp;made&nbsp;for&nbsp;other&nbsp;reasons,&nbsp;the&nbsp;result&nbsp;is<br>
-&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;same&nbsp;as&nbsp;if&nbsp;``copy=True``,&nbsp;with&nbsp;some&nbsp;exceptions&nbsp;for&nbsp;`A`,&nbsp;see&nbsp;the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Notes&nbsp;section.&nbsp;The&nbsp;default&nbsp;order&nbsp;is&nbsp;'K'.<br>
-subok&nbsp;:&nbsp;bool,&nbsp;optional<br>
-&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;True,&nbsp;then&nbsp;sub-classes&nbsp;will&nbsp;be&nbsp;passed-through,&nbsp;otherwise<br>
-&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;returned&nbsp;array&nbsp;will&nbsp;be&nbsp;forced&nbsp;to&nbsp;be&nbsp;a&nbsp;base-class&nbsp;array&nbsp;(default).<br>
-ndmin&nbsp;:&nbsp;int,&nbsp;optional<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Specifies&nbsp;the&nbsp;minimum&nbsp;number&nbsp;of&nbsp;dimensions&nbsp;that&nbsp;the&nbsp;resulting<br>
-&nbsp;&nbsp;&nbsp;&nbsp;array&nbsp;should&nbsp;have.&nbsp;&nbsp;Ones&nbsp;will&nbsp;be&nbsp;pre-pended&nbsp;to&nbsp;the&nbsp;shape&nbsp;as<br>
-&nbsp;&nbsp;&nbsp;&nbsp;needed&nbsp;to&nbsp;meet&nbsp;this&nbsp;requirement.<br>
-&nbsp;<br>
-Returns<br>
--------<br>
-out&nbsp;:&nbsp;ndarray<br>
-&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;array&nbsp;object&nbsp;satisfying&nbsp;the&nbsp;specified&nbsp;requirements.<br>
-&nbsp;<br>
-See&nbsp;Also<br>
---------<br>
-empty_like&nbsp;:&nbsp;Return&nbsp;an&nbsp;empty&nbsp;array&nbsp;with&nbsp;shape&nbsp;and&nbsp;type&nbsp;of&nbsp;input.<br>
-ones_like&nbsp;:&nbsp;Return&nbsp;an&nbsp;array&nbsp;of&nbsp;ones&nbsp;with&nbsp;shape&nbsp;and&nbsp;type&nbsp;of&nbsp;input.<br>
-zeros_like&nbsp;:&nbsp;Return&nbsp;an&nbsp;array&nbsp;of&nbsp;zeros&nbsp;with&nbsp;shape&nbsp;and&nbsp;type&nbsp;of&nbsp;input.<br>
-full_like&nbsp;:&nbsp;Return&nbsp;a&nbsp;new&nbsp;array&nbsp;with&nbsp;shape&nbsp;of&nbsp;input&nbsp;filled&nbsp;with&nbsp;value.<br>
-empty&nbsp;:&nbsp;Return&nbsp;a&nbsp;new&nbsp;uninitialized&nbsp;array.<br>
-ones&nbsp;:&nbsp;Return&nbsp;a&nbsp;new&nbsp;array&nbsp;setting&nbsp;values&nbsp;to&nbsp;one.<br>
-zeros&nbsp;:&nbsp;Return&nbsp;a&nbsp;new&nbsp;array&nbsp;setting&nbsp;values&nbsp;to&nbsp;zero.<br>
-full&nbsp;:&nbsp;Return&nbsp;a&nbsp;new&nbsp;array&nbsp;of&nbsp;given&nbsp;shape&nbsp;filled&nbsp;with&nbsp;value.<br>
-&nbsp;<br>
-&nbsp;<br>
-Notes<br>
------<br>
-When&nbsp;order&nbsp;is&nbsp;'A'&nbsp;and&nbsp;`object`&nbsp;is&nbsp;an&nbsp;array&nbsp;in&nbsp;neither&nbsp;'C'&nbsp;nor&nbsp;'F'&nbsp;order,<br>
-and&nbsp;a&nbsp;copy&nbsp;is&nbsp;forced&nbsp;by&nbsp;a&nbsp;change&nbsp;in&nbsp;dtype,&nbsp;then&nbsp;the&nbsp;order&nbsp;of&nbsp;the&nbsp;result&nbsp;is<br>
-not&nbsp;necessarily&nbsp;'C'&nbsp;as&nbsp;expected.&nbsp;This&nbsp;is&nbsp;likely&nbsp;a&nbsp;bug.<br>
-&nbsp;<br>
-Examples<br>
---------<br>
-&gt;&gt;&gt;&nbsp;np.<a href="#-array">array</a>([1,&nbsp;2,&nbsp;3])<br>
-<a href="#-array">array</a>([1,&nbsp;2,&nbsp;3])<br>
-&nbsp;<br>
-Upcasting:<br>
-&nbsp;<br>
-&gt;&gt;&gt;&nbsp;np.<a href="#-array">array</a>([1,&nbsp;2,&nbsp;3.0])<br>
-<a href="#-array">array</a>([&nbsp;1.,&nbsp;&nbsp;2.,&nbsp;&nbsp;3.])<br>
-&nbsp;<br>
-More&nbsp;than&nbsp;one&nbsp;dimension:<br>
-&nbsp;<br>
-&gt;&gt;&gt;&nbsp;np.<a href="#-array">array</a>([[1,&nbsp;2],&nbsp;[3,&nbsp;4]])<br>
-<a href="#-array">array</a>([[1,&nbsp;2],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3,&nbsp;4]])<br>
-&nbsp;<br>
-Minimum&nbsp;dimensions&nbsp;2:<br>
-&nbsp;<br>
-&gt;&gt;&gt;&nbsp;np.<a href="#-array">array</a>([1,&nbsp;2,&nbsp;3],&nbsp;ndmin=2)<br>
-<a href="#-array">array</a>([[1,&nbsp;2,&nbsp;3]])<br>
-&nbsp;<br>
-Type&nbsp;provided:<br>
-&nbsp;<br>
-&gt;&gt;&gt;&nbsp;np.<a href="#-array">array</a>([1,&nbsp;2,&nbsp;3],&nbsp;dtype=complex)<br>
-<a href="#-array">array</a>([&nbsp;1.+0.j,&nbsp;&nbsp;2.+0.j,&nbsp;&nbsp;3.+0.j])<br>
-&nbsp;<br>
-Data-type&nbsp;consisting&nbsp;of&nbsp;more&nbsp;than&nbsp;one&nbsp;element:<br>
-&nbsp;<br>
-&gt;&gt;&gt;&nbsp;x&nbsp;=&nbsp;np.<a href="#-array">array</a>([(1,2),(3,4)],dtype=[('a','&lt;i4'),('b','&lt;i4')])<br>
-&gt;&gt;&gt;&nbsp;x['a']<br>
-<a href="#-array">array</a>([1,&nbsp;3])<br>
-&nbsp;<br>
-Creating&nbsp;an&nbsp;array&nbsp;from&nbsp;sub-classes:<br>
-&nbsp;<br>
-&gt;&gt;&gt;&nbsp;np.<a href="#-array">array</a>(np.mat('1&nbsp;2;&nbsp;3&nbsp;4'))<br>
-<a href="#-array">array</a>([[1,&nbsp;2],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3,&nbsp;4]])<br>
-&nbsp;<br>
-&gt;&gt;&gt;&nbsp;np.<a href="#-array">array</a>(np.mat('1&nbsp;2;&nbsp;3&nbsp;4'),&nbsp;subok=True)<br>
-matrix([[1,&nbsp;2],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3,&nbsp;4]])</tt></dd></dl>
+Opens&nbsp;a&nbsp;connection&nbsp;to&nbsp;the&nbsp;SQLite&nbsp;database&nbsp;file&nbsp;*database*.&nbsp;You&nbsp;can&nbsp;use<br>
+":memory:"&nbsp;to&nbsp;open&nbsp;a&nbsp;database&nbsp;connection&nbsp;to&nbsp;a&nbsp;database&nbsp;that&nbsp;resides&nbsp;in<br>
+RAM&nbsp;instead&nbsp;of&nbsp;on&nbsp;disk.</tt></dd></dl>
+ <dl><dt><a name="-id_feat_any"><strong>id_feat_any</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode)</dt><dd><tt>id_feat_any<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Goes&nbsp;through&nbsp;all&nbsp;defined&nbsp;levels&nbsp;of&nbsp;identification,&nbsp;starting&nbsp;with&nbsp;the&nbsp;highest&nbsp;level,&nbsp;then&nbsp;tries&nbsp;lower&nbsp;levels&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until&nbsp;an&nbsp;identification&nbsp;or&nbsp;identifications&nbsp;are&nbsp;made<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
+ <dl><dt><a name="-id_feat_meas_mz_rt_ccs"><strong>id_feat_meas_mz_rt_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode)</dt><dd><tt>id_feat_theo_meas_mz_rt_ccs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;by&nbsp;matching&nbsp;a&nbsp;reference&nbsp;value&nbsp;on&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;CCS&nbsp;within&nbsp;tolerances<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
+ <dl><dt><a name="-id_feat_theo_mz"><strong>id_feat_theo_mz</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode)</dt><dd><tt>id_feat_theo_mz<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;theoretical&nbsp;m/z<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
 </td></tr></table>
 </body></html>
