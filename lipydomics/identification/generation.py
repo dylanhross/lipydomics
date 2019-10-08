@@ -100,8 +100,11 @@ enumerate_all_lipids
     lgpls = [LPA, LPC, LPE, LPG, LPI, LPS]
     lgpl_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-']
     for lc in lgpls:
-        for l in enumerate_lipid_class(lc, (12, 22), (0, 6), lgpl_adducts):
-            yield l
+        for fa_mod in [None, 'p', 'o']:
+            # for plasmalogen lipids, minimum unsaturation must be 1
+            lgpl_nu = (1, 6) if fa_mod == 'p' else (0, 6)
+            for l in enumerate_lipid_class(lc, (12, 22), lgpl_nu, lgpl_adducts, fa_mod=fa_mod):
+                yield l
 
     # sphingolipids (Cer, HexCer, SM)
     sls = [Cer, HexCer, SM]

@@ -21,7 +21,7 @@ LPA
          R  =  --H
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 LPA.__init__
     description:
@@ -30,7 +30,7 @@ LPA.__init__
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a LPA is an --H
         self.add_to_formula({'H': 1})
         # the lipid class is LPA
@@ -49,7 +49,7 @@ LPC
                     |
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 LPC.__init__
     description:
@@ -58,7 +58,7 @@ LPC.__init__
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a LPC is a choline, because of the permanent charge on the choline group, 1 H must be
         # subtracted from the formula to account for a negative charge on the phosphate group to make the lipid
         # have an overall neutral charge
@@ -79,7 +79,7 @@ LPE
 
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 LPE.__init__
     description:
@@ -88,7 +88,7 @@ LPE.__init__
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a LPE is an ethanolamine (C2H6N)
         self.add_to_formula({'C': 2, 'H': 6, 'N': 1})
         # the lipid class is LPE
@@ -108,7 +108,7 @@ LPG
               HO
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 LPG.__init__
     description:
@@ -117,7 +117,7 @@ LPG.__init__
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a LPG is an glycerol (C3H7O2)
         self.add_to_formula({'C': 3, 'H': 7, 'O': 2})
         # the lipid class is LPG
@@ -141,7 +141,7 @@ LPI
                HO     OH
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 LPI.__init__
     description:
@@ -150,7 +150,7 @@ LPI.__init__
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a LPI is an inositol (C6H11O5)
         self.add_to_formula({'C': 6, 'H': 11, 'O': 5})
         # the lipid class is LPI
@@ -172,7 +172,7 @@ LPS
                  OH
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 LPS.__init__
     description:
@@ -181,7 +181,7 @@ LPS.__init__
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a LPS is a serine (C3H6O2N)
         self.add_to_formula({'C': 3, 'H': 6, 'O': 2, 'N': 1})
         # the lipid class is LPS

@@ -217,7 +217,7 @@ Lysoglycerophospholipid
       subtracting a single H in order to make the lipid neutral *
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 Lysoglycerophospholipid.__init__
     description:
@@ -225,6 +225,8 @@ Lysoglycerophospholipid.__init__
     parameters:
         sum_carbon (int) -- sum acyl carbons
         sum_unsaturation (int) -- sum acyl unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
+                                    respectively) or None [optional, default=None]
 """
         # formula is initially set to the core formula (only partial head group, no fatty acid tails)
         self.formula = {'C': 4, 'H': 7, 'O': 7, 'P': 1}
@@ -233,6 +235,17 @@ Lysoglycerophospholipid.__init__
         self.add_to_formula(acyl_formula)
         # store the sum composition
         self.sum_composition = (sum_carbon, sum_unsaturation)
+        self.fa_mod = fa_mod
+        if fa_mod:
+            if fa_mod == 'o':
+                # remove 1 O and add 2 H, otherwise behavior is the same
+                self.add_to_formula({'O': -1, 'H': 2})
+            elif fa_mod == 'p':
+                # remove 1 oxygen, make sure there is at least 1 unsaturation
+                self.add_to_formula({'O': -1})
+                if sum_unsaturation < 1:
+                    msg = 'Lysoglycerophospholipid: __init__: sum composition ({}:{}) is unusual for plasmalogen'
+                    warn(msg.format(sum_carbon, sum_unsaturation))
 
 
 class Sphingolipid(Lipid):
