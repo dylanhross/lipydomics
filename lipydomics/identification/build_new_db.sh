@@ -15,3 +15,7 @@ cat lipids_schema.sql | sqlite3 lipids.db
 # fill the theoretical mass table using enumeration
 ./fill_theo_mz_from_gen.py
 
+# fill the theoretical CCS table using ML model trained on reference data
+rm -f lipid_ccs_pred.pickle lipid_ccs_scale.pickle # get rid of pre-trained models (if present)
+./train_lipid_ccs_pred.py
+

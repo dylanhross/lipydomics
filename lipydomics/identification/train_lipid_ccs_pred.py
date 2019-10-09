@@ -199,7 +199,7 @@ if __name__ == '__main__':
         print('ok')
 
     # add theoretical CCS to the database
-    print('adding predicted CCS to database ...', end=' ')
+    print('\nadding predicted CCS to database ...', end=' ')
     qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz FROM theoretical_mz'
     tid_to_ccs = {}
     for tid, lc, lnc, lnu, fam, add, m in cur.execute(qry).fetchall():

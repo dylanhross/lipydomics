@@ -89,21 +89,19 @@ if __name__ == '__main__':
     # source datasets
     dsets = [
         "zhou0817",
-        "may_0114",
         "hine1217",
         "hine0217",
-        "groe0815",
-        "hine0119"
+        "hine0119",
+        'leap0219'
     ]
 
     # CCS metadata by source
     metadata = {
         "zhou0817": {"type": "DT", "method": "single field, calibrated with Agilent tune mix (Agilent)"},
-        "may_0114": {"type": "DT", "method": "stepped-field"},
         "hine1217": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
         "hine0217": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
-        "groe0815": {"type": "DT", "method": "stepped-field"},
-        "hine0119": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"}
+        "hine0119": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
+        'leap0219': {"type": "DT", "method": "stepped-field"}
     }
 
     # add each src dataset
