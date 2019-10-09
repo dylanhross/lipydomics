@@ -20,5 +20,6 @@ rm -f lipid_ccs_pred.pickle lipid_ccs_scale.pickle # get rid of pre-trained mode
 ./train_lipid_ccs_pred.py
 
 # characterize the performance of the ML based CCS prediction
+rm -f ccs_pred_perf/*.png
 ./characterize_lipid_ccs_pred.py
 

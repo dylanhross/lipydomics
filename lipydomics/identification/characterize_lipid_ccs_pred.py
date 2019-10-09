@@ -62,7 +62,7 @@ single_class_plot
     ax = fig.add_subplot(111)
 
     ax.scatter(mz_t, ccs_t, marker='.', s=64, c='r', label='theo')
-    ax.scatter(mz_m, ccs_m, marker='.', s=16, c='b', label='meas')
+    ax.scatter(mz_m, ccs_m, marker='.', s=16, c='b', label='meas (n={})'.format(len(mz_m)))
 
     ax.legend()
     ax.set_xlabel('m/z')
@@ -70,8 +70,7 @@ single_class_plot
     ax.set_title('{}{} {}'.format(lipid_class, fa_mod if fa_mod else '', adduct))
 
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
-
-
+    plt.close()
 
 
 if __name__ == '__main__':
@@ -85,14 +84,11 @@ if __name__ == '__main__':
 
     print('characterizing CCS prediction performance ...', end=' ')
 
-    single_class_plot(cur, 'PG', '[M-H]-')
-    single_class_plot(cur, 'TG', '[M+NH4]+')
-    single_class_plot(cur, 'PC', '[M+H]+')
-    single_class_plot(cur, 'PE', '[M-H]-')
-    single_class_plot(cur, 'PE', '[M+H]+')
-    single_class_plot(cur, 'PG', '[M+Na]+')
-    single_class_plot(cur, 'GlcCer', '[M+Na]+')
-
+    # automatically generate plots for all combinations having at least 10 measured values
+    qry = 'SELECT lipid_class, fa_mod, adduct, COUNT(*) as c FROM measured '
+    qry += 'GROUP BY lipid_class, fa_mod, adduct HAVING c > 9'
+    for lipid_class, fa_mod, adduct, c in cur.execute(qry).fetchall():
+        single_class_plot(cur, lipid_class, adduct, fa_mod=fa_mod)
 
     print('ok\n')
 

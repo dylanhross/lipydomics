@@ -132,6 +132,39 @@ PG.__init__
         self.lipid_class = 'PG'
 
 
+class LysylPG(Glycerophospholipid):
+    r"""
+LysylPG
+    description:
+        lysyl-phosphatidylglycerol lipid class
+        Glycerophospholipid with R-group =
+
+                        O
+                       //    
+        R  =  __    O--\    
+                \__/    \__
+                /       /  \__
+              HO     H2N      \__NH2
+"""
+
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
+        """
+PG.__init__
+    description:
+        Initializes an instance of a PG lipid
+    Parameters:
+        sum_carbon (int) -- sum FA composition carbons
+        sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o', 
+                                    respectively) or None [optional, default=None]
+"""
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
+        # the R-group for a PG is an glycerol (C3H7O2)
+        self.add_to_formula({'C': 9, 'H': 19, 'O': 3, 'N':2})
+        # the lipid class is PG
+        self.lipid_class = 'LysylPG'
+
+
 class PI(Glycerophospholipid):
     r"""
 PI

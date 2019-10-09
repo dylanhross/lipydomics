@@ -9,7 +9,7 @@
 
 
 from LipidMass.lipids.glycerolipids import DG, DGDG, GlcADG, MGDG, TG
-from LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PS
+from LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PS, LysylPG
 from LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS
 from LipidMass.lipids.sphingolipids import Cer, HexCer, GlcCer, SM
 from LipidMass.lipids.misc import FA
@@ -81,8 +81,9 @@ enumerate_all_lipids
         yield l
 
     # diacyl-glycerophospholipids (with plasmalogen and ether derivatives)
-    diagpls = [PA, PC, PE, PG, PI, PS]
-    diagpl_adducts = ['[M+H]+', '[M+Na]+', '[M+NH4]+', '[M-H]-', '[M+HCOO]-', '[M+K]+', '[M+CH3COO]-']
+    diagpls = [PA, PC, PE, PG, PI, PS, LysylPG]
+    diagpl_adducts = ['[M+H]+', '[M+Na]+', '[M+NH4]+', '[M-H]-', '[M+HCOO]-', '[M+K]+', '[M+CH3COO]-', '[M+2Na-H]+',
+                      '[M+Cl]-']
     for lc in diagpls:
         for fa_mod in [None, 'p', 'o']:
             # for plasmalogen lipids, minimum unsaturation must be 1
@@ -108,7 +109,7 @@ enumerate_all_lipids
 
     # sphingolipids (Cer, HexCer, SM)
     sls = [Cer, HexCer, GlcCer, SM]
-    sls_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-', '[M+K]+']
+    sls_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-', '[M+K]+', '[M+H-H2O]+']
     for lc in sls:
         for l in enumerate_lipid_class(lc, (30, 40), (1, 7), sls_adducts):
             yield l
