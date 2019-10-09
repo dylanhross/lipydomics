@@ -277,4 +277,4 @@ acylPG.__init__
         self.add_to_formula(acyl_formula)
         # store the sum composition
         self.sum_composition = (sum_carbon, sum_unsaturation)
-        self.lipid_class = 'acylPG'
+        self.lipid_class = 'AcylPG'

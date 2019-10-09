@@ -99,3 +99,35 @@ HexCer.__init__
         self.add_to_formula({'C': 6, 'H': 11, 'O': 5})
         # the lipid class is HexCer
         self.lipid_class = 'HexCer'
+
+
+class GlcCer(Sphingolipid):
+    r"""
+GlcCer
+    description:
+        Glucosyl-Ceramide lipid class
+        Sphingolipid with R-group =
+
+               HO      OH
+                 \____/
+                 /    \
+        R  =  __/      \__OH
+                \      /
+                 O____/
+                      \__OH
+"""
+
+    def __init__(self, sum_carbon, sum_unsaturation):
+        """
+GlcCer.__init__
+    description:
+        Initializes an instance of a GlcCer lipid
+    parameters:
+        sum_carbon (int) -- sum FA composition carbons
+        sum_unsaturation (int) -- sum FA composition unsaturations
+"""
+        super().__init__(sum_carbon, sum_unsaturation)
+        # the R-group for a HexCer is a hexose (C6H11O5)
+        self.add_to_formula({'C': 6, 'H': 11, 'O': 5})
+        # the lipid class is HexCer
+        self.lipid_class = 'GlcCer'

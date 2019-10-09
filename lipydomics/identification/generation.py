@@ -11,7 +11,7 @@
 from LipidMass.lipids.glycerolipids import DG, DGDG, GlcADG, MGDG, TG
 from LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PS
 from LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS
-from LipidMass.lipids.sphingolipids import Cer, HexCer, SM
+from LipidMass.lipids.sphingolipids import Cer, HexCer, GlcCer, SM
 from LipidMass.lipids.misc import FA
 
 
@@ -107,7 +107,7 @@ enumerate_all_lipids
                 yield l
 
     # sphingolipids (Cer, HexCer, SM)
-    sls = [Cer, HexCer, SM]
+    sls = [Cer, HexCer, GlcCer, SM]
     sls_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-', '[M+K]+']
     for lc in sls:
         for l in enumerate_lipid_class(lc, (30, 40), (1, 7), sls_adducts):

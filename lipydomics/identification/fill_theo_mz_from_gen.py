@@ -48,6 +48,7 @@ if __name__ == '__main__':
     print('adding theoretical m/z into lipds.db ...', end=' ')
     add_enumerated_mz(cur)
     print('ok')
+    print()
 
     # save changes to the database
     con.commit()

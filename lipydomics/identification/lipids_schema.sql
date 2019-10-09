@@ -49,3 +49,11 @@ CREATE TABLE theoretical_mz (
 );
 
 
+-- table to store theoretical CCS values, associated with theoretical m/z values
+CREATE TABLE theoretical_ccs (
+    -- unique integer identifier
+    t_id INTEGER UNIQUE NOT NULL,
+    -- theoretical m/z
+    ccs REAL NOT NULL
+);
+
