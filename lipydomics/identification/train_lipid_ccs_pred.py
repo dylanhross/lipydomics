@@ -31,39 +31,51 @@ prep_encoders
                                                                                     adduct, respectively
 """
     lipid_classes = [
-        ['AcylPG'],
-        ['LPG'],
-        ['LysylPG'],
-        ['LPC'],
-        ['CL'],
-        ['PA'],
-        ['TG'],
+        ['PE'],
+        ['PC'],
+        ['PG'],
+        ['PS'],
         ['SM'],
         ['GlcCer'],
         ['Cer'],
-        ['DGDG'],
-        ['LPE'],
         ['PI'],
-        ['PS'],
-        ['PC'],
-        ['PG'],
-        ['PE']
+        ['LPE'],
+        ['DGDG'],
+        ['PA'],
+        ['TG'],
+        ['CL'],
+        ['LPC'],
+        ['AcylPG'],
+        ['LysylPG'],
+        ['MGDG'],
+        ['LPG'],
+        ['AcylPE'],
+        ['DG'],
+        ['LPS'],
+        ['GlcADG'],
+        ['LPI'],
+        ['AlaPG'],
+        ['PIP']
     ]
     c_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(lipid_classes)
     fa_mods = [['o'], ['p']]
     f_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(fa_mods)
     adducts = [
-        ['[M+H-H2O]+'],
-        ['[M+Cl]-'],
-        ['[M+2K]2+'],
-        ['[M+CH3COO]-'],
-        ['[M-2H]2-'],
-        ['[M+HCOO]-'],
-        ['[M+K]+'],
-        ['[M+NH4]+'],
         ['[M+H]+'],
-        ['[M+Na]+'],
         ['[M-H]-'],
+        ['[M+Na]+'],
+        ['[M+NH4]+'],
+        ['[M+2Na-H]+'],
+        ['[M+HCOO]-'],
+        ['[M+Cl]-'],
+        ['[M+K]+'],
+        ['[M+H-H2O]+'],
+        ['[M-2H]2-'],
+        ['[M+CH3COO]-'],
+        ['[M+2K]2+'],
+        ['[M+H-2H2O]+'],
+        ['[M+Na-2H2O]+'],
+        ['[M+Na-H2O]+']
     ]
     a_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(adducts)
     return c_encoder, f_encoder, a_encoder
@@ -73,7 +85,7 @@ def featurize(lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz, c_encoder, f_
     """
 featurize
     description:
-
+        generates a numerical representation for a given lipid
     parameters:
         lipid_class (str) -- lipid class
         lipid_nc (int) -- sum composition: number of carbons
@@ -209,7 +221,7 @@ if __name__ == '__main__':
     qry = 'INSERT INTO theoretical_ccs VALUES (?, ?)'
     for tid in tid_to_ccs:
         cur.execute(qry, (tid, tid_to_ccs[tid]))
-    print('ok')
+    print('ok\n')
 
     # commit changes to the database and close connection
     con.commit()

@@ -19,3 +19,6 @@ cat lipids_schema.sql | sqlite3 lipids.db
 rm -f lipid_ccs_pred.pickle lipid_ccs_scale.pickle # get rid of pre-trained models (if present)
 ./train_lipid_ccs_pred.py
 
+# characterize the performance of the ML based CCS prediction
+./characterize_lipid_ccs_pred.py
+

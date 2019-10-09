@@ -105,7 +105,7 @@ if __name__ == '__main__':
     }
 
     # add each src dataset
-    print("adding cleaned datasets into lipids.db")
+    print("\nadding cleaned datasets into lipids.db")
     gid_next = 0
     for dset in dsets:
         print("\tadding dataset: {} ...".format(dset), end=" ")
