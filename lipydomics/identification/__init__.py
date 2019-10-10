@@ -12,27 +12,6 @@ from sqlite3 import connect
 import os
 
 
-def id_feat_any(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode):
-    """
-id_feat_any
-    description:
-        Goes through all defined levels of identification, starting with the highest level, then tries lower levels 
-        until an identification or identifications are made
-    parameters:
-        cursor (sqlite3.Cursor) -- cursor for querying lipids.db
-        mz (float) -- m/z to match
-        rt (float) -- retention time to match
-        ccs (float) -- CCS to match
-        tol_mz (float) -- tolerance for m/z 
-        tol_rt (float) -- tolerance for retention time
-        tol_ccs (float) -- tolerance for CCS
-        esi_mode (str) -- filter results by ionization mode: 'neg', 'pos', or None for unspecified
-    returns:
-        (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
-"""
-    return '', ''
-
-
 def id_feat_theo_mz(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode):
     """
 id_feat_theo_mz
@@ -65,6 +44,45 @@ id_feat_theo_mz
 
     if putative_ids:
         return putative_ids, 'theo_mz'
+    else:
+        return '', ''
+
+
+def id_feat_theo_mz_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode):
+    """
+id_feat_theo_mz_ccs
+    description:
+        identifies a feature on the basis of theoretical m/z and CCS
+    parameters:
+        cursor (sqlite3.Cursor) -- cursor for querying lipids.db
+        mz (float) -- m/z to match
+        rt (float) -- retention time to match
+        ccs (float) -- CCS to match
+        tol_mz (float) -- tolerance for m/z 
+        tol_rt (float) -- tolerance for retention time
+        tol_ccs (float) -- tolerance for CCS
+        esi_mode (str) -- filter results by ionization mode: 'neg', 'pos', or None for unspecified
+    returns:
+        (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
+"""
+    qry = 'SELECT name, adduct FROM theoretical_mz JOIN theoretical_ccs ON theoretical_mz.t_id=theoretical_ccs.t_id' \
+            + ' WHERE mz BETWEEN ? AND ? AND ccs BETWEEN ? and ?'
+    if esi_mode == 'pos':
+        qry += ' AND adduct LIKE "%+"'
+    elif esi_mode == 'neg':
+        qry += ' AND adduct LIKE "%-"'
+
+    mz_min = mz - tol_mz
+    mz_max = mz + tol_mz
+    ccs_min = ccs - tol_ccs
+    ccs_max = ccs + tol_ccs
+
+    putative_ids = []
+    for name, adduct in cursor.execute(qry, (mz_min, mz_max, ccs_min, ccs_max)).fetchall():
+        putative_ids.append('{}_{}'.format(name, adduct))
+
+    if putative_ids:
+        return putative_ids, 'theo_mz_ccs'
     else:
         return '', ''
 
@@ -110,6 +128,27 @@ id_feat_theo_meas_mz_rt_ccs
         return '', ''
 
 
+def id_feat_any(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode):
+    """
+id_feat_any
+    description:
+        Goes through all defined levels of identification, starting with the highest level, then tries lower levels 
+        until an identification or identifications are made
+    parameters:
+        cursor (sqlite3.Cursor) -- cursor for querying lipids.db
+        mz (float) -- m/z to match
+        rt (float) -- retention time to match
+        ccs (float) -- CCS to match
+        tol_mz (float) -- tolerance for m/z 
+        tol_rt (float) -- tolerance for retention time
+        tol_ccs (float) -- tolerance for CCS
+        esi_mode (str) -- filter results by ionization mode: 'neg', 'pos', or None for unspecified
+    returns:
+        (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
+"""
+    return '', ''
+
+
 def add_feature_ids(dataset, tol, level='any'):
     """
 add_feature_ids
@@ -147,7 +186,7 @@ add_feature_ids
         tol (tuple(float, float, float)) -- tolerance for m/z, rt, and CCS, respectively 
         [level (str)] -- specify the level of identification [optional, default='all']
 """
-    if level not in ['theo_mz', 'meas_mz_rt_ccs', 'any']:
+    if level not in ['theo_mz', 'theo_mz_ccs', 'meas_mz_rt_ccs', 'any']:
         m = 'add_feature_ids: identification level "{}" not recognized'
         raise ValueError(m.format(level))
 
@@ -155,6 +194,7 @@ add_feature_ids
     id_funcs = {
         'any': id_feat_any,
         'meas_mz_rt_ccs': id_feat_meas_mz_rt_ccs,
+        'theo_mz_ccs': id_feat_theo_mz_ccs,
         'theo_mz': id_feat_theo_mz
     } 
 
