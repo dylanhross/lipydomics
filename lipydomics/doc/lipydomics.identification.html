@@ -23,11 +23,13 @@ description:<br>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="lipydomics.identification.LipidMass.html"><strong>LipidMass</strong>&nbsp;(package)</a><br>
-<a href="lipydomics.identification.fill_measured_from_src.html">fill_measured_from_src</a><br>
-</td><td width="25%" valign=top><a href="lipydomics.identification.fill_theo_mz_from_gen.html">fill_theo_mz_from_gen</a><br>
-<a href="lipydomics.identification.generation.html">generation</a><br>
-</td><td width="25%" valign=top><a href="lipydomics.identification.lipid_parser.html">lipid_parser</a><br>
-</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<a href="lipydomics.identification.characterize_lipid_ccs_pred.html">characterize_lipid_ccs_pred</a><br>
+</td><td width="25%" valign=top><a href="lipydomics.identification.fill_measured_from_src.html">fill_measured_from_src</a><br>
+<a href="lipydomics.identification.fill_theo_mz_from_gen.html">fill_theo_mz_from_gen</a><br>
+</td><td width="25%" valign=top><a href="lipydomics.identification.generation.html">generation</a><br>
+<a href="lipydomics.identification.lipid_parser.html">lipid_parser</a><br>
+</td><td width="25%" valign=top><a href="lipydomics.identification.train_lipid_ccs_pred.html">train_lipid_ccs_pred</a><br>
+</td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -106,6 +108,20 @@ RAM&nbsp;instead&nbsp;of&nbsp;on&nbsp;disk.</tt></dd></dl>
  <dl><dt><a name="-id_feat_theo_mz"><strong>id_feat_theo_mz</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode)</dt><dd><tt>id_feat_theo_mz<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;theoretical&nbsp;m/z<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
+ <dl><dt><a name="-id_feat_theo_mz_ccs"><strong>id_feat_theo_mz_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode)</dt><dd><tt>id_feat_theo_mz_ccs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;theoretical&nbsp;m/z&nbsp;and&nbsp;CCS<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
