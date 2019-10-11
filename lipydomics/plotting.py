@@ -51,6 +51,10 @@ barplot_feature_bygroup
     # go through each matched feature and generate a plot
     for i in found_feat:
         mz, rt, ccs = dataset.labels[i]
+        put_id, put_lvl = dataset.feat_ids[i], dataset.feat_id_levels[i]
+        if type(put_id) == list:
+            put_id = put_id[0] 
+
         # generate a filename
         if normed:
                 nrm = 'normed'
@@ -75,10 +79,16 @@ barplot_feature_bygroup
         for d in ['top', 'right']:
             ax.spines[d].set_visible(False)
         ax.set_ylabel('intensity')
-        ax.set_title('mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz, rt, ccs), fontsize=8, fontweight='bold')
+        
+        ax.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+
+        ttl = 'mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz, rt, ccs)
+        ttl += '\n{} ({})'.format(put_id, put_lvl)
+        ax.set_title(ttl, fontsize=8)
 
         plt.tight_layout()
         plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+        plt.close()
 
 
 def scatter_pca3_projections_bygroup(dataset, group_names, img_dir, normed=False):
@@ -128,6 +138,7 @@ scatter_pca3_projections_bygroup
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.close()
 
 
 def scatter_plsda_projections_bygroup(dataset, group_names, img_dir, normed=False):
@@ -181,6 +192,7 @@ scatter_plsda_projections_bygroup
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.close()
 
 
 def splot_plsda_pcorr_bygroup(dataset, group_names, img_dir, normed=False):
@@ -238,4 +250,5 @@ splot_plsda_pcorr_bygroup
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.close()
 
