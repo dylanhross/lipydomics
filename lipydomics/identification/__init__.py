@@ -178,7 +178,7 @@ id_feat_theo_meas_mz_ccs
         putative_scores.append(get_score(tol_mz, tol_rt, tol_ccs, mz_q=mz, ccs_q=ccs, mz_x=mz_x, ccs_x=ccs_x))
 
     if putative_ids:
-        return putative_ids, 'meas_mz_rt_ccs', putative_scores
+        return putative_ids, 'meas_mz_ccs', putative_scores
     else:
         return '', '', []
 
