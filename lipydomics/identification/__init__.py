@@ -248,6 +248,18 @@ id_feat_any
     returns:
         (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
 """
+    id_funcs = [
+        id_feat_meas_mz_rt_ccs,
+        id_feat_meas_mz_ccs,
+        id_feat_theo_mz_ccs,
+        id_feat_theo_mz
+    ]
+
+    for f in id_funcs:
+        fid, lvl, scr = f(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')
+        if fid:
+            return fid, lvl, scr
+
     return '', '', []
 
 
