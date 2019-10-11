@@ -36,7 +36,7 @@ description:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-add_feature_ids"><strong>add_feature_ids</strong></a>(dataset, tol, level='any')</dt><dd><tt>add_feature_ids<br>
+<td width="100%"><dl><dt><a name="-add_feature_ids"><strong>add_feature_ids</strong></a>(dataset, tol, level='any', norm='l2')</dt><dd><tt>add_feature_ids<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Goes&nbsp;through&nbsp;the&nbsp;list&nbsp;of&nbsp;features&nbsp;(mz,&nbsp;rt,&nbsp;ccs)&nbsp;in&nbsp;Dataset.labels&nbsp;and&nbsp;provides&nbsp;an&nbsp;identification&nbsp;for&nbsp;each.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
@@ -55,10 +55,12 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;identifications&nbsp;are&nbsp;stored&nbsp;in&nbsp;`Dataset.feat_ids`&nbsp;and&nbsp;the&nbsp;associated&nbsp;identification&nbsp;levels&nbsp;are&nbsp;stored&nbsp;in&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`Dataset.feat_id_levels`<br>
 &nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;each&nbsp;feature,&nbsp;the&nbsp;identification&nbsp;is&nbsp;either&nbsp;a&nbsp;single&nbsp;string&nbsp;if&nbsp;there&nbsp;is&nbsp;only&nbsp;one&nbsp;identification&nbsp;(e.g.&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'UNK_0123.4567_01.23_123.45')&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;strings&nbsp;with&nbsp;all&nbsp;possible&nbsp;identifications&nbsp;(e.g.&nbsp;['PC(40:3)_[M+H]+',&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PE(42:2)_[M+H]+',&nbsp;'PC(p36:1)_[M+Na]+']).&nbsp;The&nbsp;corresponding&nbsp;identification&nbsp;level&nbsp;is&nbsp;always&nbsp;a&nbsp;single<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;(e.g.&nbsp;''&nbsp;and&nbsp;'meas_mass_rt_ccs',&nbsp;respectively,&nbsp;for&nbsp;the&nbsp;above&nbsp;examples)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;each&nbsp;feature,&nbsp;the&nbsp;identification&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;strings&nbsp;with&nbsp;all&nbsp;possible&nbsp;identifications&nbsp;(e.g.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;['PC(40:3)_[M+H]+',&nbsp;'PE(42:2)_[M+H]+',&nbsp;'PC(p36:1)_[M+Na]+']).&nbsp;The&nbsp;corresponding&nbsp;identification&nbsp;level&nbsp;is&nbsp;always&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;single&nbsp;string&nbsp;(e.g.&nbsp;'meas_mass_rt_ccs').&nbsp;The&nbsp;identification&nbsp;score&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;floats&nbsp;corresponding&nbsp;to&nbsp;scores<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;each&nbsp;of&nbsp;the&nbsp;possible&nbsp;identifications.&nbsp;The&nbsp;list&nbsp;is&nbsp;empty&nbsp;in&nbsp;the&nbsp;case&nbsp;of&nbsp;a&nbsp;failure&nbsp;to&nbsp;identify&nbsp;a&nbsp;feature.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;whenever&nbsp;multiple&nbsp;identifications&nbsp;are&nbsp;returned,&nbsp;always&nbsp;sort&nbsp;in&nbsp;order&nbsp;of&nbsp;descending&nbsp;scores&nbsp;*<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;same&nbsp;tolerances&nbsp;are&nbsp;used&nbsp;for&nbsp;all&nbsp;levels&nbsp;of&nbsp;identification.<br>
 &nbsp;<br>
@@ -69,14 +71,37 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol&nbsp;(tuple(float,&nbsp;float,&nbsp;float))&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;CCS,&nbsp;respectively&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[level&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;the&nbsp;level&nbsp;of&nbsp;identification&nbsp;[optional,&nbsp;default='all']</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[level&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;the&nbsp;level&nbsp;of&nbsp;identification&nbsp;[optional,&nbsp;default='all']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']</tt></dd></dl>
  <dl><dt><a name="-connect"><strong>connect</strong></a>(...)</dt><dd><tt><a href="#-connect">connect</a>(database[,&nbsp;timeout,&nbsp;detect_types,&nbsp;isolation_level,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;check_same_thread,&nbsp;factory,&nbsp;cached_statements,&nbsp;uri])<br>
 &nbsp;<br>
 Opens&nbsp;a&nbsp;connection&nbsp;to&nbsp;the&nbsp;SQLite&nbsp;database&nbsp;file&nbsp;*database*.&nbsp;You&nbsp;can&nbsp;use<br>
 ":memory:"&nbsp;to&nbsp;open&nbsp;a&nbsp;database&nbsp;connection&nbsp;to&nbsp;a&nbsp;database&nbsp;that&nbsp;resides&nbsp;in<br>
 RAM&nbsp;instead&nbsp;of&nbsp;on&nbsp;disk.</tt></dd></dl>
- <dl><dt><a name="-id_feat_any"><strong>id_feat_any</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode)</dt><dd><tt>id_feat_any<br>
+ <dl><dt><a name="-get_score"><strong>get_score</strong></a>(tol_mz, tol_rt, tol_ccs, mz_q=None, rt_q=None, ccs_q=None, mz_x=None, rt_x=None, ccs_x=None, norm='l2')</dt><dd><tt>get_score<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;computes&nbsp;a&nbsp;score&nbsp;reflecting&nbsp;the&nbsp;quality&nbsp;of&nbsp;an&nbsp;identification,&nbsp;using&nbsp;mz&nbsp;rt&nbsp;and&nbsp;ccs&nbsp;or&nbsp;any&nbsp;combination<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;score&nbsp;is&nbsp;determined&nbsp;by&nbsp;the&nbsp;residuals&nbsp;between&nbsp;the&nbsp;query&nbsp;values&nbsp;(q)&nbsp;and&nbsp;a&nbsp;potential&nbsp;match&nbsp;(x),&nbsp;normalized&nbsp;by<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;their&nbsp;respective&nbsp;tolerances.&nbsp;If&nbsp;only&nbsp;a&nbsp;single&nbsp;pair&nbsp;of&nbsp;values&nbsp;(q&nbsp;and&nbsp;x)&nbsp;is&nbsp;provided,&nbsp;the&nbsp;score&nbsp;is&nbsp;simply&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inverse&nbsp;of&nbsp;the&nbsp;normalized&nbsp;residual,&nbsp;otherwise,&nbsp;it&nbsp;is&nbsp;the&nbsp;inverse&nbsp;of&nbsp;the&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;of&nbsp;the&nbsp;normalized&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;residuals&nbsp;vector.&nbsp;The&nbsp;norm&nbsp;kwarg&nbsp;controls&nbsp;whether&nbsp;the&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;is&nbsp;used&nbsp;in&nbsp;computing&nbsp;the&nbsp;score&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mz_q&nbsp;(None&nbsp;or&nbsp;float)]&nbsp;--&nbsp;if&nbsp;specified,&nbsp;the&nbsp;query&nbsp;m/z&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[rt_q&nbsp;(None&nbsp;or&nbsp;float)]&nbsp;--&nbsp;if&nbsp;specified,&nbsp;the&nbsp;query&nbsp;retention&nbsp;time&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ccs_q&nbsp;(None&nbsp;or&nbsp;float)]&nbsp;--&nbsp;if&nbsp;specified,&nbsp;the&nbsp;query&nbsp;CCS&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mz_q&nbsp;(None&nbsp;or&nbsp;float)]&nbsp;--&nbsp;if&nbsp;specified,&nbsp;the&nbsp;m/z&nbsp;of&nbsp;a&nbsp;potential&nbsp;match&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[rt_q&nbsp;(None&nbsp;or&nbsp;float)]&nbsp;--&nbsp;if&nbsp;specified,&nbsp;the&nbsp;retention&nbsp;time&nbsp;of&nbsp;a&nbsp;potential&nbsp;match&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ccs_q&nbsp;(None&nbsp;or&nbsp;float)]&nbsp;--&nbsp;if&nbsp;specified,&nbsp;the&nbsp;CCS&nbsp;of&nbsp;a&nbsp;potential&nbsp;match&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;[optional,&nbsp;default='l2']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(float)&nbsp;--&nbsp;score&nbsp;(higher&nbsp;=&nbsp;more&nbsp;confidence&nbsp;in&nbsp;ID)</tt></dd></dl>
+ <dl><dt><a name="-id_feat_any"><strong>id_feat_any</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')</dt><dd><tt>id_feat_any<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Goes&nbsp;through&nbsp;all&nbsp;defined&nbsp;levels&nbsp;of&nbsp;identification,&nbsp;starting&nbsp;with&nbsp;the&nbsp;highest&nbsp;level,&nbsp;then&nbsp;tries&nbsp;lower&nbsp;levels&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until&nbsp;an&nbsp;identification&nbsp;or&nbsp;identifications&nbsp;are&nbsp;made<br>
@@ -89,9 +114,25 @@ RAM&nbsp;instead&nbsp;of&nbsp;on&nbsp;disk.</tt></dd></dl>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
- <dl><dt><a name="-id_feat_meas_mz_rt_ccs"><strong>id_feat_meas_mz_rt_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode)</dt><dd><tt>id_feat_theo_meas_mz_rt_ccs<br>
+ <dl><dt><a name="-id_feat_meas_mz_ccs"><strong>id_feat_meas_mz_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')</dt><dd><tt>id_feat_theo_meas_mz_ccs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;by&nbsp;matching&nbsp;a&nbsp;reference&nbsp;value&nbsp;on&nbsp;m/z,&nbsp;and&nbsp;CCS&nbsp;within&nbsp;tolerances<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
+ <dl><dt><a name="-id_feat_meas_mz_rt_ccs"><strong>id_feat_meas_mz_rt_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')</dt><dd><tt>id_feat_theo_meas_mz_rt_ccs<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;by&nbsp;matching&nbsp;a&nbsp;reference&nbsp;value&nbsp;on&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;CCS&nbsp;within&nbsp;tolerances<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
@@ -103,9 +144,10 @@ RAM&nbsp;instead&nbsp;of&nbsp;on&nbsp;disk.</tt></dd></dl>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
- <dl><dt><a name="-id_feat_theo_mz"><strong>id_feat_theo_mz</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode)</dt><dd><tt>id_feat_theo_mz<br>
+ <dl><dt><a name="-id_feat_theo_mz"><strong>id_feat_theo_mz</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm=None)</dt><dd><tt>id_feat_theo_mz<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;theoretical&nbsp;m/z<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
@@ -117,9 +159,10 @@ RAM&nbsp;instead&nbsp;of&nbsp;on&nbsp;disk.</tt></dd></dl>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(None)]&nbsp;--&nbsp;NOT&nbsp;USED&nbsp;just&nbsp;included&nbsp;to&nbsp;maintain&nbsp;the&nbsp;same&nbsp;interface&nbsp;as&nbsp;the&nbsp;other&nbsp;id&nbsp;functions<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
- <dl><dt><a name="-id_feat_theo_mz_ccs"><strong>id_feat_theo_mz_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode)</dt><dd><tt>id_feat_theo_mz_ccs<br>
+ <dl><dt><a name="-id_feat_theo_mz_ccs"><strong>id_feat_theo_mz_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')</dt><dd><tt>id_feat_theo_mz_ccs<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;theoretical&nbsp;m/z&nbsp;and&nbsp;CCS<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
@@ -131,7 +174,15 @@ RAM&nbsp;instead&nbsp;of&nbsp;on&nbsp;disk.</tt></dd></dl>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
-</td></tr></table>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>sqrt</strong> = &lt;ufunc 'sqrt'&gt;</td></tr></table>
 </body></html>
