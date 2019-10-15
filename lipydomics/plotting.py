@@ -84,7 +84,7 @@ barplot_feature_bygroup
 
         ttl = 'mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz, rt, ccs)
         ttl += '\n{} ({})'.format(put_id, put_lvl)
-        ax.set_title(ttl, fontsize=8)
+        ax.set_title(ttl, fontsize=6, y=1.075)
 
         plt.tight_layout()
         plt.savefig(fig_path, dpi=300, bbox_inches='tight')
