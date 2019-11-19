@@ -15,7 +15,8 @@ import os
 
 
 from lipydomics.test.data import (
-    dataset_init_mock1, dataset_normalize_mock1, dataset_getgroup_mock1, dataset_save_load_bin_mock1
+    dataset_init_mock1, dataset_normalize_mock1, dataset_getgroup_mock1, dataset_assign_groups_using_replicates_real1,
+    dataset_save_load_bin_mock1
 )
 from lipydomics.test.stats import (
     addanovap_mock1, addanovap_real1, addpca3_mock1, addpca3_real1, addplsda_mock1, addplsda_3groups_mock1, 
@@ -40,6 +41,7 @@ run_all_tests
         dataset_init_mock1,
         dataset_normalize_mock1,
         dataset_getgroup_mock1,
+        dataset_assign_groups_using_replicates_real1,
         dataset_save_load_bin_mock1,
         # test/stats
         addanovap_mock1,
