@@ -51,6 +51,10 @@ barplot_feature_bygroup
     # go through each matched feature and generate a plot
     for i in found_feat:
         mz, rt, ccs = dataset.labels[i]
+        put_id, put_lvl = dataset.feat_ids[i], dataset.feat_id_levels[i]
+        if type(put_id) == list:
+            put_id = put_id[0] 
+
         # generate a filename
         if normed:
                 nrm = 'normed'
@@ -75,10 +79,16 @@ barplot_feature_bygroup
         for d in ['top', 'right']:
             ax.spines[d].set_visible(False)
         ax.set_ylabel('intensity')
-        ax.set_title('mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz, rt, ccs), fontsize=8, fontweight='bold')
+        
+        ax.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+
+        ttl = 'mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz, rt, ccs)
+        ttl += '\n{} ({})'.format(put_id, put_lvl)
+        ax.set_title(ttl, fontsize=6, y=1.075)
 
         plt.tight_layout()
         plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+        plt.close()
 
 
 def scatter_pca3_projections_bygroup(dataset, group_names, img_dir, normed=False):
@@ -111,10 +121,16 @@ scatter_pca3_projections_bygroup
     ax.axvline(lw=0.5, c='k', zorder=0)
     ax.axhline(lw=0.5, c='k', zorder=0)
 
-    for group_name, c in zip(group_names, ['r', 'b', '#ffa600', 'purple', 'green', 'm']):
+    d = dataset.stats['PCA3_{}_projections_{}'.format('-'.join(group_names), nrm)]
+    si = []
+    i = 0
+    for gn in group_names:
+        l = len(dataset.group_indices[gn])
+        si.append(len(dataset.group_indices[gn]) + i)
+        i += l
 
-        d = np.array([dataset.stats['PCA3_{}_projections_{}'.format('-'.join(group_names), nrm)][i][:2] for i in dataset.group_indices[group_name]]).T
-        ax.scatter(*d, marker='.', s=24, c=c, label=group_name)
+    for dg, c, gn in zip(np.split(d, si), ['r', 'b', '#ffa600', 'purple', 'green', 'm'], group_names):
+        ax.scatter(*dg.T[:2], marker='.', s=24, c=c, label=gn)
 
     for d in ['top', 'right', 'bottom', 'left']:
         ax.spines[d].set_visible(False)
@@ -128,6 +144,7 @@ scatter_pca3_projections_bygroup
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.close()
 
 
 def scatter_plsda_projections_bygroup(dataset, group_names, img_dir, normed=False):
@@ -164,10 +181,12 @@ scatter_plsda_projections_bygroup
     ax.axvline(lw=0.5, c='k', zorder=0)
     ax.axhline(lw=0.5, c='k', zorder=0)
 
-    for group_name, c in zip(group_names, ['r', 'b', '#ffa600', 'purple', 'green', 'm']):
-
-        d = np.array([dataset.stats['PLS-DA_{}_projections_{}'.format('-'.join(group_names), nrm)][i] for i in dataset.group_indices[group_name]]).T
-        ax.scatter(*d, marker='.', s=24, c=c, label=group_name)
+    #get the projections, split into groups A and B
+    d = dataset.stats['PLS-DA_{}_projections_{}'.format('-'.join(group_names), nrm)]
+    d_A = d[:len(dataset.group_indices[group_names[0]])]
+    d_B = d[len(dataset.group_indices[group_names[0]]):]
+    ax.scatter(*d_A.T, marker='.', s=24, c='r', label=group_names[0])
+    ax.scatter(*d_B.T, marker='.', s=24, c='b', label=group_names[1])
 
     for d in ['top', 'right', 'bottom', 'left']:
         ax.spines[d].set_visible(False)
@@ -181,6 +200,7 @@ scatter_plsda_projections_bygroup
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.close()
 
 
 def splot_plsda_pcorr_bygroup(dataset, group_names, img_dir, normed=False):
@@ -208,7 +228,6 @@ splot_plsda_pcorr_bygroup
     fig_name = 'S-Plot_{}_{}.png'.format('-'.join(group_names), nrm)
     fig_path = os.path.join(img_dir, fig_name)
 
-    
     # get the data
     x = dataset.stats['PLS-DA_{}_loadings_{}'.format('-'.join(group_names), nrm)].T[0]
     y = dataset.stats['2-group-corr_{}_{}'.format('-'.join(group_names), nrm)]
@@ -238,4 +257,5 @@ splot_plsda_pcorr_bygroup
 
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.close()
 
