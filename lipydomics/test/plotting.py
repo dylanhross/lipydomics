@@ -140,7 +140,7 @@ splot_plsda_pcorr_bygroup_mock1
     add_2group_corr(dset, group_names, normed=True)
 
     img_dir = os.path.dirname(__file__)
-    img_path = os.path.join(img_dir, 'S-plot_{}_normed.png'.format('-'.join(group_names)))
+    img_path = os.path.join(img_dir, 'S-Plot_{}_normed.png'.format('-'.join(group_names)))
 
     splot_plsda_pcorr_bygroup(dset, group_names, img_dir, normed=True)
     if not os.path.isfile(img_path):
