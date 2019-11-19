@@ -112,6 +112,28 @@ Dataset.assign_groups
         for group_name in group_indices:
             self.group_indices[group_name] = group_indices[group_name]
 
+    def assign_groups_with_replicates(self, groups, n_replicates):
+        """
+Dataset.assign_groups_with_replicates
+    description:
+        Assign group identities to sample columns using a list of group names and number of replicates in each group.
+        This method should ideally be applied to label all samples and the number of groups * number of replicates
+        should be equal to the number of sample columns, BUT this is not enforced. A dictionary reflecting the group
+        assignments (in order of the group names provided and with the specified number of replicates in each group) is
+        produced and passed on to Dataset.assign_groups to actually make the group assignments
+    parameters:
+        groups (list(str)) -- list of group names
+        n_replicates (int) -- number of samples in each group
+"""
+        group_indices = {}
+        i = 0
+        for group in groups:
+            group_indices[group] = []
+            for j in range(n_replicates):
+                group_indices[group].append(i)
+                i += 1
+        self.assign_groups(group_indices)
+
     def get_data_bygroup(self, group_names, normed=False):
         """
 Dataset.get_data_bygroup

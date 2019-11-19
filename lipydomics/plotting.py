@@ -51,7 +51,11 @@ barplot_feature_bygroup
     # go through each matched feature and generate a plot
     for i in found_feat:
         mz, rt, ccs = dataset.labels[i]
-        put_id, put_lvl = dataset.feat_ids[i], dataset.feat_id_levels[i]
+        # check for identifications first
+        if dataset.feat_ids is not None:
+            put_id, put_lvl = dataset.feat_ids[i], dataset.feat_id_levels[i]
+        else:
+            put_id, put_lvl = '', ''
         if type(put_id) == list:
             put_id = put_id[0] 
 

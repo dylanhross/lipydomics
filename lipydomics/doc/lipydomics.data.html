@@ -97,6 +97,17 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_indices&nbsp;(dict(str:list(int)))&nbsp;--&nbsp;dictionary&nbsp;of&nbsp;group&nbsp;names&nbsp;mapped&nbsp;to&nbsp;the&nbsp;indices&nbsp;of&nbsp;sample&nbsp;columns&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;belonging&nbsp;to&nbsp;each&nbsp;group</tt></dd></dl>
 
+<dl><dt><a name="Dataset-assign_groups_with_replicates"><strong>assign_groups_with_replicates</strong></a>(self, groups, n_replicates)</dt><dd><tt><a href="#Dataset">Dataset</a>.assign_groups_with_replicates<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assign&nbsp;group&nbsp;identities&nbsp;to&nbsp;sample&nbsp;columns&nbsp;using&nbsp;a&nbsp;list&nbsp;of&nbsp;group&nbsp;names&nbsp;and&nbsp;number&nbsp;of&nbsp;replicates&nbsp;in&nbsp;each&nbsp;group.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;method&nbsp;should&nbsp;ideally&nbsp;be&nbsp;applied&nbsp;to&nbsp;label&nbsp;all&nbsp;samples&nbsp;and&nbsp;the&nbsp;number&nbsp;of&nbsp;groups&nbsp;*&nbsp;number&nbsp;of&nbsp;replicates<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;should&nbsp;be&nbsp;equal&nbsp;to&nbsp;the&nbsp;number&nbsp;of&nbsp;sample&nbsp;columns,&nbsp;BUT&nbsp;this&nbsp;is&nbsp;not&nbsp;enforced.&nbsp;A&nbsp;dictionary&nbsp;reflecting&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assignments&nbsp;(in&nbsp;order&nbsp;of&nbsp;the&nbsp;group&nbsp;names&nbsp;provided&nbsp;and&nbsp;with&nbsp;the&nbsp;specified&nbsp;number&nbsp;of&nbsp;replicates&nbsp;in&nbsp;each&nbsp;group)&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;produced&nbsp;and&nbsp;passed&nbsp;on&nbsp;to&nbsp;<a href="#Dataset">Dataset</a>.assign_groups&nbsp;to&nbsp;actually&nbsp;make&nbsp;the&nbsp;group&nbsp;assignments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groups&nbsp;(list(str))&nbsp;--&nbsp;list&nbsp;of&nbsp;group&nbsp;names<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_replicates&nbsp;(int)&nbsp;--&nbsp;number&nbsp;of&nbsp;samples&nbsp;in&nbsp;each&nbsp;group</tt></dd></dl>
+
 <dl><dt><a name="Dataset-get_data_bygroup"><strong>get_data_bygroup</strong></a>(self, group_names, normed=False)</dt><dd><tt><a href="#Dataset">Dataset</a>.get_data_bygroup<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;a&nbsp;subset&nbsp;(or&nbsp;multiple&nbsp;subsets)&nbsp;of&nbsp;the&nbsp;dataset&nbsp;as&nbsp;defined&nbsp;by&nbsp;group&nbsp;names.&nbsp;The&nbsp;group&nbsp;indices&nbsp;must&nbsp;be&nbsp;<br>

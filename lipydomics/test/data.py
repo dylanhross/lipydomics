@@ -64,6 +64,34 @@ dataset_getgroup_mock1
     return True
 
 
+def dataset_assign_groups_using_replicates_real1():
+    """
+dataset_assign_groups_using_replicates_real1
+    description:
+        Loads the real data example from .csv then uses Dataset.assign_groups_and_replicates to assign groups and checks
+        that the indices are correct.
+
+        Test fails if Dataset.group_indices is not set as expected.
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    dset.assign_groups_with_replicates(['Par', 'Dap2', 'Dal2', 'Van4', 'Van8'], 4)
+    group_indices = {
+        'Par': [0, 1, 2, 3],
+        'Dap2': [4, 5, 6, 7],
+        'Dal2': [8, 9, 10, 11],
+        'Van4': [12, 13, 14, 15],
+        'Van8': [16, 17, 18, 19]
+    }
+    for group in dset.group_indices.keys():
+        if dset.group_indices[group] != group_indices[group]:
+            # indices are not the same
+            return False
+    # no group index mismatches were found
+    return True
+
+
 def dataset_save_load_bin_mock1():
     """
 dataset_save_load_bin_mock1
@@ -72,7 +100,7 @@ dataset_save_load_bin_mock1
         format. The binary file is then reloaded and presence of the groups and normalized data is verified.
 
         Test fails if there are any errors, if the .pickle file does not get produced, or if the reloaded Dataset does
-        not have the coorrect attributes. 
+        not have the correct attributes.
     returns:
         (bool) -- test pass (True) or fail (False)
 """
