@@ -110,7 +110,7 @@ manage_groups
 
     if option == "1":
         print("Please provide a name for a group and its indices in order of name > starting index > ending index."
-              "\n\t- group name should not contain spaces\n\t- indices start at 0\n\t- example: 'A 1 3'")
+              "\n\t* group name should not contain spaces\n\t* indices start at 0\n\t* example: 'A 1 3'")
         group = input('> ')
         group = group.split()
         name = group[0]
@@ -251,7 +251,7 @@ manage_statistics
     print('Managing statistics... What would you like to do?')
     print("\t1. Compute Statistics")
     print("\t2. View Statistics")
-    print("\t3. Download CSV file of computed Statistics")
+    print("\t3. Export .csv File of Computed Statistics")
     print('\t"back" to go back')
     option = input('> ')
 
@@ -273,10 +273,11 @@ manage_statistics
                 if dset.normed_intensities is None:
                     print('! ERROR: No normalization has been performed yet')
                     return False
-            print('Please enter group names for this analysis, separated by spaces')
+            print('Please enter group names to use in this analysis, separated by spaces')
             groups = input('> ').split()
             try:
                 stats_f_map[opt2](dset, groups, normed=norm)
+                print('! INFO: Applied new statistical analysis using groups: {}'.format(groups))
             except ValueError:
                 print('! ERROR: Unable to perform statistical analysis, check group names and try again')
         elif opt2 == 'back':
@@ -286,9 +287,18 @@ manage_statistics
         return False
 
     elif option == '2':
+        print(dset.stats)
         return False
 
     elif option == '3':
+        print('Please enter the path to save the exported statics file (.csv) under.')
+        export_path = input('> ')
+        try:
+            pd.DataFrame.from_dict(dset.stats).to_csv(export_path)
+            print('! INFO: Exported statistic to file: "{}"'.format(export_path))
+        except Exception as e:
+            #print(e)
+            print('! ERROR: Failed to export statistics to file: "{}"'.format(export_path))
         return False
 
     elif option == 'back':
@@ -297,58 +307,6 @@ manage_statistics
     else:
         print('! ERROR: unrecognized option: "{}"'.format(option))
         return False
-
-
-"""if option == "1":
-                print(">> What would you like to do?")
-                print("1. Anova-P")
-                print("2. PCA3")
-                print("3. PLS-DA")
-                print("4. Two Group Correlation")
-                option = input()
-                if option == "b":
-                    continue
-                print(">> Which groups would you like to perform chosen Statistic on?")
-                group = input()
-                print(">> Would you like to use normalized data? (y/n)")
-                norm = input()
-                if norm == "y":
-                    norm = True
-                else:
-                    norm = False
-                if group == "b":
-                    continue
-                group = group.split()
-                if option == "1":
-                    try:
-                        add_anova_p(data, group, norm)
-                        print(">> Statistic added successfully")
-                    except ValueError:
-                        print(">> Something went wrong")
-                if option == "2":
-                    try:aaaa
-                        add_pca3(data, group, norm)
-                        print(">> Statistic added successfully")
-                    except ValueError:
-                        print(">> Something went wrong")
-                if option == "3":
-                    try:
-                        add_plsda(data, group, norm)
-                        print(">> Statistic added successfully")
-                    except ValueError:
-                        print(">> Something went wrong")
-                if option == "4":
-                    try:
-                        add_2group_corr(data, group, norm)
-                        print(">> Statistic added successfully")
-                    except ValueError:
-                        print(">> Something went wrong")
-            elif option == "2":
-                print(data.stats)
-            elif option == "3":
-                path = ""
-                df = pd.DataFrame.from_dict(data.stats)
-                export = df.to_csv(r'C:/Users/narsi/Desktop/results.csv')"""
 
 
 def main():
@@ -379,8 +337,8 @@ main
         print("\t5. Lipid Identification")
         print("\t6. Normalize Intensities")
         print("\t7. Overview of Dataset")
-        print("\t8. Download current data as CSV")
-        print("\t9. Save current Dataset")
+        print("\t8. Export Current Dataset to Spreadsheet")
+        print("\t9. Save Current Dataset to File")
         print('\t"exit" to quit the interface')
         option = input('> ')
         # Manage groups
@@ -407,7 +365,14 @@ main
         elif option == '8':
             pass
         elif option == '9':
-            pass
+            print("Saving Current Dataset to File... Please enter the full path and file name to save the Dataset "
+                  "under.\n\t* .pickle file\n\t* no spaces in path)\n\texample: 'jang_ho/191120_bacterial_pos.pickle'")
+            pickle_path = input('> ')
+            try:
+                data.save_bin(pickle_path)
+                print('! INFO: Dataset saved to file: "{}"'.format(pickle_path))
+            except:
+                print('! ERROR: Unable to save Dataset to file: "{}"'.format(pickle_path))
         elif option == 'exit':
             exit()
         else:
@@ -486,61 +451,7 @@ main
                 export_csv = filtered.to_csv('results.csv',
                                              index=None, header=False)
 
-        elif option == "3":
-            print("1. Compute Statistics")
-            print("2. View Statistics")
-            print("3. Download CSV file of computed Statistics")
-            option = input()
-            if option == "1":
-                print(">> What would you like to do?")
-                print("1. Anova-P")
-                print("2. PCA3")
-                print("3. PLS-DA")
-                print("4. Two Group Correlation")
-                option = input()
-                if option == "b":
-                    continue
-                print(">> Which groups would you like to perform chosen Statistic on?")
-                group = input()
-                print(">> Would you like to use normalized data? (y/n)")
-                norm = input()
-                if norm == "y":
-                    norm = True
-                else:
-                    norm = False
-                if group == "b":
-                    continue
-                group = group.split()
-                if option == "1":
-                    try:
-                        add_anova_p(data, group, norm)
-                        print(">> Statistic added successfully")
-                    except ValueError:
-                        print(">> Something went wrong")
-                if option == "2":
-                    try:aaaa
-                        add_pca3(data, group, norm)
-                        print(">> Statistic added successfully")
-                    except ValueError:
-                        print(">> Something went wrong")
-                if option == "3":
-                    try:
-                        add_plsda(data, group, norm)
-                        print(">> Statistic added successfully")
-                    except ValueError:
-                        print(">> Something went wrong")
-                if option == "4":
-                    try:
-                        add_2group_corr(data, group, norm)
-                        print(">> Statistic added successfully")
-                    except ValueError:
-                        print(">> Something went wrong")
-            elif option == "2":
-                print(data.stats)
-            elif option == "3":
-                path = ""
-                df = pd.DataFrame.from_dict(data.stats)
-                export = df.to_csv(r'C:/Users/narsi/Desktop/results.csv')
+        
         elif option == "4":
             print("1. Bar plot feature by group")
             print("2. Scatter PCA3 Projections by group")
@@ -643,8 +554,7 @@ main
                 except ValueError:
                     print("Something went wrong")
 
-        elif option == "7":
-            print(data)
+
 
         elif option == "8":
             print("Where would you like to save?")
@@ -686,15 +596,7 @@ main
             identification_df = pd.concat([level_df, iden_df], axis=1, ignore_index=True, sort=False)
             identification_df.to_excel(writer, sheet_name='Identification')
             writer.save()
-        elif option == "9":
-            print("Where do you want to save your data set?")
-            path = input()
-            if path == "b":
-                continue
-            data.save_bin(path)
-            print("File saved successfully")
-        elif option == "exit":
-            c = False
+        
             
 """
 
