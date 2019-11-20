@@ -1,118 +1,224 @@
-from data import Dataset
-import stats
-import plotting
-import identification
+"""
+    lipydomics/interactive.py
+    Jang Ho Cho
+
+    description:
+
+"""
+
+
 import pandas as pd
 import csv
 import numpy as np
-import sys
+import os
+
+from lipydomics.data import Dataset
+from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr
+from lipydomics.plotting import (
+    barplot_feature_bygroup, scatter_pca3_projections_bygroup, scatter_plsda_projections_bygroup,
+    splot_plsda_pcorr_bygroup
+)
+from lipydomics.identification import add_feature_ids
+
+
+def load_dset():
+    """
+load_dset
+    description:
+        Prompts the user with options to load a lipydomics Dataset instance, either a new one from a .csv file or an
+        existing one from .pickle file. Returns the loaded instance or None on any sort of failure. There is also a
+        hidden exit option that will completely stop execution.
+        (if None is returned, this function is called again until a Dataset instance is returned)
+    returns:
+        (lipydomics.data.Dataset or None) -- lipidomics dataset instance
+"""
+    dset = None
+    print('\nWhat would you like to do?')
+    print('\t1. Make a new Dataset')
+    print('\t2. Load a previous Dataset')
+    option = input('> ')
+
+    if option == '1':
+        print('Please enter the path to the csv file you want to work with.')
+        csv_fname = input('> ')
+        # validate the csv file exists
+        if not os.path.isfile(csv_fname):
+            print('! ERROR: Make sure the path specified is correct and the file exists.')
+            return None
+        # load the Dataset from .csv file
+        dset = Dataset(csv_fname)
+        # try to automatically assign headers
+        print('Would you like to automatically assign groups from headers? (y/n)')
+        ans = input('> ')
+        if ans == 'y':
+            try:
+                with open(csv_fname, newline='') as f:
+                    reader = csv.reader(f)
+                    header = next(reader)
+                header = header[3:]
+                group_map = {}
+                for i in range(len(header)):
+                    if header[i] not in group_map:
+                        group_map[header[i]] = [i]
+                    else:
+                        group_map[header[i]] = group_map[header[i]] + [i]
+                dset.assign_groups(group_map)
+            except:
+                print('! ERROR: Unable to automatically assign groups from headers.')
+                # reload the Dataset just in case
+                dset = Dataset(csv_fname)
+
+    elif option == '2':
+        print('Please enter the path to the pickle file you want to load.')
+        pickle_fname = input('> ')
+        if not os.path.isfile(pickle_fname):
+            print('! ERROR: Make sure the path specified is correct and the file exists.')
+            return None
+        return Dataset.load_bin(pickle_fname)
+
+    # exit option not listed
+    elif option == 'exit':
+        exit()
+
+    return dset
+
+
+def manage_groups(dset):
+    """
+manage_groups
+    description:
+        Prompts the user with options to manage group assignments on the Dataset instance:
+            - Assign indices to a group
+            - View assigned group indices
+            - Get data by group
+        Returns a boolean indicating whether the user is finished with assigning groups.
+        (this function gets called again if False is returned)
+    parameters:
+        dset (lipydomics.data.Dataset) -- lipidomics dataset instance
+    returns:
+        (bool) -- finished managing groups
+"""
+    print('Managing groups... What would you like to do?')
+    print("\t1. Assign group")
+    print("\t2. View assigned groups")
+    print("\t3. Get data by group(s)")
+    print('\t"back" to go back')
+    option = input('> ')
+
+    if option == "1":
+        print("Please provide a name for a group and its indices in order of name > starting index > ending index."
+              "\n\t- group name should not contain spaces\n\t- indices start at 0\n\t- example: 'A 1 3'")
+        group = input('> ')
+        group = group.split()
+        name = group[0]
+        indices = [_ for _ in range(int(group[1]), int(group[2]) + 1)]
+        try:
+            dset.assign_groups({name: indices})
+            print('! INFO: Assigned indices: {} to group: "{}"'.format(dset.group_indices[name], name))
+        except ValueError:
+            print("! ERROR: Failed to assign group, please check your formatting and try again")
+
+    elif option == "2":
+        for group in dset.group_indices:
+            print('\t"{}": {}'.format(group, dset.group_indices[group]))
+        return False
+
+    elif option == "3":
+        print("Which group would you like to view?")
+        name = input('> ')
+        print(dset.get_data_bygroup(name))
+        return False
+
+    elif option == 'back':
+        return True
+
+    else:
+        print('! ERROR: unrecognized option: "{}"'.format(option))
+        return False
+
+
+def filter_d(mzs, rts, ccss, data):
+    """
+filter_d
+    description:
+
+    parameters:
+        mzs () --
+        rts () --
+        ccss () --
+        data () --
+    returns:
+        () --
+"""
+    filtered = data[(data[0] < int(mzs[0]) + int(mzs[1])) & (data[0] > int(mzs[0]) - int(mzs[1])) &
+                    (data[1] < int(rts[0]) + int(rts[1])) & (data[1] > int(rts[0]) - int(rts[1])) &
+                    (data[2] < int(ccss[0]) + int(ccss[1])) & (data[2] > int(ccss[0]) - int(ccss[1]))]
+    return filtered
+
 
 
 def main():
-    print("1. Make a new Dataset")
-    print("2. Load previous Dataset")
-    option = input()
-    c = True
+    """
+main
+    description:
 
-    def filter_d(mzs, rts, ccss, data):
-        filtered = data[(data[0] < int(mzs[0]) + int(mzs[1])) & (data[0] > int(mzs[0]) - int(mzs[1])) &
-                        (data[1] < int(rts[0]) + int(rts[1])) & (data[1] > int(rts[0]) - int(rts[1])) &
-                        (data[2] < int(ccss[0]) + int(ccss[1])) & (data[2] > int(ccss[0]) - int(ccss[1]))]
-        return filtered
+    parameters:
+        () -- 
+"""
+    # keep retrying to load the Dataset until it works (or the exit command happens)
+    dset = load_dset()
+    while dset is None:
+        dset = load_dset()
+    print(dset)
 
-    if option == "1":
-        print("Please enter the path of the csv file you want to work with: ")
-        file = input()
-        try:
-            print("Does this file have headers? y/n")
-            ans = input()
-            if ans == "y":
-                print("Would you like to auto-make groups? (y/n)")
-                ans = input()
-                if ans == "y":
-                    with open(file, newline='') as f:
-                        reader = csv.reader(f)
-                        header = next(reader)
-                    header = header[3:]
-                    group_map = {}
-                    for i in range(len(header)):
-                        if header[i] not in group_map:
-                            group_map[header[i]] = [i]
-                        else:
-                            group_map[header[i]] = group_map[header[i]] + [i]
-                    data = Dataset(file)
-                    data.assign_groups(group_map)
-                else:
-                    data = Dataset(file)
-            else:
-                data = Dataset(file)
-            print("Data loaded successfully")
-        except IOError:
-            print(">> Error. Make sure the path specified is correct and the file exists")
-            c = False
-    elif option == "2":
-        print("Please provide the path of data file you want to load")
-        path = input()
-        try:
-            data = Dataset.load_bin(path)
-            print("Data loaded successfully")
-        except IOError:
-            print(">> Error. Make sure the path specified is correct and the file exists")
-            c = False
-    if c:
-        print(data)
-        label_df = pd.DataFrame(data.labels)
-        int_df = pd.DataFrame(data.intensities)
-        df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
-    while c:
-        print("What would you like to do with the data? ")
-        print("1. Manage groups")
-        print("2. Filter Data")
-        print("3. Manage Statistics")
-        print("4. Make Plots")
-        print("5. Identification")
-        print("6. Normalize")
-        print("7. Overview of Dataset")
-        print("8. Download current data as CSV")
-        print("9. Save current Dataset")
-        print("'exit' to quit the interface")
-        option = input()
-        if option == "1":
-            print(" 1. Assign Groups")
-            print(" 2. View Assigned Groups")
-            print(" 3. Get Data By Group(s)")
-            option = input()
-            if option == "b":
-                continue
-            if option == "1":
-                cont = True
-                while cont:
-                    print(">> Please provide a name for a group and its indices in order of Name > Starting index > "
-                          "Ending index.\nExample: 'A 1 3'")
-                    group = input()
-                    if group == "b":
-                        break
-                    group = group.split()
-                    d = {group[0]: range(int(group[1]), int(group[2]) + 1)}
-                    try:
-                        data.assign_groups(d)
-                        print("     >> Group assigned successfully")
-                        print("     >> Would you like to assign more groups? (y/n)")
-                        a = input()
-                        if a == "n":
-                            cont = False
-                    except ValueError:
-                        print(
-                            ">> Error. Make sure the provided indices are correct and the format of the input is"
-                            " like the provided example")
+    # create a pandas DataFrame
+    label_df = pd.DataFrame(dset.labels)
+    int_df = pd.DataFrame(dset.intensities)
+    df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
 
-            if option == "2":
-                print(" " + data.group_indices)
+    # main execution loop
+    while True:
+        print("\nWhat would you like to do with the data? ")
+        print("\t1. Manage groups")
+        print("\t2. Filter Data")
+        print("\t3. Manage Statistics")
+        print("\t4. Make Plots")
+        print("\t5. Identification")
+        print("\t6. Normalize")
+        print("\t7. Overview of Dataset")
+        print("\t8. Download current data as CSV")
+        print("\t9. Save current Dataset")
+        print('\t"exit" to quit the interface')
+        option = input('> ')
+        # Manage groups
+        if option == '1':
+            finished = manage_groups(dset)
+            while not finished:
+                finished = manage_groups(dset)
+        elif option == '2':
+            pass
+        elif option == '3':
+            pass
+        elif option == '4':
+            pass
+        elif option == '5':
+            pass
+        elif option == '6':
+            pass
+        elif option == '7':
+            pass
+        elif option == '8':
+            pass
+        elif option == '9':
+            pass
+        elif option == 'exit':
+            exit()
+        else:
+            print('! ERROR: Unrecognized option: "{}"'.format(option))
 
-            if option == "3":
-                print(">> Which group would you like to view?")
-                name = input()
-                print(data.get_data_bygroup(name))
+
+"""
+        
 
         elif option == "2":
             print("1. Single query")
@@ -210,25 +316,25 @@ def main():
                 group = group.split()
                 if option == "1":
                     try:
-                        stats.add_anova_p(data, group, norm)
+                        add_anova_p(data, group, norm)
                         print(">> Statistic added successfully")
                     except ValueError:
                         print(">> Something went wrong")
                 if option == "2":
                     try:
-                        stats.add_pca3(data, group, norm)
+                        add_pca3(data, group, norm)
                         print(">> Statistic added successfully")
                     except ValueError:
                         print(">> Something went wrong")
                 if option == "3":
                     try:
-                        stats.add_plsda(data, group, norm)
+                        add_plsda(data, group, norm)
                         print(">> Statistic added successfully")
                     except ValueError:
                         print(">> Something went wrong")
                 if option == "4":
                     try:
-                        stats.add_2group_corr(data, group, norm)
+                        add_2group_corr(data, group, norm)
                         print(">> Statistic added successfully")
                     except ValueError:
                         print(">> Something went wrong")
@@ -237,7 +343,7 @@ def main():
             elif option == "3":
                 path = ""
                 df = pd.DataFrame.from_dict(data.stats)
-                export = df.to_csv(r'C:\Users\narsi\Desktop\results.csv')
+                export = df.to_csv(r'C:/Users/narsi/Desktop/results.csv')
         elif option == "4":
             print("1. Bar plot feature by group")
             print("2. Scatter PCA3 Projections by group")
@@ -264,20 +370,20 @@ def main():
                 print(">> Feature Range? (Type M/Z RT CCS in this order)")
                 feature = input()
                 feature = list(map(float, feature.split()))
-                plotting.barplot_feature_bygroup(data, group, path, norm, feature)
+                barplot_feature_bygroup(data, group, path, norm, feature)
             if option == "2":
                 try:
-                    plotting.scatter_pca3_projections_bygroup(data, group, path, norm)
+                    scatter_pca3_projections_bygroup(data, group, path, norm)
                 except KeyError:
                     print("Statistic not yet computed")
             if option == "3":
                 try:
-                    plotting.scatter_plsda_projections_bygroup(data, group, path, norm)
+                    scatter_plsda_projections_bygroup(data, group, path, norm)
                 except KeyError:
                     print("Statistic not yet computed")
             if option == "4":
                 try:
-                    plotting.splot_plsda_pcorr_bygroup(data, group, path, norm)
+                    splot_plsda_pcorr_bygroup(data, group, path, norm)
                 except KeyError:
                     print("Statistic not yet computed")
         elif option == "5":
@@ -291,7 +397,7 @@ def main():
             if level == "b":
                 continue
             try:
-                identification.add_feature_ids(data, feature, level)
+                add_feature_ids(data, feature, level)
                 print("Identification added successfully")
             except ValueError:
                 print("Something went wrong!")
@@ -392,8 +498,11 @@ def main():
             print("File saved successfully")
         elif option == "exit":
             c = False
-
+            
+"""
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    # main not setup to accept parameters yet...
+    #main(sys.argv[1:])
+    main()
 
