@@ -29,8 +29,9 @@ load_dset
         existing one from .pickle file. Returns the loaded instance or None on any sort of failure. There is also a
         hidden exit option that will completely stop execution.
         (if None is returned, this function is called again until a Dataset instance is returned)
+        (if 'exit' is returned, main() will return None rather than actually exiting)
     returns:
-        (lipydomics.data.Dataset or None) -- lipidomics dataset instance
+        (lipydomics.data.Dataset or None or 'exit') -- lipidomics dataset instance
 """
     dset = None
     print('\nWhat would you like to do?')
@@ -81,7 +82,7 @@ load_dset
 
     # exit option not listed
     elif option == 'exit':
-        exit()
+        return 'exit'
 
     return dset
 
@@ -389,6 +390,10 @@ main
     while dset is None:
         dset = load_dset()
 
+    # instead of exiting, return None
+    if dset == 'exit':
+        return
+
     # why?
     # create a pandas DataFrame
     label_df = pd.DataFrame(dset.labels)
@@ -439,12 +444,13 @@ main
                   "under.\n\t* .pickle file\n\t* no spaces in path)\n\texample: 'jang_ho/191120_bacterial_pos.pickle'")
             pickle_path = input('> ')
             try:
-                data.save_bin(pickle_path)
+                dset.save_bin(pickle_path)
                 print('! INFO: Dataset saved to file: "{}"'.format(pickle_path))
             except:
                 print('! ERROR: Unable to save Dataset to file: "{}"'.format(pickle_path))
         elif option == 'exit':
-            exit()
+            # instead of exiting return None
+            return
         else:
             print('! ERROR: Unrecognized option: "{}"'.format(option))
 
