@@ -309,6 +309,73 @@ manage_statistics
         return False
 
 
+def make_plots(dset):
+    """
+make_plots
+    description:
+
+    parameters:
+        dset (lipydomics.data.Dataset) -- lipidomics dataset instance
+    returns:
+        (bool) -- finished making plots
+"""
+    print('Making Plots... What would you like to do?')
+    print("\t1. Bar plot feature(s) by group")
+    print("\t2. Scatter PCA3 Projections by group")
+    print("\t3. Scatter PLS-DA Projections by group")
+    print("\t4. S-Plot PLSA-DA and Pearson correlation by group")
+    print('\t"back" to go back')
+    option = input('> ')
+
+    # map the options to plotting functions
+    plots_f_map = {'1': barplot_feature_bygroup, '2': scatter_pca3_projections_bygroup,
+                   '3': scatter_plsda_projections_bygroup, '4': splot_plsda_pcorr_bygroup}
+    if option in plots_f_map:
+        print("Where would you like to save the plot? (default = current directory)")
+        plot_dir = input('> ')
+        print("Which groups would you like to plot?")
+        groups = input('> ').split()
+        print('Would you like to use normalized data? (y/N)')
+        norm = input('> ') == 'y'
+        if norm:
+            # make sure there is actually normalized data in the Dataset
+            if dset.normed_intensities is None:
+                print('! ERROR: No normalization has been performed yet')
+                return False
+        if option == '1':
+            try:
+                # get the m/z, rt, and CCS of the feature
+                print("Please enter the m/z, retention time, and CCS of the feature\n\t* separated by spaces\n\t*"
+                      " example: '345.6789 1.23 123.45'")
+                feature = input('> ').split()
+                feat = [float(f) for f in feature]
+                # get the m/z, rt, and CCS tolerance
+                print("Please enter the search tolerances for m/z, retention time, and CCS\n\t* separated by spaces"
+                      "\n\t* example: '0.05 0.5 1.0'")
+                tolerance = input('> ').split()
+                tol = [float(t) for t in tolerance]
+                plots_f_map[option](dset, groups, plot_dir, feat, normed=norm, tolerance=tol)
+                print('! INFO: Generated plot for groups: {}'.format(groups))
+            except:
+                print('! ERROR: Unable to generate plot using groups: {}'.format(groups))
+        else:
+            try:
+                plots_f_map[option](dset, groups, plot_dir, normed=norm)
+                print('! INFO: Generated plot for groups: {}'.format(groups))
+            except KeyError:
+                print('! ERROR: Required statistic(s) have not been computed for groups: {}'.format(groups))
+            except:
+                print('! ERROR: Unable to generate plot using groups: {}'.format(groups))
+        return False
+
+    elif option == 'back':
+        return True
+
+    else:
+        print('! ERROR: unrecognized option: "{}"'.format(option))
+        return False
+
+
 def main():
     """
 main
@@ -322,6 +389,7 @@ main
     while dset is None:
         dset = load_dset()
 
+    # why?
     # create a pandas DataFrame
     label_df = pd.DataFrame(dset.labels)
     int_df = pd.DataFrame(dset.intensities)
@@ -355,7 +423,9 @@ main
             while not finished:
                 finished = manage_statistics(dset)
         elif option == '4':
-            pass
+            finished = make_plots(dset)
+            while not finished:
+                finished = make_plots(dset)
         elif option == '5':
             pass
         elif option == '6':
@@ -451,49 +521,7 @@ main
                 export_csv = filtered.to_csv('results.csv',
                                              index=None, header=False)
 
-        
-        elif option == "4":
-            print("1. Bar plot feature by group")
-            print("2. Scatter PCA3 Projections by group")
-            print("3. Scatter PLS-DA Projections by group")
-            print("4. S-Plot PLSA-DA and Pearson correlation by group")
-
-            option = input()
-            if option == "b":
-                continue
-            print(">> Where would you like to save the plot?")
-            path = ""
-            print(">> Which group would you like to plot?")
-            group = input()
-            if group == "b":
-                continue
-            group = group.split()
-            print(">> Would you like to use normalized data? (y/n)")
-            norm = input()
-            if norm == "y":
-                norm = True
-            else:
-                norm = False
-            if option == "1":
-                print(">> Feature Range? (Type M/Z RT CCS in this order)")
-                feature = input()
-                feature = list(map(float, feature.split()))
-                barplot_feature_bygroup(data, group, path, norm, feature)
-            if option == "2":
-                try:
-                    scatter_pca3_projections_bygroup(data, group, path, norm)
-                except KeyError:
-                    print("Statistic not yet computed")
-            if option == "3":
-                try:
-                    scatter_plsda_projections_bygroup(data, group, path, norm)
-                except KeyError:
-                    print("Statistic not yet computed")
-            if option == "4":
-                try:
-                    splot_plsda_pcorr_bygroup(data, group, path, norm)
-                except KeyError:
-                    print("Statistic not yet computed")
+                    
         elif option == "5":
             print(">> Please type the tolerance for m/z, rt, and CCS, respectively (Ex. '0.1 0.1 0.01')")
             feature = input()
