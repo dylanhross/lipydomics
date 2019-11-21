@@ -253,7 +253,7 @@ def make_plots(dset):
     """
 make_plots
     description:
-        
+
     parameters:
         dset (lipydomics.data.Dataset) -- lipidomics dataset instance
     returns:

@@ -10,7 +10,7 @@
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/DylanRoss/Documents/GitHub/lipydomics/lipydomics/interactive.py">/Users/DylanRoss/Documents/GitHub/lipydomics/lipydomics/interactive.py</a></font></td></tr></table>
     <p><tt>lipydomics/interactive.py<br>
-Jang&nbsp;Ho&nbsp;Cho<br>
+Jang&nbsp;Ho&nbsp;Cho&nbsp;and&nbsp;Dylan&nbsp;Ross<br>
 &nbsp;<br>
 description:</tt></p>
 <p>
@@ -40,14 +40,20 @@ description:</tt></p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;--<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;finished&nbsp;filtering&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-identify_lipids"><strong>identify_lipids</strong></a>(dset)</dt><dd><tt>identify&nbsp;lipids<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;to&nbsp;perform&nbsp;lipid&nbsp;identification&nbsp;at&nbsp;a&nbsp;variety&nbsp;of&nbsp;levels&nbsp;of&nbsp;confidence<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance</tt></dd></dl>
  <dl><dt><a name="-load_dset"><strong>load_dset</strong></a>()</dt><dd><tt>load_dset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;to&nbsp;load&nbsp;a&nbsp;lipydomics&nbsp;Dataset&nbsp;instance,&nbsp;either&nbsp;a&nbsp;new&nbsp;one&nbsp;from&nbsp;a&nbsp;.csv&nbsp;file&nbsp;or&nbsp;an<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;existing&nbsp;one&nbsp;from&nbsp;.pickle&nbsp;file.&nbsp;Returns&nbsp;the&nbsp;loaded&nbsp;instance&nbsp;or&nbsp;None&nbsp;on&nbsp;any&nbsp;sort&nbsp;of&nbsp;failure.&nbsp;There&nbsp;is&nbsp;also&nbsp;a<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hidden&nbsp;exit&nbsp;option&nbsp;that&nbsp;will&nbsp;completely&nbsp;stop&nbsp;execution.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(if&nbsp;None&nbsp;is&nbsp;returned,&nbsp;this&nbsp;function&nbsp;is&nbsp;called&nbsp;again&nbsp;until&nbsp;a&nbsp;Dataset&nbsp;instance&nbsp;is&nbsp;returned)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(if&nbsp;'exit'&nbsp;is&nbsp;returned,&nbsp;<a href="#-main">main</a>()&nbsp;will&nbsp;return&nbsp;None&nbsp;rather&nbsp;than&nbsp;actually&nbsp;exiting)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(lipydomics.data.Dataset&nbsp;or&nbsp;None)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(lipydomics.data.Dataset&nbsp;or&nbsp;None&nbsp;or&nbsp;'exit')&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance</tt></dd></dl>
  <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>main<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Main&nbsp;function&nbsp;for&nbsp;interactive&nbsp;interface.&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;to&nbsp;choose&nbsp;actions&nbsp;...<br>
