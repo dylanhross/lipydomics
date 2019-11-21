@@ -1,6 +1,6 @@
 """
     lipydomics/interactive.py
-    Jang Ho Cho
+    Jang Ho Cho and Dylan Ross
 
     description:
 
@@ -46,8 +46,14 @@ load_dset
         if not os.path.isfile(csv_fname):
             print('! ERROR: Make sure the path specified is correct and the file exists.')
             return None
+        # prompt for positive or negative ESI mode
+        print('What ESI mode was used for this data? (pos/neg)')
+        esi = input('> ')
+        if esi not in ['pos', 'neg']:
+            print('! ERROR: ESI mode "{}" not recognized'.format(esi))
+            return None
         # load the Dataset from .csv file
-        dset = Dataset(csv_fname)
+        dset = Dataset(csv_fname, esi_mode=esi)
         print('! INFO: Loaded a new Dataset from .csv file: "{}"'.format(csv_fname))
         # try to automatically assign headers
         print('Would you like to automatically assign groups from headers? (y/N)')
@@ -168,73 +174,6 @@ filter_data
 
     return True
 
-    if option == "1":
-        pass
-    label_dat = data.labels
-    label_df = pd.DataFrame(label_dat)
-    if option == "1":
-        print(">> M/Z range? (Ex. '150 10'  <--- This would be 150 plus or minus 10)")
-        mz = input()
-        print(">> Retention Time range? (Ex. '1 1' <--- This would be 1 plus or minus 1)")
-        rt = input()
-        print(">> CCS range? (Ex. '150 10'  <--- This would be 150 plus or minus 10)")
-        ccs = input()
-        print(">> Which group would you like to choose? ('All' to select the whole data)")
-        group = input()
-        if group == "b":
-            pass
-        try:
-            if group == "All":
-                cur_data = pd.DataFrame(data.intensities)
-            else:
-                cur_data = data.get_data_bygroup(group)
-            int_df = pd.DataFrame(cur_data)
-            cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
-            mzs = mz.split()
-            rts = rt.split()
-            ccss = ccs.split()
-            filtered = filter_d(mzs, rts, ccss, cur_df)
-            print(filtered)
-        except ValueError:
-            print(" >> That group has not been assigned")
-
-    elif option == "2":
-        print(">> Which group would you like to choose? ('All' to select the whole data)")
-        group = input()
-        if group == "b":
-            pass
-        try:
-            if group == "All":
-                cur_data = pd.DataFrame(data.intensities)
-            else:
-                cur_data = data.get_data_bygroup(group)
-                int_df = pd.DataFrame(cur_data)
-                cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
-        except ValueError:
-            print(">> That group has not been assigned")
-        print(">> Path of the file with batch-query information")
-        path = input()
-        query = pd.read_csv(path)
-        for index, row in query.iterrows():
-            if index == 0:
-                filtered = filter_d([row["m/z"], row["m/z_tol"]], [row["rt"], row["rt_tol"]],
-                                    [row["ccs"], row["ccs_tol"]], cur_df)
-            else:
-                filtered = pd.concat([filtered,
-                                      filter_d([int(row["m/z"]), int(row["m/z_tol"])],
-                                               [row["rt"], row["rt_tol"]], [row["ccs"], row["ccs_tol"]],
-                                               cur_df)])
-    print(filtered)
-    print(">> Data filter success. Would you like to download the result as csv? (y/n)")
-    option = input()
-    if option == "y":
-        print(">> Please specify the path you want to save the csv file")
-        path = input()
-        export_csv = filtered.to_csv('results.csv',
-                                     index=None, header=False)
-
-    return True
-
 
 def manage_statistics(dset):
     """
@@ -314,7 +253,7 @@ def make_plots(dset):
     """
 make_plots
     description:
-
+        
     parameters:
         dset (lipydomics.data.Dataset) -- lipidomics dataset instance
     returns:
@@ -377,6 +316,46 @@ make_plots
         return False
 
 
+def identify_lipids(dset):
+    """
+identify lipids
+    description:
+        Prompts the user with options to perform lipid identification at a variety of levels of confidence
+    parameters:
+        dset (lipydomics.data.Dataset) -- lipidomics dataset instance
+"""
+    print("Identifying Lipids... Please enter the tolerances for m/z, retention time and CCS matching"
+          "\n\t* separated by spaces\n\t* example: '0.05 0.5 1.0'")
+    tolerance = input('> ').split()
+    tol = [float(t) for t in tolerance]
+    print("Please specify an identification level")
+    print("\t'theo_mz' - match on theoretical m/z")
+    print("\t'theo_mz_ccs' - match on theoretical m/z and CCS")
+    print("\t'meas_mz_ccs' - match on measured m/z and CCS")
+    print("\t'meas_mz_rt_ccs' - match on measured m/z, retention time, and CCS")
+    print("\t'any' - try all criteria (highest confidence first)")
+    print("\t'back' to go back")
+    option = input('> ')
+
+    if option in ['theo_mz', 'theo_mz_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
+        # make the identifications
+        try:
+            add_feature_ids(dset, tol, level=option)
+            n_identified = len([_ for _ in dset.feat_ids if type(_) == list])
+            print("! INFO: Lipid identifications added successfully ({} lipids identified)".format(n_identified))
+        except ValueError:
+            print("! ERROR: Unable to make lipid identifications")
+
+    elif option == 'back':
+        # just return None to go back
+        return
+
+    else:
+        print('! ERROR: unrecognized option: "{}"'.format(option))
+        # just return None to go back
+        return
+
+
 def main():
     """
 main
@@ -385,7 +364,7 @@ main
     parameters:
         () --
 """
-    # keep retrying to load the Dataset until it works (or the exit command happens)
+    # keep retrying to load the Dataset until it returns something
     dset = load_dset()
     while dset is None:
         dset = load_dset()
@@ -414,31 +393,39 @@ main
         print("\t9. Save Current Dataset to File")
         print('\t"exit" to quit the interface')
         option = input('> ')
-        # Manage groups
+        # Manage Groups
         if option == '1':
             finished = manage_groups(dset)
             while not finished:
                 finished = manage_groups(dset)
+        # Filter Data
         elif option == '2':
             finished = filter_data(dset)
             while not finished:
                 finished = filter_data(dset)
+        # Manage Statistics
         elif option == '3':
             finished = manage_statistics(dset)
             while not finished:
                 finished = manage_statistics(dset)
+        # Make Plots
         elif option == '4':
             finished = make_plots(dset)
             while not finished:
                 finished = make_plots(dset)
+        # Lipid Identification
         elif option == '5':
-            pass
+            identify_lipids(dset)
+        # Normalize Intensities
         elif option == '6':
             pass
+        # Overview of Dataset
         elif option == '7':
             print(dset)
+        # Export Current Dataset to Spreadsheet
         elif option == '8':
             pass
+        # Save Current Dataset to File
         elif option == '9':
             print("Saving Current Dataset to File... Please enter the full path and file name to save the Dataset "
                   "under.\n\t* .pickle file\n\t* no spaces in path)\n\texample: 'jang_ho/191120_bacterial_pos.pickle'")
@@ -456,8 +443,7 @@ main
 
 
 """
-        
-
+        # FILTER DATA
         elif option == "2":
             print("1. Single query")
             print("2. Batch query")
@@ -528,22 +514,7 @@ main
                                              index=None, header=False)
 
                     
-        elif option == "5":
-            print(">> Please type the tolerance for m/z, rt, and CCS, respectively (Ex. '0.1 0.1 0.01')")
-            feature = input()
-            if feature == "b":
-                continue
-            feature = list(map(float, feature.split()))
-            print(">> Level? (theo_mz', 'meas_mz_rt_ccs', 'any')")
-            level = input()
-            if level == "b":
-                continue
-            try:
-                add_feature_ids(data, feature, level)
-                print("Identification added successfully")
-            except ValueError:
-                print("Something went wrong!")
-
+        # NORMALIZE INTENSITIES
         elif option == "6":
             print("1. Internal")
             print("2. External")
@@ -589,7 +560,7 @@ main
                     print("Something went wrong")
 
 
-
+        # EXPORT DATA TO SPREADSHEET
         elif option == "8":
             print("Where would you like to save?")
             path = input()
