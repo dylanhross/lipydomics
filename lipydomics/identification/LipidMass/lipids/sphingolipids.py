@@ -8,7 +8,7 @@
 """
 
 
-from LipidMass.base import Sphingolipid
+from ..base import Sphingolipid
 
 
 class Cer(Sphingolipid):

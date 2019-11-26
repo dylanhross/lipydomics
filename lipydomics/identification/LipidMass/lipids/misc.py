@@ -8,7 +8,7 @@
 """
 
 
-from LipidMass.base import Lipid
+from ..base import Lipid
 
 
 class FA(Lipid):

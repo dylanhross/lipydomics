@@ -8,7 +8,7 @@
 """
 
 
-from LipidMass.base import Glycerophospholipid
+from ..base import Glycerophospholipid
 
 
 class PA(Glycerophospholipid):

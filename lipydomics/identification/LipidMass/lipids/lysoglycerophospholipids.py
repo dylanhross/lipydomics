@@ -8,7 +8,7 @@
 """
 
 
-from LipidMass.base import Lysoglycerophospholipid
+from ..base import Lysoglycerophospholipid
 
 
 class LPA(Lysoglycerophospholipid):

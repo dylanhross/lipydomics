@@ -10,7 +10,7 @@
 
 from warnings import warn
 
-from LipidMass.monoiso import formula_mass, ms_adduct_mass
+from .monoiso import formula_mass, ms_adduct_mass
 
 
 class Lipid:

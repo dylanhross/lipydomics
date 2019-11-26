@@ -7,7 +7,7 @@
         Define individual glycerolipid classes
 """
 
-from LipidMass.base import Glycerolipid
+from ..base import Glycerolipid
 
 
 class DG(Glycerolipid):
