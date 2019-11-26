@@ -25,13 +25,16 @@ barplot_feature_bygroup
         generates a bar plot of the specified feature, comparing the mean intensities of the specified groups and saves
         the image to a specified directory. The filename of the image is:
             'bar_{mz}-{rt}-{ccs}_{group_name1}-{group_name2}-{etc.}_{raw or normed}.png'
+        returns a boolean indicating whether a feature was found (and therefore a plot was generated)
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- pick groups to plot against
         img_dir (str) -- directory to save the image under
         feature (tuple(float)) -- m/z, rt, and ccs of feature
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
-        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search [optional, default=(0.01, 0.1, 1.)] 
+        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search [optional, default=(0.01, 0.1, 1.)]
+    returns:
+        (bool) -- at least one feature was found
 """
     # search for the corresponding feature
     mz_r, rt_r, ccs_r = feature
@@ -46,7 +49,7 @@ barplot_feature_bygroup
     if not found_feat:
         print('did not find a feature matching mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz_r, rt_r, ccs_r), 
               'within tolerances:', tolerance)
-        return None
+        return False
 
     # go through each matched feature and generate a plot
     for i in found_feat:
@@ -93,6 +96,8 @@ barplot_feature_bygroup
         plt.tight_layout()
         plt.savefig(fig_path, dpi=300, bbox_inches='tight')
         plt.close()
+    # if we made it here, at least one feature was found
+    return True
 
 
 def scatter_pca3_projections_bygroup(dataset, group_names, img_dir, normed=False):
