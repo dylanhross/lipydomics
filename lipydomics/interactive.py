@@ -147,30 +147,104 @@ manage_groups
         return False
 
 
+def filter_d(mzs, rts, ccss, data):
+    """ a helper function for filtering data
+        given M/Z, RT, CCS ranges and a DataFrame containing data,
+        find and returns all data within that range.
+    """
+    filtered = data[(data[0] < int(mzs[0]) + int(mzs[1])) & (data[0] > int(mzs[0]) - int(mzs[1])) &
+                    (data[1] < int(rts[0]) + int(rts[1])) & (data[1] > int(rts[0]) - int(rts[1])) &
+                    (data[2] < int(ccss[0]) + int(ccss[1])) & (data[2] > int(ccss[0]) - int(ccss[1]))]
+    return filtered
+
+
+""" To Do: S plot filter, """
 def filter_data(dset):
     """
 filter_data
     description:
         Prompts the user with options for filtering the data:
-            -
-            -
+            - The user is to provide ranges for M/Z, RT and CCS values and it let's the user download
+              a csv file containing all data matching that range.
+            - Can also take multiple ranges given a CSV file of ranges.
     parameters:
-        () --
+        dset (lipydomics.data.Dataset) -- lipidomics dataset instance
     returns:
         (bool) -- finished filtering data
 """
-    def filter_d(mzs, rts, ccss, data):
-        """ a helper function for filtering data """
-        filtered = data[(data[0] < int(mzs[0]) + int(mzs[1])) & (data[0] > int(mzs[0]) - int(mzs[1])) &
-                        (data[1] < int(rts[0]) + int(rts[1])) & (data[1] > int(rts[0]) - int(rts[1])) &
-                        (data[2] < int(ccss[0]) + int(ccss[1])) & (data[2] > int(ccss[0]) - int(ccss[1]))]
-        return filtered
-
     print('Filtering data... What would you like to do?')
     print("\t1. Single query")
     print("\t2. Batch query")
     print('\t"back" to go back')
     option = input('> ')
+    if option == "back":
+        return True
+    label_dat = dset.labels
+    label_df = pd.DataFrame(label_dat)
+    if option == "1":
+        print("Please Provide M/Z range? (Ex. '150 10'  <--- This would be 150 plus or minus 10)")
+        mz = input('> ')
+        print("Please Provide Retention Time range? (Ex. '1 1' <--- This would be 1 plus or minus 1)")
+        rt = input('> ')
+        print("Please Provide CCS range? (Ex. '150 10'  <--- This would be 150 plus or minus 10)")
+        ccs = input('> ')
+        print("Which group would you like to choose? ('All' to select the whole data)")
+        group = input('> ')
+        try:
+            if group == "All":
+                cur_data = pd.DataFrame(dset.intensities)
+            else:
+                cur_data = dset.get_data_bygroup(group)
+            int_df = pd.DataFrame(cur_data)
+            cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+            mzs = mz.split()
+            rts = rt.split()
+            ccss = ccs.split()
+            filtered = filter_d(mzs, rts, ccss, cur_df)
+        except ValueError:
+            return False
+            print("! ERROR: Failed to filter data, please check your groups and try again")
+
+    elif option == "2":
+        print("Please provide the path of the file with batch-query information")
+        path = input('> ')
+        query = pd.read_csv(path)
+        print("Which group would you like to choose? ('All' to select the whole data)")
+        group = input('> ')
+        try:
+            if group == "All":
+                cur_data = pd.DataFrame(dset.intensities)
+                cur_df = pd.concat([label_df, cur_data], axis=1, ignore_index=True, sort=False)
+            else:
+                cur_data = dset.get_data_bygroup(group)
+                int_df = pd.DataFrame(cur_data)
+                cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+        except ValueError:
+            print("! ERROR: Failed to filter data, please check your groups and try again")
+            return False
+        for index, row in query.iterrows():
+            if index == 0:
+                filtered = filter_d([row["m/z"], row["m/z_tol"]], [row["rt"], row["rt_tol"]],
+                                    [row["ccs"], row["ccs_tol"]], cur_df)
+            else:
+                filtered = pd.concat([filtered,
+                                      filter_d([int(row["m/z"]), int(row["m/z_tol"])],
+                                               [row["rt"], row["rt_tol"]], [row["ccs"], row["ccs_tol"]],
+                                               cur_df)])
+    else:
+        print('! ERROR: unrecognized option: "{}"'.format(option))
+        return False
+    print("! INFO: Successfully filtered data. Would you like to download the result as csv? (y/N)")
+    option = input('> ')
+    if option == "y":
+        print("Please specify the path you want to save the csv file")
+        path = input('> ')
+        try:
+            filtered.to_csv(path, index=None, header=False)
+            print("! INFO: Successfully downloaded the filtered data")
+        except:
+            print("! ERROR: Failed to download, please check your path and try again")
+            return False
 
     return True
 
@@ -227,7 +301,12 @@ manage_statistics
         return False
 
     elif option == '2':
-        print(dset.stats)
+        if dset.stats:
+            print("Computed statistics are:")
+            for s in dset.stats:
+                print("\t" + s + "\n")
+        else:
+            print("No statistic have been computed yet")
         return False
 
     elif option == '3':
@@ -356,6 +435,148 @@ identify lipids
         return
 
 
+def normalize_data(dset, df):
+    """
+normalize_data
+    description:
+        Prompts the user with options for normalizing the data:
+            - The user is to choose between internal and external normalization and
+              it will normalize the data within lipidomics dataset
+    parameters:
+        dset (lipydomics.data.Dataset) -- lipidomics dataset instance
+        df (Pandas DataFrame) -- DataFrame version of lipidomics dataset
+    returns:
+        (bool) -- finished normalizing data
+"""
+    print('Normalizing data... What would you like to do?')
+    print("\t1. Internal")
+    print("\t2. External")
+    print('\t"back" to go back')
+    option = input('> ')
+    if option == "1":
+        print("Please provide the feature m/z, rt and CCS respectively (Ex. 150, 1, 150)")
+        feat = input()
+        feat = feat.split()
+        print("Please type the tolerance for m/z, rt, and CCS, respectively (Ex. '0.1 0.1 0.01')")
+        tol = input()
+        tol = tol.split()
+        mzs = [int(feat[0]), int(tol[0])]
+        rts = [int(feat[1]), int(tol[1])]
+        ccses = [int(feat[2]), int(tol[2])]
+        filtered = filter_d(mzs, rts, ccses, df)
+        try:
+            max_inten = max(filtered.iloc[0][3:])
+        except:
+            print("! ERROR: Unable find matching feature.")
+            return False
+        norm = []
+        for i in range(3, len(filtered.iloc[0])):
+            norm.append(filtered.iloc[0][i] / max_inten)
+        try:
+            dset.normalize(np.asarray(norm))
+            print('! INFO: Successfully normalized')
+            return True
+        except ValueError:
+            print("! ERROR: Unable to normalize. Please check the constraints and try again.")
+            return False
+
+    elif option == "2":
+        print("Please provide a text file with the normalization values")
+        path = input()
+        norm = []
+        try:
+            with open(path) as fp:
+                line = float(fp.readline())
+                norm.append(line)
+                while line:
+                    try:
+                        line = float(fp.readline())
+                        norm.append(line)
+                    except ValueError:
+                        break
+        except IOError:
+            print("! ERROR: Unable to normalize. Please check the path and try again.")
+            return False
+        try:
+            dset.normalize(np.asarray(norm))
+            print('! INFO: Successfully normalized')
+            return True
+        except ValueError:
+            print("! ERROR: Unable to normalize. Check the file and try again.")
+            return False
+    elif option == "back":
+        return True
+    else:
+        print('! ERROR: unrecognized option: "{}"'.format(option))
+        return False
+
+
+def export(dset, df):
+    """
+    export
+        description:
+            Prompts the user to save a excel file of the current lipidomics dataset:
+                - The user specifies a path where to save the file and it creates an
+                  excel file with all the information that current lipidomics dataset
+                  has.
+        parameters:
+            dset (lipydomics.data.Dataset) -- lipidomics dataset instance
+            df (Pandas DataFrame) -- DataFrame version of lipidomics dataset
+        returns:
+            (bool) -- finished exporting data to excel file
+    """
+    print("Exporting data... Where would you like to save the file? \n\texample: 'jang_ho/results.xlsx'")
+    print('\t"back" to go back')
+    path = input('> ')
+    if path == "back":
+        return True
+    writer = pd.ExcelWriter(path, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Data')
+    for key in dset.stats:
+        stats_df = pd.DataFrame(dset.stats[key])
+        if "PCA3" in key and "loadings" in key:
+            stats_df = stats_df.transpose()
+        stats_df.to_excel(writer, sheet_name=key)
+    m = 0
+    feat_dict = {}
+    label_df = pd.DataFrame(dset.labels)
+    if dset.feat_ids:
+        for feat in dset.feat_ids:
+            if type(feat) is list:
+                m = max(m, len(feat))
+
+    for i in range(0, m):
+        s = []
+        for feat in dset.feat_ids:
+            if type(feat) is list:
+                try:
+                    s.append(feat[i])
+                except:
+                    s.append("")
+            else:
+                if i == 0:
+                    s.append(feat)
+                else:
+                    s.append("")
+        feat_dict[i] = s
+    if dset.normed_intensities is not None:
+        norm_df = pd.DataFrame(dset.normed_intensities)
+        norm_df = pd.concat([label_df, norm_df], axis=1, ignore_index=True, sort=False)
+
+        norm_df.to_excel(writer, sheet_name="Normalized Intensities")
+    if feat_dict:
+        iden_df = pd.DataFrame(feat_dict)
+        level_df = pd.DataFrame(dset.feat_id_levels)
+        identification_df = pd.concat([label_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
+        identification_df.to_excel(writer, sheet_name='Identification')
+    try:
+        writer.save()
+        print('! INFO: Successfully exported excel version of the data to {}.'.format(path))
+    except:
+        print("! ERROR: Unable to export data.")
+    return True
+
+
 def main():
     """
 main
@@ -418,13 +639,15 @@ main
             identify_lipids(dset)
         # Normalize Intensities
         elif option == '6':
-            pass
+            finished = normalize_data(dset, df)
+            while not finished:
+                finished = normalize_data(dset, df)
         # Overview of Dataset
         elif option == '7':
             print(dset)
         # Export Current Dataset to Spreadsheet
         elif option == '8':
-            pass
+            export(dset, df)
         # Save Current Dataset to File
         elif option == '9':
             print("Saving Current Dataset to File... Please enter the full path and file name to save the Dataset "
@@ -441,169 +664,6 @@ main
         else:
             print('! ERROR: Unrecognized option: "{}"'.format(option))
 
-
-"""
-        # FILTER DATA
-        elif option == "2":
-            print("1. Single query")
-            print("2. Batch query")
-            option = input()
-            if option == "b":
-                continue
-            label_dat = data.labels
-            label_df = pd.DataFrame(label_dat)
-            if option == "1":
-                print(">> M/Z range? (Ex. '150 10'  <--- This would be 150 plus or minus 10)")
-                mz = input()
-                print(">> Retention Time range? (Ex. '1 1' <--- This would be 1 plus or minus 1)")
-                rt = input()
-                print(">> CCS range? (Ex. '150 10'  <--- This would be 150 plus or minus 10)")
-                ccs = input()
-                print(">> Which group would you like to choose? ('All' to select the whole data)")
-                group = input()
-                if group == "b":
-                    continue
-                try:
-                    if group == "All":
-                        cur_data = pd.DataFrame(data.intensities)
-                    else:
-                        cur_data = data.get_data_bygroup(group)
-                    int_df = pd.DataFrame(cur_data)
-                    cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
-                    mzs = mz.split()
-                    rts = rt.split()
-                    ccss = ccs.split()
-                    filtered = filter_d(mzs, rts, ccss, cur_df)
-                    print(filtered)
-                except ValueError:
-                    print(" >> That group has not been assigned")
-
-            elif option == "2":
-                print(">> Which group would you like to choose? ('All' to select the whole data)")
-                group = input()
-                if group == "b":
-                    continue
-                try:
-                    if group == "All":
-                        cur_data = pd.DataFrame(data.intensities)
-                    else:
-                        cur_data = data.get_data_bygroup(group)
-                        int_df = pd.DataFrame(cur_data)
-                        cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
-                except ValueError:
-                    print(">> That group has not been assigned")
-                print(">> Path of the file with batch-query information")
-                path = input()
-                query = pd.read_csv(path)
-                for index, row in query.iterrows():
-                    if index == 0:
-                        filtered = filter_d([row["m/z"], row["m/z_tol"]], [row["rt"], row["rt_tol"]],
-                                            [row["ccs"], row["ccs_tol"]], cur_df)
-                    else:
-                        filtered = pd.concat([filtered,
-                                              filter_d([int(row["m/z"]), int(row["m/z_tol"])],
-                                                       [row["rt"], row["rt_tol"]], [row["ccs"], row["ccs_tol"]],
-                                                       cur_df)])
-            print(filtered)
-            print(">> Data filter success. Would you like to download the result as csv? (y/n)")
-            option = input()
-            if option == "y":
-                print(">> Please specify the path you want to save the csv file")
-                path = input()
-                export_csv = filtered.to_csv('results.csv',
-                                             index=None, header=False)
-
-                    
-        # NORMALIZE INTENSITIES
-        elif option == "6":
-            print("1. Internal")
-            print("2. External")
-            option = input()
-            if option == "1":
-                print(">> Please provide the feature m/z, rt and CCS respectively (Ex. 150, 1, 150)")
-                feat = input()
-                feat = feat.split()
-                print(">> Please type the tolerance for m/z, rt, and CCS, respectively (Ex. '0.1 0.1 0.01')")
-                tol = input()
-                tol = tol.split()
-                mzs = [int(feat[0]), int(tol[0])]
-                rts = [int(feat[1]), int(tol[1])]
-                ccses = [int(feat[2]), int(tol[2])]
-                filtered = filter_d(mzs, rts, ccses, df)
-                max_inten = max(filtered.iloc[0][3:])
-                norm = []
-                for i in range(3, len(filtered.iloc[0])):
-                    norm.append(filtered.iloc[0][i] / max_inten)
-                try:
-                    data.normalize(np.asarray(norm))
-                    print("Successfully normalized")
-                except ValueError:
-                    print("Something went wrong")
-
-            elif option == "2":
-                print("    >> Please provide a text file with the normalization values")
-                path = input()
-                norm = []
-                with open(path) as fp:
-                    line = float(fp.readline())
-                    norm.append(line)
-                    while line:
-                        try:
-                            line = float(fp.readline())
-                            norm.append(line)
-                        except ValueError:
-                            break
-                try:
-                    data.normalize(np.asarray(norm))
-                    print("Successfully normalized")
-                except ValueError:
-                    print("Something went wrong")
-
-
-        # EXPORT DATA TO SPREADSHEET
-        elif option == "8":
-            print("Where would you like to save?")
-            path = input()
-            if path == "b":
-                continue
-            writer = pd.ExcelWriter('results.xlsx', engine='xlsxwriter')
-            df.to_excel(writer, sheet_name='Data')
-            for key in data.stats:
-                stats_df = pd.DataFrame(data.stats[key])
-                if "PCA3" in key and "loadings" in key:
-                    stats_df = stats_df.transpose()
-                stats_df.to_excel(writer, sheet_name=key)
-            m = 1
-            feat_dict = {}
-            for feat in data.feat_ids:
-                if type(feat) is list:
-                    m = max(m, len(feat))
-            for i in range(0, m):
-                s = []
-                for feat in data.feat_ids:
-                    if type(feat) is list:
-                        try:
-                            s.append(feat[i])
-                        except:
-                            s.append("")
-                    else:
-                        if i == 0:
-                            s.append(feat)
-                        else:
-                            s.append("")
-                feat_dict[i] = s
-            if data.normed_intensities is not None:
-                norm_df = pd.DataFrame(data.normed_intensities)
-                norm_df.to_excel(writer, sheet_name="Normalized Intensities")
-            iden_df = pd.DataFrame(feat_dict)
-            level_df = pd.DataFrame(data.feat_id_levels)
-            pd.concat([level_df, iden_df], axis=1, ignore_index=False, sort=False)
-            identification_df = pd.concat([level_df, iden_df], axis=1, ignore_index=True, sort=False)
-            identification_df.to_excel(writer, sheet_name='Identification')
-            writer.save()
-        
-            
-"""
 
 if __name__ == "__main__":
     # main not setup to accept parameters yet...
