@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/Cellar/python3/3.7.3/bin/python3
 """
     lipydomics/identification/characterize_lipid_ccs_pred.py
     Dylan H. Ross

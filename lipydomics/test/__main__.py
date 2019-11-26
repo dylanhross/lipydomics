@@ -9,9 +9,6 @@
 
 
 import traceback
-import os
-
-
 
 
 from lipydomics.test.data import (
@@ -26,6 +23,7 @@ from lipydomics.test.plotting import (
     barplot_feature_bygroup_mock1, scatter_pca3_projections_bygroup_mock1, scatter_plsda_projections_bygroup_mock1,
     splot_plsda_pcorr_bygroup_mock1
 )
+from lipydomics.test.identification import add_feature_ids_any_real1
 
 
 def run_all_tests():
@@ -58,7 +56,9 @@ run_all_tests
         barplot_feature_bygroup_mock1,
         scatter_pca3_projections_bygroup_mock1,
         scatter_plsda_projections_bygroup_mock1,
-        splot_plsda_pcorr_bygroup_mock1
+        splot_plsda_pcorr_bygroup_mock1,
+        # test/identification
+        add_feature_ids_any_real1
     ]
     # run the tests
     failed = False
