@@ -294,17 +294,22 @@ make_plots
                       "\n\t* example: '0.05 0.5 1.0'")
                 tolerance = input('> ').split()
                 tol = [float(t) for t in tolerance]
-                plots_f_map[option](dset, groups, plot_dir, feat, normed=norm, tolerance=tol)
-                print('! INFO: Generated plot for groups: {}'.format(groups))
-            except:
+                if plots_f_map[option](dset, groups, plot_dir, feat, normed=norm, tolerance=tol):
+                    print('! INFO: Generated plot for groups: {}'.format(groups))
+                else:
+                    print('! ERROR: Could not match feature')
+            except ValueError as ve:
+                print(ve)
                 print('! ERROR: Unable to generate plot using groups: {}'.format(groups))
         else:
             try:
                 plots_f_map[option](dset, groups, plot_dir, normed=norm)
                 print('! INFO: Generated plot for groups: {}'.format(groups))
-            except KeyError:
+            except KeyError as ke:
+                print(ke)
                 print('! ERROR: Required statistic(s) have not been computed for groups: {}'.format(groups))
-            except:
+            except ValueError as ve:
+                print(ve)
                 print('! ERROR: Unable to generate plot using groups: {}'.format(groups))
         return False
 
