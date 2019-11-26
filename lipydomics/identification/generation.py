@@ -9,7 +9,7 @@
 
 
 from LipidMass.lipids.glycerolipids import DG, DGDG, GlcADG, MGDG, TG
-from LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PS, LysylPG
+from LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG
 from LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS
 from LipidMass.lipids.sphingolipids import Cer, HexCer, GlcCer, SM
 from LipidMass.lipids.misc import FA
@@ -81,7 +81,7 @@ enumerate_all_lipids
         yield l
 
     # diacyl-glycerophospholipids (with plasmalogen and ether derivatives)
-    diagpls = [PA, PC, PE, PG, PI, PS, LysylPG]
+    diagpls = [PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG]
     diagpl_adducts = ['[M+H]+', '[M+Na]+', '[M+NH4]+', '[M-H]-', '[M+HCOO]-', '[M+K]+', '[M+CH3COO]-', '[M+2Na-H]+',
                       '[M+Cl]-']
     for lc in diagpls:

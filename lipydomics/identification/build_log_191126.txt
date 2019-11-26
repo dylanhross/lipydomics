@@ -6,9 +6,7 @@ adding cleaned datasets into lipids.db
 	adding dataset: hine0119 ... ok
 	adding dataset: leap0219 ... ok
 
-adding theoretical m/z into lipds.db ... ok
-
-training new predictive CCS model (and input scaler) ...
+adding theoretical m/z into lipds.db ... training new predictive CCS model (and input scaler) ...
 X:  (1452, 45)
 y:  (1452,)
 splitting data into training and test sets
