@@ -111,7 +111,7 @@ enumerate_all_lipids
     sls = [Cer, HexCer, GlcCer, SM]
     sls_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-', '[M+K]+', '[M+H-H2O]+']
     for lc in sls:
-        for l in enumerate_lipid_class(lc, (30, 40), (1, 7), sls_adducts):
+        for l in enumerate_lipid_class(lc, (30, 44), (1, 7), sls_adducts):
             yield l
 
     # fatty acids
