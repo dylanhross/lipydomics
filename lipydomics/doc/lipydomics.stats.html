@@ -87,6 +87,13 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;an&nbsp;instance&nbsp;variable&nbsp;(Dataset.plsr_).&nbsp;The&nbsp;feature&nbsp;loadings&nbsp;(n_features,&nbsp;2)&nbsp;and&nbsp;projections&nbsp;(n_samples,&nbsp;2)&nbsp;are&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;added&nbsp;to&nbsp;Dataset.stats&nbsp;with&nbsp;the&nbsp;labels&nbsp;'PLS-DA_A-B_loadings_{raw/normed}'&nbsp;and&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PLS-DA_A-B_projections_{raw/normed}',&nbsp;respectively.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;the&nbsp;projections&nbsp;and&nbsp;loadings&nbsp;are&nbsp;checked&nbsp;before&nbsp;the&nbsp;statistics&nbsp;are&nbsp;added&nbsp;to&nbsp;the&nbsp;Dataset&nbsp;to&nbsp;ensure&nbsp;that&nbsp;their<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direction&nbsp;is&nbsp;consistent&nbsp;with&nbsp;the&nbsp;order&nbsp;of&nbsp;the&nbsp;two&nbsp;groups&nbsp;provided,&nbsp;i.e.&nbsp;if&nbsp;groups&nbsp;'A'&nbsp;and&nbsp;'B'&nbsp;were&nbsp;provided<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;that&nbsp;order,&nbsp;then&nbsp;the&nbsp;X&nbsp;projections&nbsp;should&nbsp;be&nbsp;negative&nbsp;for&nbsp;'A'&nbsp;and&nbsp;positive&nbsp;for&nbsp;'B',&nbsp;consistent&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direction&nbsp;of&nbsp;the&nbsp;corresponding&nbsp;correlation&nbsp;coefficients.&nbsp;This&nbsp;is&nbsp;to&nbsp;ensure&nbsp;that&nbsp;S-plots&nbsp;that&nbsp;are&nbsp;generated<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;the&nbsp;two&nbsp;analyses&nbsp;are&nbsp;consistent&nbsp;and&nbsp;interpretable.&nbsp;If&nbsp;this&nbsp;condition&nbsp;is&nbsp;not&nbsp;met,&nbsp;the&nbsp;X&nbsp;component&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;projections&nbsp;and&nbsp;loadings&nbsp;are&nbsp;simply&nbsp;flipped&nbsp;!<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;the&nbsp;Dataset.plsr_&nbsp;instance&nbsp;variable&nbsp;or&nbsp;either&nbsp;of&nbsp;the&nbsp;Dataset.stats&nbsp;entries&nbsp;are&nbsp;already&nbsp;present,&nbsp;then&nbsp;they&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;overridden.<br>
