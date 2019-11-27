@@ -93,6 +93,13 @@ add_plsda
         in an instance variable (Dataset.plsr_). The feature loadings (n_features, 2) and projections (n_samples, 2) are 
         added to Dataset.stats with the labels 'PLS-DA_A-B_loadings_{raw/normed}' and 
         'PLS-DA_A-B_projections_{raw/normed}', respectively.
+
+        ! the projections and loadings are checked before the statistics are added to the Dataset to ensure that their
+          direction is consistent with the order of the two groups provided, i.e. if groups 'A' and 'B' were provided
+          in that order, then the X projections should be negative for 'A' and positive for 'B', consistent with the
+          direction of the corresponding correlation coefficients. This is to ensure that S-plots that are generated
+          from the two analyses are consistent and interpretable. If this condition is not met, the X component of the
+          projections and loadings are simply flipped !
     
         If the Dataset.plsr_ instance variable or either of the Dataset.stats entries are already present, then they 
         will be overridden.
@@ -122,9 +129,22 @@ add_plsda
     else:
         nrm = 'raw'
 
+    loadings = dataset.plsr_.x_loadings_
+    projections = dataset.plsr_.transform(X)
+
+    # check to see if the X dimension needs to be flipped
+    ordered = True
+    for y_, x_ in zip(y, projections.T[0]):
+        if (y_ < 0 and x_ > 0) or (y_ > 0 and x_ < 0):
+            ordered = False
+    if not ordered:
+        # flip the direction of the X projections and loadings
+        projections *= [-1, 1]
+        loadings *= [-1, 1]
+
     # add the statistics into the Dataset
-    dataset.stats['PLS-DA_{}_loadings_{}'.format('-'.join(group_names), nrm)] = dataset.plsr_.x_loadings_
-    dataset.stats['PLS-DA_{}_projections_{}'.format('-'.join(group_names), nrm)] = dataset.plsr_.transform(X)
+    dataset.stats['PLS-DA_{}_loadings_{}'.format('-'.join(group_names), nrm)] = loadings
+    dataset.stats['PLS-DA_{}_projections_{}'.format('-'.join(group_names), nrm)] = projections
 
 
 def add_2group_corr(dataset, group_names, normed=False):
@@ -178,4 +198,4 @@ add_2group_corr
 
     # add the statistic into the Dataset
     dataset.stats['2-group-corr_{}_{}'.format('-'.join(group_names), nrm)] = corr
-   
+

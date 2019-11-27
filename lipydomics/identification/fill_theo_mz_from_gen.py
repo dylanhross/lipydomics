@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/Cellar/python3/3.7.3/bin/python3
 """
     fill_theo_mz_from_gen.py
     Dylan H. Ross

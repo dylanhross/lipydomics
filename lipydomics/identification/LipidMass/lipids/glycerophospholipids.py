@@ -200,6 +200,123 @@ PI.__init__
         self.lipid_class = 'PI'
 
 
+class PIP(Glycerophospholipid):
+    r"""
+PIP
+    description:
+        phosphatidylinositolmonophosphate lipid class
+        Glycerophospholipid with R-group =
+
+               HO     OH
+                 \___/       O
+                 /   \      //
+        R  =  __/     \__O__P__OH
+                \     /     |
+                 \___/      OH
+                 /   \
+               HO     OH
+"""
+
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
+        """
+PIP.__init__
+    description:
+        Initializes an instance of a PIP lipid
+    Parameters:
+        sum_carbon (int) -- sum FA composition carbons
+        sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o',
+                                    respectively) or None [optional, default=None]
+"""
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
+        # the R-group for a PIP is an inositol monophosphate (C6H12O8P)
+        self.add_to_formula({'C': 6, 'H': 12, 'O': 8, 'P': 1})
+        # the lipid class is PIP
+        self.lipid_class = 'PIP'
+
+
+class PIP2(Glycerophospholipid):
+    r"""
+PIP2
+    description:
+        phosphatidylinositoldiphosphate lipid class
+        Glycerophospholipid with R-group =
+
+               HO     OH
+                 \___/       O
+                 /   \      //
+        R  =  __/     \__O__P__OH
+                \     /     |
+                 \___/      OH
+                 /   \
+               HO     O
+                       \
+                    HO__P__OH
+                        \\
+                         O
+"""
+
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
+        """
+PIP2.__init__
+    description:
+        Initializes an instance of a PIP2 lipid
+    Parameters:
+        sum_carbon (int) -- sum FA composition carbons
+        sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o',
+                                    respectively) or None [optional, default=None]
+"""
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
+        # the R-group for a PIP2 is an inositol diphosphate (C6H13O11P2)
+        self.add_to_formula({'C': 6, 'H': 13, 'O': 11, 'P': 2})
+        # the lipid class is PIP2
+        self.lipid_class = 'PIP2'
+
+
+class PIP3(Glycerophospholipid):
+    r"""
+PIP3
+    description:
+        phosphatidylinositoltriphosphate lipid class
+        Glycerophospholipid with R-group =
+
+                         O
+                        //
+                    HO__P__OH
+                       /
+               HO     O
+                 \___/       O
+                 /   \      //
+        R  =  __/     \__O__P__OH
+                \     /     |
+                 \___/      OH
+                 /   \
+               HO     O
+                       \
+                    HO__P__OH
+                        \\
+                         O
+"""
+
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
+        """
+PIP3.__init__
+    description:
+        Initializes an instance of a PIP3 lipid
+    Parameters:
+        sum_carbon (int) -- sum FA composition carbons
+        sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o',
+                                    respectively) or None [optional, default=None]
+"""
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
+        # the R-group for a PIP3 is an inositol triphosphate (C6H14O14P3)
+        self.add_to_formula({'C': 6, 'H': 14, 'O': 14, 'P': 3})
+        # the lipid class is PIP3
+        self.lipid_class = 'PIP3'
+
+
 class PS(Glycerophospholipid):
     r"""
 PS
