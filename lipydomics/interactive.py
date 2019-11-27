@@ -152,9 +152,9 @@ def filter_d(mzs, rts, ccss, data):
         given M/Z, RT, CCS ranges and a DataFrame containing data,
         find and returns all data within that range.
     """
-    filtered = data[(data[0] < int(mzs[0]) + int(mzs[1])) & (data[0] > int(mzs[0]) - int(mzs[1])) &
-                    (data[1] < int(rts[0]) + int(rts[1])) & (data[1] > int(rts[0]) - int(rts[1])) &
-                    (data[2] < int(ccss[0]) + int(ccss[1])) & (data[2] > int(ccss[0]) - int(ccss[1]))]
+    filtered = data[(data[0] < float(mzs[0]) + float(mzs[1])) & (data[0] > float(mzs[0]) - float(mzs[1])) &
+                    (data[1] < float(rts[0]) + float(rts[1])) & (data[1] > float(rts[0]) - float(rts[1])) &
+                    (data[2] < float(ccss[0]) + float(ccss[1])) & (data[2] > float(ccss[0]) - float(ccss[1]))]
     return filtered
 
 
@@ -228,7 +228,7 @@ filter_data
                                     [row["ccs"], row["ccs_tol"]], cur_df)
             else:
                 filtered = pd.concat([filtered,
-                                      filter_d([int(row["m/z"]), int(row["m/z_tol"])],
+                                      filter_d([row["m/z"], row["m/z_tol"]],
                                                [row["rt"], row["rt_tol"]], [row["ccs"], row["ccs_tol"]],
                                                cur_df)])
     else:
