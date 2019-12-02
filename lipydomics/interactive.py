@@ -175,6 +175,7 @@ filter_data
     print('Filtering data... What would you like to do?')
     print("\t1. Single query")
     print("\t2. Batch query")
+    print("\t3. S-Plot filtering")
     print('\t"back" to go back')
     option = input('> ')
     if option == "back":
@@ -231,6 +232,48 @@ filter_data
                                       filter_d([row["m/z"], row["m/z_tol"]],
                                                [row["rt"], row["rt_tol"]], [row["ccs"], row["ccs_tol"]],
                                                cur_df)])
+    elif option == "3":
+        print("Which groups would you like to choose?")
+        groups = input("> ")
+        group_names = groups.split()
+        print("Would you like to filter on normalized data? (y/N)")
+        nrm = input("> ")
+        if nrm == "y":
+            nrm = "norm"
+        else:
+            nrm = "raw"
+        try:
+            x = dset.stats['PLS-DA_{}_loadings_{}'.format('-'.join(group_names), nrm)].T[0]
+            y = dset.stats['2-group-corr_{}_{}'.format('-'.join(group_names), nrm)]
+            x = abs(x)
+            y = abs(y)
+        except KeyError:
+            print("! ERROR: Required Statistics not yet computed")
+            return False
+        print("Please provide desired range on PLS-DA loadings separated by space. "
+              "\n\tExample: '-10 10' will get values between -10 and 10")
+        x_range = input("> ")
+        x_range = [float(i) for i in x_range.split()]
+        print("Please provide desired range on group correlation values. "
+              "\n\tExample: '-10 10' will get values between -10 and 10")
+        y_range = input("> ")
+        y_range = [float(i) for i in y_range.split()]
+        indices = []
+        for i in range(0, len(x)):
+            if x[i] <= x_range[1] and x[i] >= x_range[0] and y[i] <= y_range[1] and y[i] >= y_range[0]:
+                indices.append(i)
+        if not indices:
+            print("! ERROR: Could not find any matching point")
+        else:
+            filtered = []
+            group_data = list(dset.get_data_bygroup(group_names))
+            first = group_data[0]
+            second = group_data[1]
+            for ind in indices:
+                t = list(dset.labels[ind]) + list(first[ind]) + list(second[ind])
+                filtered.append(t)
+            filtered = pd.DataFrame(filtered)
+
     else:
         print('! ERROR: unrecognized option: "{}"'.format(option))
         return False
