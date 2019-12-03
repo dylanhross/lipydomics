@@ -142,6 +142,54 @@ id_feat_theo_mz_ccs
         return '', '', []
 
 
+def id_feat_theo_mz_rt_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
+    """
+id_feat_theo_mz_rt_ccs
+    description:
+        identifies a feature on the basis of theoretical m/z, retention time, and CCS
+    parameters:
+        cursor (sqlite3.Cursor) -- cursor for querying lipids.db
+        mz (float) -- m/z to match
+        rt (float) -- retention time to match
+        ccs (float) -- CCS to match
+        tol_mz (float) -- tolerance for m/z
+        tol_rt (float) -- tolerance for retention time
+        tol_ccs (float) -- tolerance for CCS
+        esi_mode (str) -- filter results by ionization mode: 'neg', 'pos', or None for unspecified
+        [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
+    returns:
+        (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
+"""
+    qry = 'SELECT name, adduct, mz, rt, ccs FROM theoretical_mz JOIN theoretical_ccs ON ' \
+            + 'theoretical_mz.t_id=theoretical_ccs.t_id JOIN theoretical_rt ON ' \
+            + 'theoretical_mz.t_id=theoretical_rt.t_id WHERE mz BETWEEN ? AND ? AND ccs BETWEEN ? AND ? AND ' \
+            + 'rt BETWEEN ? AND ?'
+    if esi_mode == 'pos':
+        qry += ' AND adduct LIKE "%+"'
+    elif esi_mode == 'neg':
+        qry += ' AND adduct LIKE "%-"'
+
+    mz_min = mz - tol_mz
+    mz_max = mz + tol_mz
+    ccs_min = ccs - tol_ccs
+    ccs_max = ccs + tol_ccs
+    rt_min = rt - tol_rt
+    rt_max = rt + tol_rt
+
+    putative_ids, putative_scores = [], []
+    qdata = (mz_min, mz_max, ccs_min, ccs_max, rt_min, rt_max)
+    for name, adduct, mz_x, rt_x, ccs_x in cursor.execute(qry, qdata).fetchall():
+        putative_ids.append('{}_{}'.format(name, adduct))
+        putative_scores.append(get_score(tol_mz, tol_rt, tol_ccs,
+                                         mz_q=mz, rt_q=rt, ccs_q=ccs,
+                                         mz_x=mz_x, rt_x=rt_x, ccs_x=ccs_x))
+
+    if putative_ids:
+        return putative_ids, 'theo_mz_rt_ccs', putative_scores
+    else:
+        return '', '', []
+
+
 def id_feat_meas_mz_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
     """
 id_feat_theo_meas_mz_ccs
@@ -251,6 +299,7 @@ id_feat_any
     id_funcs = [
         id_feat_meas_mz_rt_ccs,
         id_feat_meas_mz_ccs,
+        id_feat_theo_mz_rt_ccs,
         id_feat_theo_mz_ccs,
         id_feat_theo_mz
     ]
@@ -279,7 +328,7 @@ add_feature_ids
             'theo_mz' -- simple matching based on theoretical m/z
             'theo_mz_ccs' -- match on theoretical m/z and CCS
             'meas_mz_ccs' -- match on measured m/z and CCS
-            'meas_mz_rt_ccs' -- match on m/z, rt, and CCS for 
+            'meas_mz_rt_ccs' -- match on m/z, rt, and CCS
             (high)
             'any' -- start at the highest level, then work downward
 
@@ -305,7 +354,7 @@ add_feature_ids
         [level (str)] -- specify the level of identification [optional, default='all']
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
 """
-    if level not in ['theo_mz', 'theo_mz_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
+    if level not in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
         m = 'add_feature_ids: identification level "{}" not recognized'
         raise ValueError(m.format(level))
 
@@ -314,6 +363,7 @@ add_feature_ids
         'any': id_feat_any,
         'meas_mz_rt_ccs': id_feat_meas_mz_rt_ccs,
         'meas_mz_ccs': id_feat_meas_mz_ccs,
+        'theo_mz_rt_ccs': id_feat_theo_mz_rt_ccs,
         'theo_mz_ccs': id_feat_theo_mz_ccs,
         'theo_mz': id_feat_theo_mz
     } 

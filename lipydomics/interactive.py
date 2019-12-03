@@ -452,19 +452,20 @@ identify lipids
         dset (lipydomics.data.Dataset) -- lipidomics dataset instance
 """
     print("Identifying Lipids... Please enter the tolerances for m/z, retention time and CCS matching"
-          "\n\t* separated by spaces\n\t* example: '0.05 0.5 1.0'")
+          "\n\t* separated by spaces\n\t* example: '0.05 0.5 5.'")
     tolerance = input('> ').split()
     tol = [float(t) for t in tolerance]
     print("Please specify an identification level")
     print("\t'theo_mz' - match on theoretical m/z")
     print("\t'theo_mz_ccs' - match on theoretical m/z and CCS")
+    print("\t'theo_mz_rt_ccs' - match on theoretical m/z, retention time, and CCS")
     print("\t'meas_mz_ccs' - match on measured m/z and CCS")
     print("\t'meas_mz_rt_ccs' - match on measured m/z, retention time, and CCS")
     print("\t'any' - try all criteria (highest confidence first)")
     print("\t'back' to go back")
     option = input('> ')
 
-    if option in ['theo_mz', 'theo_mz_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
+    if option in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
         # make the identifications
         try:
             add_feature_ids(dset, tol, level=option)
