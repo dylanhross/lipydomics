@@ -31,6 +31,8 @@ RMSE: 2.06 Å^2
 
 adding predicted CCS to database ... ok
 
+characterizing CCS prediction performance ... ok
+
 training new predictive RT model (and input scaler) ...
 X:  (596, 45)
 y:  (596,)
@@ -53,6 +55,4 @@ RMSE: 0.11 min
 ... ok
 
 adding predicted RT to database ... ok
-
-characterizing CCS prediction performance ... ok
 
