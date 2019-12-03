@@ -27,5 +27,7 @@ rm -f ccs_pred_perf/*.png
 rm -f lipid_rt_pred.pickle lipid_rt_scale.pickle # get rid of pre-trained models (if present)
 ./train_lipid_rt_pred.py
 
-
+# characterize the performance of the ML based RT prediction
+rm -f rt_pred_perf/*.png
+./characterize_lipid_rt_pred.py
 
