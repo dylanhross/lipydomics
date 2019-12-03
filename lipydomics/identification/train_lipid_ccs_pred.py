@@ -215,9 +215,9 @@ if __name__ == '__main__':
     qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz FROM theoretical_mz'
     tid_to_ccs = {}
     for tid, lc, lnc, lnu, fam, add, m in cur.execute(qry).fetchall():
-
-        x = [featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder)]
-        tid_to_ccs[int(tid)] = model.predict(scaler.transform(x))[0]
+        if int(sum(c_encoder.transform([[lc]])[0])) != 0:  # make sure lipid class is encodable
+            x = [featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder)]
+            tid_to_ccs[int(tid)] = model.predict(scaler.transform(x))[0]
     qry = 'INSERT INTO theoretical_ccs VALUES (?, ?)'
     for tid in tid_to_ccs:
         cur.execute(qry, (tid, tid_to_ccs[tid]))

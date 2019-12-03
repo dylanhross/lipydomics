@@ -12,36 +12,93 @@
 
 import pickle
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.model_selection import ShuffleSplit
 from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
-# reuse some utility functions from the CCS predictor training script
-from train_lipid_ccs_pred import prep_encoders, featurize
+
+def prep_encoders():
+    """
+prep_encoders
+    description:
+        fits and returns encoders for lipid_class, fa_mod, and adduct
+    returns:
+        c_encoder, f_encoder (sklearn.preprocessing.OneHotEncoder) -- encoders for lipid_class and fa_mod
+"""
+    lipid_classes = [
+        ['PG'],
+        ['PE'],
+        ['DGDG'],
+        ['LPE'],
+        ['PC'],
+        ['CL'],
+        ['PI'],
+        ['PA'],
+        ['Cer'],
+        ['AcylPG'],
+        ['LysylPG'],
+        ['GlcCer'],
+        ['MGDG'],
+        ['LPG'],
+        ['AcylPE'],
+        ['SM'],
+        ['LPC'],
+        ['PS'],
+        ['DG'],
+        ['GlcADG'],
+        ['AlaPG'],
+        ['PIP']
+    ]
+    c_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(lipid_classes)
+    fa_mods = [['p']]
+    f_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(fa_mods)
+    return c_encoder, f_encoder
 
 
-def train_new_model(cursor, use_model):
+def featurize(lipid_class, lipid_nc, lipid_nu, fa_mod, mz, c_encoder, f_encoder):
+    """
+featurize
+    description:
+        generates a numerical representation for a given lipid
+    parameters:
+        lipid_class (str) -- lipid class
+        lipid_nc (int) -- sum composition: number of carbons
+        lipid_nu (int) -- sum composition: number of unsaturations
+        fa_mod (str) -- fatty acid modifiers
+        mz (float) -- m/z
+        c_encoder, f_encoder (sklearn.preprocessing.OneHotEncoder) -- encoders for lipid_class and fa_mod
+    returns:
+        (np.array(float)) -- feature vector
+"""
+    lc_enc = c_encoder.transform([[lipid_class]])[0]
+    fm_enc = f_encoder.transform([[fa_mod]])[0]
+    lnc = np.array([float(lipid_nc)])
+    lnu = np.array([float(lipid_nu)])
+    m = np.array([mz])
+    return np.concatenate([lc_enc, fm_enc, lnc, lnu, m])
+
+
+def train_new_model(cursor):
     """
 train_new_model
     description:
         trains a predictive model
     parameters:
         cursor (sqlite3.cursor) -- cursor for querying lipids.db
-        use_model (str) -- specify the ML model to use
     returns:
         mdl, scaler -- trained predictive model and input scaler instances
 """
     # prepare encoders
-    c_encoder, f_encoder, a_encoder = prep_encoders()
+    c_encoder, f_encoder = prep_encoders()
 
     # get the raw data and featurize (encode lipid_class, fa_mod, and adduct)
-    qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz, rt FROM measured WHERE rt IS NOT NULL'
+    qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, mz, rt FROM measured WHERE rt IS NOT NULL'
     X, y = [], []
-    for lc, lnc, lnu, fam, add, m, c in cursor.execute(qry).fetchall():
-        X.append(featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder))
+    for lc, lnc, lnu, fam, m, c in cursor.execute(qry).fetchall():
+        X.append(featurize(lc, lnc, lnu, fam, float(m), c_encoder, f_encoder))
         y.append(float(c))
     X, y = np.array(X), np.array(y)
     print('X: ', X.shape)
@@ -49,7 +106,7 @@ train_new_model
 
     # split into test/train sets, scale data (do not center)
     print('splitting data into training and test sets')
-    SSplit = ShuffleSplit(n_splits=1, test_size=0.2, random_state=1235)
+    SSplit = ShuffleSplit(n_splits=1, test_size=0.2, random_state=1236)
     for train_index, test_index in SSplit.split(X):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
@@ -62,17 +119,9 @@ train_new_model
     X_train_s = scaler.fit_transform(X_train)
     print('X_train_s: ', X_train_s.shape)
 
-    # train model (hyperparameters have already been tuned using gridsearch)
+    # train model
     print('training model')
-    if use_model == 'linear':
-        model = LinearRegression(n_jobs=-1)
-    elif use_model == 'svr':
-        model = SVR(kernel='rbf', cache_size=1024, gamma='scale', C=300)
-    elif use_model == 'forest':
-        model = RandomForestRegressor(n_jobs=-1, random_state=1234, bootstrap=True, max_depth=8, n_estimators=4)
-    else:
-        m = 'train_new_model: ML model "{}" not recognized'
-        raise ValueError(m.format(use_model))
+    model = LinearRegression(n_jobs=-1)
     model.fit(X_train_s, y_train)
 
     # performance on training set
@@ -110,14 +159,14 @@ if __name__ == '__main__':
     cur = con.cursor()
 
     # prepare encoders
-    c_encoder, f_encoder, a_encoder = prep_encoders()
+    c_encoder, f_encoder = prep_encoders()
 
     # load the trained model if available, or train a new one
     model_path = 'lipid_rt_pred.pickle'
     scaler_path = 'lipid_rt_scale.pickle'
     if not os.path.isfile(model_path) or not os.path.isfile(scaler_path):
         print('training new predictive RT model (and input scaler) ...', )
-        model, scaler = train_new_model(cur, 'linear')
+        model, scaler = train_new_model(cur)
         print('... ok')
     else:
         print('loading pre-trained predictive RT model (and input scaler) ...', end=' ')
@@ -128,11 +177,12 @@ if __name__ == '__main__':
 
     # add theoretical CCS to the database
     print('\nadding predicted RT to database ...', end=' ')
-    qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz FROM theoretical_mz'
+    qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, mz FROM theoretical_mz'
     tid_to_rt = {}
-    for tid, lc, lnc, lnu, fam, add, m in cur.execute(qry).fetchall():
-        x = [featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder)]
-        tid_to_rt[int(tid)] = model.predict(scaler.transform(x))[0]
+    for tid, lc, lnc, lnu, fam, m in cur.execute(qry).fetchall():
+        if int(sum(c_encoder.transform([[lc]])[0])) != 0: # make sure lipid class is encodable
+            x = [featurize(lc, lnc, lnu, fam, float(m), c_encoder, f_encoder)]
+            tid_to_rt[int(tid)] = model.predict(scaler.transform(x))[0]
     qry = 'INSERT INTO theoretical_rt VALUES (?, ?)'
     for tid in tid_to_rt:
         cur.execute(qry, (tid, tid_to_rt[tid]))
