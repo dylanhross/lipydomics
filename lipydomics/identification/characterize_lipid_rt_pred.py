@@ -13,7 +13,7 @@
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
-rcParams['font.size'] = 10
+rcParams['font.size'] = 6
 
 
 def single_class_plot(cursor, lipid_class, fa_mod=None):
@@ -55,7 +55,7 @@ single_class_plot
         rt_m.append(float(rt[0]))
 
     if len(rt_m) > 0 and len(rt_t) > 0:
-        fig = plt.figure(figsize=(2, 3))
+        fig = plt.figure(figsize=(1.2, 1.8))
         ax = fig.add_subplot(111)
 
         bp1 = ax.boxplot(rt_t, positions=[1], widths=0.8)
@@ -75,6 +75,9 @@ single_class_plot
         ax.set_xticklabels(['theo', 'meas (n={})'.format(len(rt_m))], rotation=45)
         ax.set_ylabel('retention time (min)')
         ax.set_title('{}{}'.format(lipid_class, fa_mod if fa_mod else ''))
+
+        for d in ['top', 'right']:
+            ax.spines[d].set_visible(False)
 
         plt.savefig(fig_path, dpi=300, bbox_inches='tight')
         plt.close()

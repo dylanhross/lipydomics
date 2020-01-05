@@ -58,7 +58,7 @@ prep_encoders
     return c_encoder, f_encoder
 
 
-def featurize(lipid_class, lipid_nc, lipid_nu, fa_mod, mz, c_encoder, f_encoder):
+def featurize(lipid_class, lipid_nc, lipid_nu, fa_mod, c_encoder, f_encoder):
     """
 featurize
     description:
@@ -77,8 +77,7 @@ featurize
     fm_enc = f_encoder.transform([[fa_mod]])[0]
     lnc = np.array([float(lipid_nc)])
     lnu = np.array([float(lipid_nu)])
-    m = np.array([mz])
-    return np.concatenate([lc_enc, fm_enc, lnc, lnu, m])
+    return np.concatenate([lc_enc, fm_enc, lnc, lnu])
 
 
 def train_new_model(cursor):
@@ -95,10 +94,10 @@ train_new_model
     c_encoder, f_encoder = prep_encoders()
 
     # get the raw data and featurize (encode lipid_class, fa_mod, and adduct)
-    qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, mz, rt FROM measured WHERE rt IS NOT NULL'
+    qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, rt FROM measured WHERE rt IS NOT NULL'
     X, y = [], []
-    for lc, lnc, lnu, fam, m, c in cursor.execute(qry).fetchall():
-        X.append(featurize(lc, lnc, lnu, fam, float(m), c_encoder, f_encoder))
+    for lc, lnc, lnu, fam, c in cursor.execute(qry).fetchall():
+        X.append(featurize(lc, lnc, lnu, fam, c_encoder, f_encoder))
         y.append(float(c))
     X, y = np.array(X), np.array(y)
     print('X: ', X.shape)
@@ -177,11 +176,11 @@ if __name__ == '__main__':
 
     # add theoretical CCS to the database
     print('\nadding predicted RT to database ...', end=' ')
-    qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, mz FROM theoretical_mz'
+    qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod FROM theoretical_mz'
     tid_to_rt = {}
-    for tid, lc, lnc, lnu, fam, m in cur.execute(qry).fetchall():
+    for tid, lc, lnc, lnu, fam in cur.execute(qry).fetchall():
         if int(sum(c_encoder.transform([[lc]])[0])) != 0: # make sure lipid class is encodable
-            x = [featurize(lc, lnc, lnu, fam, float(m), c_encoder, f_encoder)]
+            x = [featurize(lc, lnc, lnu, fam, c_encoder, f_encoder)]
             tid_to_rt[int(tid)] = model.predict(scaler.transform(x))[0]
     qry = 'INSERT INTO theoretical_rt VALUES (?, ?)'
     for tid in tid_to_rt:
