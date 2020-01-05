@@ -13,7 +13,7 @@
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
-rcParams['font.size'] = 10
+rcParams['font.size'] = 6
 
 
 def single_class_plot(cursor, lipid_class, adduct, fa_mod=None):
@@ -34,19 +34,6 @@ single_class_plot
     mz_t, ccs_t = [], []
     mz_m, ccs_m = [], []
 
-    # fetch the theoretical data
-    if fa_mod in ['o', 'p']:
-        qry = 'SELECT mz, ccs FROM theoretical_mz JOIN theoretical_ccs ON theoretical_mz.t_id=theoretical_ccs.t_id '
-        qry += 'WHERE lipid_class="{}" AND fa_mod=="{}" AND adduct="{}"'
-        qry = qry.format(lipid_class, fa_mod, adduct)
-    else:
-        qry = 'SELECT mz, ccs FROM theoretical_mz JOIN theoretical_ccs ON theoretical_mz.t_id=theoretical_ccs.t_id '
-        qry += 'WHERE lipid_class="{}" AND fa_mod IS NULL AND adduct="{}"'
-        qry = qry.format(lipid_class, adduct)
-    for mz, ccs in cursor.execute(qry).fetchall():
-        mz_t.append(float(mz))
-        ccs_t.append(float(ccs))
-
     # fetch the measured data
     if fa_mod in ['o', 'p']:
         qry = 'SELECT mz, ccs FROM measured WHERE lipid_class="{}" AND fa_mod=="{}" AND adduct="{}"'
@@ -58,16 +45,41 @@ single_class_plot
         mz_m.append(float(mz))
         ccs_m.append(float(ccs))
 
-    fig = plt.figure(figsize=(8, 6))
+    # set bounds on the theoretical data to fetch and display
+    mz_min, mz_max = int(min(mz_m)), int(max(mz_m))
+    ccs_min, ccs_max = int(min(ccs_m)), int(max(ccs_m))
+
+    # fetch the theoretical data
+    if fa_mod in ['o', 'p']:
+        qry = 'SELECT mz, ccs FROM theoretical_mz JOIN theoretical_ccs ON theoretical_mz.t_id=theoretical_ccs.t_id '
+        qry += 'WHERE lipid_class="{}" AND fa_mod=="{}" AND adduct="{}" AND (mz BETWEEN {} AND {}) AND '
+        qry += '(ccs BETWEEN {} AND {})'
+        qry = qry.format(lipid_class, fa_mod, adduct, mz_min, mz_max, ccs_min, ccs_max)
+    else:
+        qry = 'SELECT mz, ccs FROM theoretical_mz JOIN theoretical_ccs ON theoretical_mz.t_id=theoretical_ccs.t_id '
+        qry += 'WHERE lipid_class="{}" AND fa_mod IS NULL AND adduct="{}" AND (mz BETWEEN {} AND {}) AND '
+        qry += '(ccs BETWEEN {} AND {})'
+        qry = qry.format(lipid_class, adduct, mz_min, mz_max, ccs_min, ccs_max)
+    for mz, ccs in cursor.execute(qry).fetchall():
+        mz_t.append(float(mz))
+        ccs_t.append(float(ccs))
+
+    fig = plt.figure(figsize=(3.33, 2))
     ax = fig.add_subplot(111)
 
-    ax.scatter(mz_t, ccs_t, marker='.', s=64, c='r', label='theo')
-    ax.scatter(mz_m, ccs_m, marker='.', s=16, c='b', label='meas (n={})'.format(len(mz_m)))
+    ax.scatter(mz_t, ccs_t, marker='.', s=32, c='#ffa600', label='theo')
+    ax.scatter(mz_m, ccs_m, marker='.', s=4, c='purple', label='meas (n={})'.format(len(mz_m)))
 
     ax.legend()
     ax.set_xlabel('m/z')
-    ax.set_ylabel('CCS (Å^2)')
+    ax.set_ylabel(r'CCS ($\AA^2$)')
     ax.set_title('{}{} {}'.format(lipid_class, fa_mod if fa_mod else '', adduct))
+
+    for d in ['top', 'right']:
+        ax.spines[d].set_visible(False)
+
+    #ax.set_xlim([mz_min - 10, mz_max + 10])
+    #ax.set_ylim([ccs_min - 2, ccs_max + 2])
 
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
     plt.close()
