@@ -46,11 +46,13 @@ Dataset.__init__
         self.labels, self.intensities = np.array([mz, rt, ccs]).T, np.array(intensities).T
         # identifications can be added later
         self.feat_ids, self.feat_id_levels, self.feat_id_scores = None, None, None
-        # store the number of features and samples in convenient
+        # store the number of features and samples in convenient instance variables
         self.n_features, self.n_samples = self.intensities.shape
         # group assignments and normalization can be done at some point
         self.group_indices = None
         self.normed_intensities = None
+        # retention time calibration can be added at some point
+        self.rt_calibration = None
         # statistics can be added in later
         self.stats = {}
         # ESI mode used for identification purposes
@@ -210,6 +212,7 @@ Dataset.__repr__
         s += '\tfeatures={},\n'.format(self.n_features)
         s += '\tidentified={},\n'.format(len([_ for _ in self.feat_id_levels if _]) if self.feat_ids else 'False')
         s += '\tnormalized={},\n'.format(self.normed_intensities is not None)
+        s += '\trt_calibrated={},\n'.format(self.rt_calibration is not None)
         if self.group_indices is not None:
             s += '\tgroup_indices={\n'
             for name in self.group_indices:

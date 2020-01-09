@@ -445,7 +445,7 @@ make_plots
 
 def identify_lipids(dset):
     """
-identify lipids
+identify_lipids
     description:
         Prompts the user with options to perform lipid identification at a variety of levels of confidence
     parameters:
@@ -560,6 +560,34 @@ normalize_data
         return False
 
 
+def calibrate_rt(dset):
+    """
+calibrate_rt
+    description:
+        Prompts the user with options to perform retention time calibration
+    parameters:
+        dset (lipydomics.data.Dataset) -- lipidomics dataset instance
+"""
+    print("Calibrating Retention Time... Please enter SOMETHING")
+    print("\t'option' - description of option")
+
+    print("\t'back' to go back")
+    option = input('> ')
+
+    if option in []:
+        # do stuff
+        pass
+
+    elif option == 'back':
+        # just return None to go back
+        return
+
+    else:
+        print('! ERROR: unrecognized option: "{}"'.format(option))
+        # just return None to go back
+        return
+
+
 def export(dset, df):
     """
     export
@@ -652,15 +680,16 @@ main
     # main execution loop
     while True:
         print("\nWhat would you like to do with this Dataset? ")
-        print("\t1. Manage Groups")
-        print("\t2. Filter Data")
-        print("\t3. Manage Statistics")
-        print("\t4. Make Plots")
-        print("\t5. Lipid Identification")
-        print("\t6. Normalize Intensities")
-        print("\t7. Overview of Dataset")
-        print("\t8. Export Current Dataset to Spreadsheet")
-        print("\t9. Save Current Dataset to File")
+        print("\t1.  Manage Groups")
+        print("\t2.  Filter Data")
+        print("\t3.  Manage Statistics")
+        print("\t4.  Make Plots")
+        print("\t5.  Lipid Identification")
+        print("\t6.  Normalize Intensities")
+        print("\t7.  Calibrate Retention Time")
+        print("\t8.  Overview of Dataset")
+        print("\t9.  Export Current Dataset to Spreadsheet")
+        print("\t10. Save Current Dataset to File")
         print('\t"exit" to quit the interface')
         option = input('> ')
         # Manage Groups
@@ -691,14 +720,19 @@ main
             finished = normalize_data(dset, df)
             while not finished:
                 finished = normalize_data(dset, df)
-        # Overview of Dataset
+        # Calibrate Retention Time
         elif option == '7':
+            finished = calibrate_rt(dset)
+            while not finished:
+                finished = calibrate_rt(dset)
+        # Overview of Dataset
+        elif option == '8':
             print(dset)
         # Export Current Dataset to Spreadsheet
-        elif option == '8':
+        elif option == '9':
             export(dset, df)
         # Save Current Dataset to File
-        elif option == '9':
+        elif option == '10':
             print("Saving Current Dataset to File... Please enter the full path and file name to save the Dataset "
                   "under.\n\t* .pickle file\n\t* no spaces in path)\n\texample: 'jang_ho/191120_bacterial_pos.pickle'")
             pickle_path = input('> ')

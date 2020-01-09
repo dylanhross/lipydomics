@@ -347,6 +347,8 @@ add_feature_ids
         Potential identifications are automatically restricted on the basis of electrospray ionization mode (taken from
         Dataset.esi_mode) if it is set to 'pos' or 'neg'
 
+        > If a retention time calibration is available, use calibrated retention time for feature identification <
+
         * if identifications have already been made, subsequent calls to this function will override previous results *
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
@@ -377,6 +379,9 @@ add_feature_ids
 
     feat_ids, feat_id_levels, feat_id_scores = [], [], []
     for mz, rt, ccs in dataset.labels:
+
+        # use calibrated retention time if a retention time calibration has been set up
+        rt = dataset.rt_calibration.get_calibrated_rt(rt) if dataset.rt_calibration is not None else rt
 
         # try to get identification(s)
         feat_id, feat_id_level, feat_id_score = id_funcs[level](cur, mz, rt, ccs, *tol, esi, norm=norm)
