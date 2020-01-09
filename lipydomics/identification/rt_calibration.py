@@ -9,6 +9,8 @@
 """
 
 
+from sqlite3 import connect
+import os
 from numpy import mean
 
 
