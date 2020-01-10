@@ -10,7 +10,7 @@
 
 import os
 
-from lipydomics.identification.rt_calibration import get_ref_rt
+from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
 from lipydomics.identification.lipid_parser import parse_lipid
 
 
@@ -32,4 +32,21 @@ get_ref_rt_real1
             rt = get_ref_rt(parsed['lipid_class'], parsed['n_carbon'], parsed['n_unsat'], fa_mod=fam, strict=False)
 
     return True
+
+
+def rtcal_init_mismatch_len():
+    """
+rtcal_init_mismatch_len
+    description:
+        Tests initializing an RTCalibration object with lists of mismatched length which triggers a ValueError
+
+        Test fails if there are no errors or other errors besides the ValueError
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    try:
+        rtc = RTCalibration(['A', 'B', 'C'], [1.23, 2.34, 3.45], [1.1, 2.2, 4.4, 8.8])
+    except ValueError:
+        return True
+    return False
 

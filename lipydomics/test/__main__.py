@@ -24,7 +24,7 @@ from lipydomics.test.plotting import (
     splot_plsda_pcorr_bygroup_mock1
 )
 from lipydomics.test.identification import add_feature_ids_any_real1
-from lipydomics.test.rt_calibration import get_ref_rt_lipids1
+from lipydomics.test.rt_calibration import get_ref_rt_lipids1, rtcal_init_mismatch_len
 
 
 def run_all_tests():
@@ -61,7 +61,8 @@ run_all_tests
         # test/identification
         add_feature_ids_any_real1,
         # test/rt_calibration
-        get_ref_rt_lipids1
+        get_ref_rt_lipids1,
+        rtcal_init_mismatch_len
     ]
 
     # run the tests

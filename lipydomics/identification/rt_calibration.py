@@ -53,24 +53,62 @@ RTCalibration
         An object for performing HILIC retention time calibration
 """
 
-    def __init__(self):
+    def __init__(self, lipids, ref_rt, meas_rt):
         """
 RTCalibration.__init__
     description:
-
+        Stores lists of lipid calibrants and their reference/measured retention times
     parameters:
-
+        lipids (list(str)) -- lipid calibrants
+        ref_rt (list(float)) -- reference retention times
+        meas_rt (list(float)) -- measured retention times
 """
-        pass
+        # all the lists need to be the same length
+        if len(lipids) != len(ref_rt) or len(lipids) != len(meas_rt):
+            m = 'RTCalibration: __init__: lipids, ref_rt, and meas_rt must all be the same length ({}, {}, {})'
+            raise ValueError(m.format(len(lipids), len(ref_rt), len(meas_rt)))
+        # sort the calibrants by reference rt and store them
+        self.ref_rt, self.meas_rt, self.lipids = (list(t) for t in zip(*sorted(zip(ref_rt, meas_rt, lipids))))
+        self.n_calibrants = len(lipids)
+
+    def __repr__(self):
+        """
+RTCalibration.__repr__
+    description:
+        generates a string representation of this RTCalibration instance
+    returns:
+        (str) -- string representation of this instance
+"""
+        s = 'RTCalibration(\n\tlipid, ref rt, meas rt\n'
+        for lipid, ref, meas in zip(self.lipids, self.ref_rt, self.meas_rt):
+            s += '\t{}, {:.2f}, {:.2f}\n'.format(lipid, ref, meas)
+        s += ')'
+        return s
 
     def get_calibrated_rt(self, rt_uncal):
         """
 RTCalibration
     description:
-        returns a calibrated retention time using the fitted calibration function
+        returns a calibrated retention time using the calibrant data
     parameters:
         rt_uncal (float) -- uncalibrated retention time
     returns:
          (float) -- calibrated retention time
 """
+        # if there is only one calibrant, just compute a ratio and use that
+        if self.n_calibrants == 1:
+            return rt_uncal * (self.ref_rt[0] / self.meas_rt[0])
+
+        # if there are two calibrants, use the line between them
+        elif self.n_calibrants == 2:
+            m = (self.ref_rt[1] - self.ref_rt[0]) /  (self.meas_rt[1] - self.meas_rt[0])
+            b = self.ref_rt[0] - m * self.meas_rt[0]
+            print(m, b)
+            return m * rt_uncal + b
+
+        # if there are more than two calibrants, use linear interpolation between each pair
+        else:
+            pass
+
         return None
+
