@@ -19,6 +19,8 @@ from lipydomics.plotting import (
     splot_plsda_pcorr_bygroup
 )
 from lipydomics.identification import add_feature_ids
+from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
+from lipydomics.identification.lipid_parser import parse_lipid
 
 
 def load_dset():
@@ -475,12 +477,12 @@ identify_lipids
             print("! ERROR: Unable to make lipid identifications")
 
     elif option == 'back':
-        # just return None to go back
+        # return None to finish
         return
 
     else:
         print('! ERROR: unrecognized option: "{}"'.format(option))
-        # just return None to go back
+        # return None to finish
         return
 
 
@@ -553,8 +555,10 @@ normalize_data
         except ValueError:
             print("! ERROR: Unable to normalize. Check the file and try again.")
             return False
+
     elif option == "back":
         return True
+
     else:
         print('! ERROR: unrecognized option: "{}"'.format(option))
         return False
@@ -567,25 +571,107 @@ calibrate_rt
         Prompts the user with options to perform retention time calibration
     parameters:
         dset (lipydomics.data.Dataset) -- lipidomics dataset instance
+    returns:
+        (bool) -- finished calibrating retention time
 """
-    print("Calibrating Retention Time... Please enter SOMETHING")
-    print("\t'option' - description of option")
+    def build_new_calibration():
+        """ helper function that prompts user to enter RT calibrant information"""
+        finished = False
+        lipids, meas_rt, ref_rt = [], [], []
+        while not finished:
+            print("Adding lipid calibrants... Please enter a lipid to search for reference retention time")
+            print("\t* example: 'PG(36:1)' *")
+            print("\t'done' - finished adding calibrants")
+            print("\t'cancel' - discard calibration")
+            lipid = input('> ')
+            if lipid == 'done':
+                # check for lipid calibrants (at least one must be set)
+                if len(lipids) < 1 or len(meas_rt) < 1 or len(ref_rt) < 1:
+                    print('! INFO: did not create retention time calibration')
+                    return None
+                # build the actual RTCalibration and return it
+                finished = True
+            elif lipid == 'cancel':
+                return None
+            else:
+                try:
+                    parsed = parse_lipid(lipid)
+                    fam = parsed['fa_mod'] if 'fa_mod' in parsed else None
+                    rt_strict = get_ref_rt(parsed['lipid_class'], parsed['n_carbon'], parsed['n_unsat'], fa_mod=fam)
+                    rt_nonstrict = get_ref_rt(parsed['lipid_class'], parsed['n_carbon'], parsed['n_unsat'],
+                                              fa_mod=fam, strict=False)
+                except:
+                    rt_strict = None
+                    rt_nonstrict = None
+                if rt_strict is None and rt_nonstrict is None:
+                    print('! ERROR: unable to find reference RT for lipid: {}'.format(lipid))
+                else:
+                    if rt_strict is not None:
+                        print('! INFO: found reference RT for lipid: {} → {:.2f}'.format(lipid, rt_strict))
+                        rtr = rt_strict
+                    else:
+                        print('! WARNING: had to ignore unsaturations, RT matched only on lipid class and' \
+                              ' fatty acid carbons')
+                        print('! INFO: found reference RT for lipid: {} → {:.2f}'.format(lipid, rt_nonstrict))
+                        rtr = rt_nonstrict
+                    # get the measured retention time for the lipid
+                    print('Please enter the measured retention time for this lipid...')
+                    rtm = float(input('> '))
+                    lipids.append(lipid)
+                    meas_rt.append(rtm)
+                    ref_rt.append(rtr)
+                    print('! INFO: added lipid calibrant: {} measured RT → {:.2f} reference RT → {:.2f}'.format(lipid,
+                                                                                                              rtm, rtr))
+        rtc = RTCalibration(lipids, meas_rt, ref_rt)
+        if rtc is not None:
+            print('! INFO: successfully created a retention time calibration')
+        else:
+            print('! ERROR: failed to create a retention time calibration')
+        return rtc
 
+    print("Retention Time Calibration... Please choose an option")
+    print("\t1. create new retention time calibration")
+    print("\t2. view retention time calibration")
+    print("\t3. clear current retention time calibration")
     print("\t'back' to go back")
     option = input('> ')
 
-    if option in []:
-        # do stuff
-        pass
+    if option == '1':
+        # create a new RT calibration
+        try:
+            dset.rt_calibration = build_new_calibration()
+        except Exception as e:
+            print(e)
+            print('! ERROR: failed to create a new RT calibration.')
+        # prompt again
+        return False
+
+    elif option == '2':
+        if dset.rt_calibration is not None:
+            # print the RT calibration information
+            print(dset.rt_calibration)
+        else:
+            print('! INFO: no retention time calibration available')
+        # prompt again
+        return False
+
+    elif option == '3':
+        if dset.rt_calibration is None:
+            print('! INFO: there is no retention time calibration to clear')
+            return False
+        else:
+            dset.rt_calibration = None
+            print('! INFO: cleared existing retention time calibration')
+            return False
 
     elif option == 'back':
-        # just return None to go back
-        return
+        # go back
+        return True
 
     else:
         print('! ERROR: unrecognized option: "{}"'.format(option))
-        # just return None to go back
-        return
+        # prompt again
+        return False
 
 
 def export(dset, df):
@@ -671,7 +757,6 @@ main
     if dset == 'exit':
         return
 
-    # why?
     # create a pandas DataFrame
     label_df = pd.DataFrame(dset.labels)
     int_df = pd.DataFrame(dset.intensities)
