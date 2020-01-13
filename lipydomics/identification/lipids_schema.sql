@@ -53,7 +53,15 @@ CREATE TABLE theoretical_mz (
 CREATE TABLE theoretical_ccs (
     -- unique integer identifier
     t_id INTEGER UNIQUE NOT NULL,
-    -- theoretical m/z
+    -- theoretical CCS
     ccs REAL NOT NULL
 );
 
+
+-- table to store theoretical retention time values, associated with theoretical m/z values
+CREATE TABLE theoretical_rt (
+    -- unique integer identifier
+    t_id INTEGER UNIQUE NOT NULL,
+    -- theoretical retention time
+    rt REAL NOT NULL
+);

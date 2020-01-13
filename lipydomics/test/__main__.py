@@ -24,6 +24,10 @@ from lipydomics.test.plotting import (
     splot_plsda_pcorr_bygroup_mock1
 )
 from lipydomics.test.identification import add_feature_ids_any_real1
+from lipydomics.test.rt_calibration import (
+    get_ref_rt_lipids1, rtcal_init_mismatch_len, rtcal_calibrate_rtc1_c12, rtcal_calibrate_rtc1_c13,
+    rtcal_calibrate_rtc2_c12, rtcal_calibrate_rtc2_c13
+)
 
 
 def run_all_tests():
@@ -58,8 +62,16 @@ run_all_tests
         scatter_plsda_projections_bygroup_mock1,
         splot_plsda_pcorr_bygroup_mock1,
         # test/identification
-        add_feature_ids_any_real1
+        add_feature_ids_any_real1,
+        # test/rt_calibration
+        get_ref_rt_lipids1,
+        rtcal_init_mismatch_len,
+        rtcal_calibrate_rtc1_c12,
+        rtcal_calibrate_rtc1_c13,
+        rtcal_calibrate_rtc2_c12,
+        rtcal_calibrate_rtc2_c13
     ]
+
     # run the tests
     failed = False
     print("running all tests ... ", end="")

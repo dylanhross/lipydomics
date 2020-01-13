@@ -31,16 +31,38 @@ description:</tt></p>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-filter_data"><strong>filter_data</strong></a>(dset)</dt><dd><tt>filter_data<br>
+<td width="100%"><dl><dt><a name="-calibrate_rt"><strong>calibrate_rt</strong></a>(dset)</dt><dd><tt>calibrate_rt<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;to&nbsp;perform&nbsp;retention&nbsp;time&nbsp;calibration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;finished&nbsp;calibrating&nbsp;retention&nbsp;time</tt></dd></dl>
+ <dl><dt><a name="-export"><strong>export</strong></a>(dset, df)</dt><dd><tt>export<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;to&nbsp;save&nbsp;a&nbsp;excel&nbsp;file&nbsp;of&nbsp;the&nbsp;current&nbsp;lipidomics&nbsp;dataset:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;The&nbsp;user&nbsp;specifies&nbsp;a&nbsp;path&nbsp;where&nbsp;to&nbsp;save&nbsp;the&nbsp;file&nbsp;and&nbsp;it&nbsp;creates&nbsp;an<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;excel&nbsp;file&nbsp;with&nbsp;all&nbsp;the&nbsp;information&nbsp;that&nbsp;current&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;has.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;df&nbsp;(Pandas&nbsp;DataFrame)&nbsp;--&nbsp;DataFrame&nbsp;version&nbsp;of&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;finished&nbsp;exporting&nbsp;data&nbsp;to&nbsp;excel&nbsp;file</tt></dd></dl>
+ <dl><dt><a name="-filter_d"><strong>filter_d</strong></a>(mzs, rts, ccss, data)</dt><dd><tt>a&nbsp;helper&nbsp;function&nbsp;for&nbsp;filtering&nbsp;data<br>
+given&nbsp;M/Z,&nbsp;RT,&nbsp;CCS&nbsp;ranges&nbsp;and&nbsp;a&nbsp;DataFrame&nbsp;containing&nbsp;data,<br>
+find&nbsp;and&nbsp;returns&nbsp;all&nbsp;data&nbsp;within&nbsp;that&nbsp;range.</tt></dd></dl>
+ <dl><dt><a name="-filter_data"><strong>filter_data</strong></a>(dset)</dt><dd><tt>filter_data<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;for&nbsp;filtering&nbsp;the&nbsp;data:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;The&nbsp;user&nbsp;is&nbsp;to&nbsp;provide&nbsp;ranges&nbsp;for&nbsp;M/Z,&nbsp;RT&nbsp;and&nbsp;CCS&nbsp;values&nbsp;and&nbsp;it&nbsp;let's&nbsp;the&nbsp;user&nbsp;download<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;csv&nbsp;file&nbsp;containing&nbsp;all&nbsp;data&nbsp;matching&nbsp;that&nbsp;range.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Can&nbsp;also&nbsp;take&nbsp;multiple&nbsp;ranges&nbsp;given&nbsp;a&nbsp;CSV&nbsp;file&nbsp;of&nbsp;ranges.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;()&nbsp;--<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;finished&nbsp;filtering&nbsp;data</tt></dd></dl>
- <dl><dt><a name="-identify_lipids"><strong>identify_lipids</strong></a>(dset)</dt><dd><tt>identify&nbsp;lipids<br>
+ <dl><dt><a name="-identify_lipids"><strong>identify_lipids</strong></a>(dset)</dt><dd><tt>identify_lipids<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;to&nbsp;perform&nbsp;lipid&nbsp;identification&nbsp;at&nbsp;a&nbsp;variety&nbsp;of&nbsp;levels&nbsp;of&nbsp;confidence<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
@@ -88,5 +110,15 @@ description:</tt></p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;finished&nbsp;managing&nbsp;statistics</tt></dd></dl>
+ <dl><dt><a name="-normalize_data"><strong>normalize_data</strong></a>(dset, df)</dt><dd><tt>normalize_data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;for&nbsp;normalizing&nbsp;the&nbsp;data:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;The&nbsp;user&nbsp;is&nbsp;to&nbsp;choose&nbsp;between&nbsp;internal&nbsp;and&nbsp;external&nbsp;normalization&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;will&nbsp;normalize&nbsp;the&nbsp;data&nbsp;within&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;df&nbsp;(Pandas&nbsp;DataFrame)&nbsp;--&nbsp;DataFrame&nbsp;version&nbsp;of&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;finished&nbsp;normalizing&nbsp;data</tt></dd></dl>
 </td></tr></table>
 </body></html>

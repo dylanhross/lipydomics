@@ -23,3 +23,11 @@ rm -f lipid_ccs_pred.pickle lipid_ccs_scale.pickle # get rid of pre-trained mode
 rm -f ccs_pred_perf/*.png
 ./characterize_lipid_ccs_pred.py
 
+# fill the theoretical RT table using ML model trained on reference data
+rm -f lipid_rt_pred.pickle lipid_rt_scale.pickle # get rid of pre-trained models (if present)
+./train_lipid_rt_pred.py
+
+# characterize the performance of the ML based RT prediction
+rm -f rt_pred_perf/*.png
+./characterize_lipid_rt_pred.py
+
