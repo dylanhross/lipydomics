@@ -9,6 +9,8 @@
 
 
 import os
+from csv import reader
+from numpy import array, mean, sqrt
 
 from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
 from lipydomics.identification.lipid_parser import parse_lipid
@@ -50,3 +52,126 @@ rtcal_init_mismatch_len
         return True
     return False
 
+
+def rtcal_calibrate_rtc1_c12():
+    """
+rtcal_calibrate_rtc1_c12
+    description:
+        Uses the data from rtc_1.csv column 1 (reference rt) and column 2 (measured rt) to compute a RT calibration.
+        Checks the root mean squared error of predicted vs. reference RT
+        Uses 2 lipids for calibration
+
+        Test fails if there are any errors or if RMSE of predicted RT is > 0.3 min
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    n = ['PG(36:0)', 'LysylPG(34:0)']
+    rtm = [0.707, 3.928]
+    rtr = [1.293, 6.598]
+    rtc = RTCalibration(n, rtm, rtr)
+    x, r = [], []
+    with open(os.path.join(os.path.dirname(__file__), 'rtc_1.csv'), 'r') as f:
+        rdr = reader(f)
+        for l, rr, rm, _ in rdr:
+            x.append(float(rm))
+            r.append(float(rr))
+    y = [rtc.get_calibrated_rt(_) for _ in x]
+    y = array(y)
+    r = array(r)
+    rmse = sqrt(mean((y - r)**2.))
+    if rmse > 0.3:
+        return False
+    return True
+
+
+def rtcal_calibrate_rtc1_c13():
+    """
+rtcal_calibrate_rtc1_c13
+    description:
+        Uses the data from rtc_1.csv column 1 (reference rt) and column 3 (measured rt) to compute a RT calibration.
+        Checks the root mean squared error of predicted vs. reference RT
+        Uses 2 lipids for calibration
+
+        Test fails if there are any errors or if RMSE of predicted RT is > 0.3 min
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    n = ['PG(36:0)', 'LysylPG(34:0)']
+    rtm = [0.464, 2.533]
+    rtr = [1.293, 6.598]
+    rtc = RTCalibration(n, rtm, rtr)
+    x, r = [], []
+    with open(os.path.join(os.path.dirname(__file__), 'rtc_1.csv'), 'r') as f:
+        rdr = reader(f)
+        for l, rr, _, rm in rdr:
+            x.append(float(rm))
+            r.append(float(rr))
+    y = [rtc.get_calibrated_rt(_) for _ in x]
+    y = array(y)
+    r = array(r)
+    rmse = sqrt(mean((y - r)**2.))
+    if rmse > 0.3:
+        return False
+    return True
+
+
+def rtcal_calibrate_rtc2_c12():
+    """
+rtcal_calibrate_rtc1_c12
+    description:
+        Uses the data from rtc_2.csv column 1 (reference rt) and column 2 (measured rt) to compute a RT calibration.
+        Checks the root mean squared error of predicted vs. reference RT
+        Uses 5 lipids for calibration
+
+        Test fails if there are any errors or if RMSE of predicted RT is > 0.2 min
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    n = ['FFA(18:0)', 'DGDG(36:0)', 'PG(36:0)', 'CL(60:0)', 'LysylPG(34:0)']
+    rtm = [0.673, 0.929, 1.549, 2.843, 3.996]
+    rtr = [0.673, 0.895, 1.549, 4.393, 7.252]
+    rtc = RTCalibration(n, rtm, rtr)
+    x, r = [], []
+    with open(os.path.join(os.path.dirname(__file__), 'rtc_2.csv'), 'r') as f:
+        rdr = reader(f)
+        for l, rr, rm, _ in rdr:
+            x.append(float(rm))
+            r.append(float(rr))
+    y = [rtc.get_calibrated_rt(_) for _ in x]
+    y = array(y)
+    r = array(r)
+    rmse = sqrt(mean((y - r)**2.))
+    if rmse > 0.2:
+        return False
+    return True
+
+
+def rtcal_calibrate_rtc2_c13():
+    """
+rtcal_calibrate_rtc1_c13
+    description:
+        Uses the data from rtc_2.csv column 1 (reference rt) and column 3 (measured rt) to compute a RT calibration.
+        Checks the root mean squared error of predicted vs. reference RT
+        Uses 5 lipids for calibration
+
+        Test fails if there are any errors or if RMSE of predicted RT is > 0.2 min
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    n = ['FFA(18:0)', 'DGDG(36:0)', 'PG(36:0)', 'CL(60:0)', 'LysylPG(34:0)']
+    rtm = [0.673, 0.929, 1.516, 6.665, 12.246]
+    rtr = [0.673, 0.895, 1.549, 4.393, 7.252]
+    rtc = RTCalibration(n, rtm, rtr)
+    x, r = [], []
+    with open(os.path.join(os.path.dirname(__file__), 'rtc_2.csv'), 'r') as f:
+        rdr = reader(f)
+        for l, rr, _, rm in rdr:
+            x.append(float(rm))
+            r.append(float(rr))
+    y = [rtc.get_calibrated_rt(_) for _ in x]
+    y = array(y)
+    r = array(r)
+    rmse = sqrt(mean((y - r)**2.))
+    if rmse > 0.2:
+        return False
+    return True

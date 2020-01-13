@@ -29,9 +29,10 @@ description:<br>
 <a href="lipydomics.identification.fill_theo_mz_from_gen.html">fill_theo_mz_from_gen</a><br>
 <a href="lipydomics.identification.generation.html">generation</a><br>
 </td><td width="25%" valign=top><a href="lipydomics.identification.lipid_parser.html">lipid_parser</a><br>
+<a href="lipydomics.identification.rt_calibration.html">rt_calibration</a><br>
 <a href="lipydomics.identification.train_lipid_ccs_pred.html">train_lipid_ccs_pred</a><br>
-<a href="lipydomics.identification.train_lipid_rt_pred.html">train_lipid_rt_pred</a><br>
-</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+</td><td width="25%" valign=top><a href="lipydomics.identification.train_lipid_rt_pred.html">train_lipid_rt_pred</a><br>
+</td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -70,6 +71,8 @@ description:<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Potential&nbsp;identifications&nbsp;are&nbsp;automatically&nbsp;restricted&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;electrospray&nbsp;ionization&nbsp;mode&nbsp;(taken&nbsp;from<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dataset.esi_mode)&nbsp;if&nbsp;it&nbsp;is&nbsp;set&nbsp;to&nbsp;'pos'&nbsp;or&nbsp;'neg'<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;&nbsp;If&nbsp;a&nbsp;retention&nbsp;time&nbsp;calibration&nbsp;is&nbsp;available,&nbsp;use&nbsp;calibrated&nbsp;retention&nbsp;time&nbsp;for&nbsp;feature&nbsp;identification&nbsp;&lt;<br>
 &nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;if&nbsp;identifications&nbsp;have&nbsp;already&nbsp;been&nbsp;made,&nbsp;subsequent&nbsp;calls&nbsp;to&nbsp;this&nbsp;function&nbsp;will&nbsp;override&nbsp;previous&nbsp;results&nbsp;*<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>

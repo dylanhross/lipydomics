@@ -53,22 +53,23 @@ RTCalibration
         An object for performing HILIC retention time calibration
 """
 
-    def __init__(self, lipids, ref_rt, meas_rt):
+    def __init__(self, lipids, meas_rt, ref_rt):
         """
 RTCalibration.__init__
     description:
-        Stores lists of lipid calibrants and their reference/measured retention times
+        Stores lists of lipid calibrants and their reference/measured retention times,
+        lists are sorted together by measured retention time
     parameters:
         lipids (list(str)) -- lipid calibrants
-        ref_rt (list(float)) -- reference retention times
         meas_rt (list(float)) -- measured retention times
+        ref_rt (list(float)) -- reference retention times
 """
         # all the lists need to be the same length
         if len(lipids) != len(ref_rt) or len(lipids) != len(meas_rt):
             m = 'RTCalibration: __init__: lipids, ref_rt, and meas_rt must all be the same length ({}, {}, {})'
             raise ValueError(m.format(len(lipids), len(ref_rt), len(meas_rt)))
-        # sort the calibrants by reference rt and store them
-        self.ref_rt, self.meas_rt, self.lipids = (list(t) for t in zip(*sorted(zip(ref_rt, meas_rt, lipids))))
+        # sort the calibrants by measured rt and store them
+        self.meas_rt, self.ref_rt, self.lipids = (list(t) for t in zip(*sorted(zip(meas_rt, ref_rt, lipids))))
         self.n_calibrants = len(lipids)
 
     def __repr__(self):
@@ -79,15 +80,34 @@ RTCalibration.__repr__
     returns:
         (str) -- string representation of this instance
 """
-        s = 'RTCalibration(\n\tlipid, ref rt, meas rt\n'
+        s = 'RTCalibration(\n\tlipid, measured rt, reference rt\n'
         for lipid, ref, meas in zip(self.lipids, self.ref_rt, self.meas_rt):
-            s += '\t{}, {:.2f}, {:.2f}\n'.format(lipid, ref, meas)
+            s += '\t{}, {:.2f}, {:.2f}\n'.format(lipid, meas, ref)
         s += ')'
         return s
 
+    @staticmethod
+    def linear(x1, y1, x2, y2, x):
+        """
+RTCalibration.linear
+    description:
+        Returns a linear interpolation (or extrapolation) of an x value using a line defined by two points
+    parameters:
+        x1 (float) -- point 1 x value
+        y1 (float) -- point 1 y value
+        x2 (float) -- point 2 x value
+        y2 (float) -- point 2 y value
+        x (float) -- input x value
+    returns:
+        (float) -- output y value
+"""
+        m = (y2 - y1) / (x2 - x1)
+        b = y1 - m * x1
+        return m * x + b
+
     def get_calibrated_rt(self, rt_uncal):
         """
-RTCalibration
+RTCalibration.get_calibrated_rt
     description:
         returns a calibrated retention time using the calibrant data
     parameters:
@@ -101,14 +121,20 @@ RTCalibration
 
         # if there are two calibrants, use the line between them
         elif self.n_calibrants == 2:
-            m = (self.ref_rt[1] - self.ref_rt[0]) /  (self.meas_rt[1] - self.meas_rt[0])
-            b = self.ref_rt[0] - m * self.meas_rt[0]
-            print(m, b)
-            return m * rt_uncal + b
+            return self.linear(self.meas_rt[0], self.ref_rt[0], self.meas_rt[1], self.ref_rt[1], rt_uncal)
 
         # if there are more than two calibrants, use linear interpolation between each pair
         else:
-            pass
+            if rt_uncal <= self.meas_rt[1]:
+                i0, i1 = 0, 1
+            elif rt_uncal > self.meas_rt[-2]:
+                i0, i1 = -2, -1
+            else:
+                i0, i1 = 1, 2
+                while rt_uncal > self.meas_rt[i1]:
+                    i0 += 1
+                    i1 += 1
+            return self.linear(self.meas_rt[i0], self.ref_rt[i0], self.meas_rt[i1], self.ref_rt[i1], rt_uncal)
 
         return None
 

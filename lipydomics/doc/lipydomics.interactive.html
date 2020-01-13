@@ -31,7 +31,12 @@ description:</tt></p>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-export"><strong>export</strong></a>(dset, df)</dt><dd><tt>export<br>
+<td width="100%"><dl><dt><a name="-calibrate_rt"><strong>calibrate_rt</strong></a>(dset)</dt><dd><tt>calibrate_rt<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;to&nbsp;perform&nbsp;retention&nbsp;time&nbsp;calibration<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance</tt></dd></dl>
+ <dl><dt><a name="-export"><strong>export</strong></a>(dset, df)</dt><dd><tt>export<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;to&nbsp;save&nbsp;a&nbsp;excel&nbsp;file&nbsp;of&nbsp;the&nbsp;current&nbsp;lipidomics&nbsp;dataset:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;The&nbsp;user&nbsp;specifies&nbsp;a&nbsp;path&nbsp;where&nbsp;to&nbsp;save&nbsp;the&nbsp;file&nbsp;and&nbsp;it&nbsp;creates&nbsp;an<br>
@@ -55,7 +60,7 @@ find&nbsp;and&nbsp;returns&nbsp;all&nbsp;data&nbsp;within&nbsp;that&nbsp;range.<
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;finished&nbsp;filtering&nbsp;data</tt></dd></dl>
- <dl><dt><a name="-identify_lipids"><strong>identify_lipids</strong></a>(dset)</dt><dd><tt>identify&nbsp;lipids<br>
+ <dl><dt><a name="-identify_lipids"><strong>identify_lipids</strong></a>(dset)</dt><dd><tt>identify_lipids<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;to&nbsp;perform&nbsp;lipid&nbsp;identification&nbsp;at&nbsp;a&nbsp;variety&nbsp;of&nbsp;levels&nbsp;of&nbsp;confidence<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
