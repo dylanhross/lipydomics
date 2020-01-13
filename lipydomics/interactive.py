@@ -592,6 +592,7 @@ calibrate_rt
                 # build the actual RTCalibration and return it
                 finished = True
             elif lipid == 'cancel':
+                print('! INFO: discarding calibrants and cancelling retention time calibration creation')
                 return None
             else:
                 try:
@@ -607,12 +608,12 @@ calibrate_rt
                     print('! ERROR: unable to find reference RT for lipid: {}'.format(lipid))
                 else:
                     if rt_strict is not None:
-                        print('! INFO: found reference RT for lipid: {} → {:.2f}'.format(lipid, rt_strict))
+                        print('! INFO: found reference RT for lipid: {} → {:.2f} min'.format(lipid, rt_strict))
                         rtr = rt_strict
                     else:
                         print('! WARNING: had to ignore unsaturations, RT matched only on lipid class and' \
                               ' fatty acid carbons')
-                        print('! INFO: found reference RT for lipid: {} → {:.2f}'.format(lipid, rt_nonstrict))
+                        print('! INFO: found reference RT for lipid: {} → {:.2f} min'.format(lipid, rt_nonstrict))
                         rtr = rt_nonstrict
                     # get the measured retention time for the lipid
                     print('Please enter the measured retention time for this lipid...')
@@ -620,8 +621,8 @@ calibrate_rt
                     lipids.append(lipid)
                     meas_rt.append(rtm)
                     ref_rt.append(rtr)
-                    print('! INFO: added lipid calibrant: {} measured RT → {:.2f} reference RT → {:.2f}'.format(lipid,
-                                                                                                              rtm, rtr))
+                    print('! INFO: added lipid calibrant: '
+                          '{} measured RT → {:.2f} min reference RT → {:.2f} min'.format(lipid, rtm, rtr))
         rtc = RTCalibration(lipids, meas_rt, ref_rt)
         if rtc is not None:
             print('! INFO: successfully created a retention time calibration')
@@ -651,13 +652,13 @@ calibrate_rt
             # print the RT calibration information
             print(dset.rt_calibration)
         else:
-            print('! INFO: no retention time calibration available')
+            print('! INFO: there is no retention time calibration available')
         # prompt again
         return False
 
     elif option == '3':
         if dset.rt_calibration is None:
-            print('! INFO: there is no retention time calibration to clear')
+            print('! ERROR: there is no retention time calibration to clear')
             return False
         else:
             dset.rt_calibration = None

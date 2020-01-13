@@ -28,8 +28,6 @@ single_class_plot
         adduct (str) -- MS adduct
         [fa_mod (None or str)] -- fatty acid modifier [optional, default=None]
 """
-    fig_path = 'ccs_pred_perf/{}{}_{}.png'.format(lipid_class, fa_mod if fa_mod else '', adduct)
-
     # theoretical and measured m/z and ccs
     mz_t, ccs_t = [], []
     mz_m, ccs_m = [], []
@@ -64,6 +62,8 @@ single_class_plot
         mz_t.append(float(mz))
         ccs_t.append(float(ccs))
 
+    fig_path = 'ccs_pred_perf/{}_{}{}_{}.png'.format(len(ccs_m), lipid_class, fa_mod if fa_mod else '', adduct)
+
     fig = plt.figure(figsize=(3.33, 2))
     ax = fig.add_subplot(111)
 
@@ -81,7 +81,7 @@ single_class_plot
     #ax.set_xlim([mz_min - 10, mz_max + 10])
     #ax.set_ylim([ccs_min - 2, ccs_max + 2])
 
-    plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.savefig(fig_path, dpi=400, bbox_inches='tight')
     plt.close()
 
 

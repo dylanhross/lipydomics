@@ -12,6 +12,7 @@
 
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
+from numpy import median
 
 rcParams['font.size'] = 6
 
@@ -27,8 +28,6 @@ single_class_plot
         lipid_class (str) -- lipid class
         [fa_mod (None or str)] -- fatty acid modifier [optional, default=None]
 """
-    fig_path = 'rt_pred_perf/{}{}.png'.format(lipid_class, fa_mod if fa_mod else '')
-
     # theoretical and measured retention time
     rt_t, rt_m = [], []
 
@@ -54,12 +53,20 @@ single_class_plot
     for rt in cursor.execute(qry).fetchall():
         rt_m.append(float(rt[0]))
 
+    fig_path = 'rt_pred_perf/{}_{}{}.png'.format(len(rt_m), lipid_class, fa_mod if fa_mod else '')
+
     if len(rt_m) > 0 and len(rt_t) > 0:
+
+        # determine the median of all of the RT values and set the y-bounds of the plots accordingly
+        rt_all = rt_m + rt_t
+        rt_min, rt_max = min(rt_all), max(rt_all)
+        rt_middle = round((rt_max - rt_min) / 2. + rt_min, 1)
+
         fig = plt.figure(figsize=(1.2, 1.8))
         ax = fig.add_subplot(111)
 
         bp1 = ax.boxplot(rt_t, positions=[1], widths=0.8)
-        bp2 = ax.boxplot(rt_m, positions=[2], widths=0.8)
+        bp2 = ax.boxplot(rt_m, positions=[2], widths=0.8, flierprops={'markersize': 3})
 
         plt.setp(bp1['whiskers'], color='r')
         plt.setp(bp2['whiskers'], color='b')
@@ -72,6 +79,7 @@ single_class_plot
 
         ax.set_xlim([0, 3])
         ax.set_xticks([1, 2])
+        ax.set_ylim([rt_middle - 0.7, rt_middle + 0.7])
         ax.set_xticklabels(['theo', 'meas (n={})'.format(len(rt_m))], rotation=45)
         ax.set_ylabel('retention time (min)')
         ax.set_title('{}{}'.format(lipid_class, fa_mod if fa_mod else ''))
@@ -79,7 +87,7 @@ single_class_plot
         for d in ['top', 'right']:
             ax.spines[d].set_visible(False)
 
-        plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+        plt.savefig(fig_path, dpi=400, bbox_inches='tight')
         plt.close()
 
 

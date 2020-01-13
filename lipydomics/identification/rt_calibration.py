@@ -82,7 +82,7 @@ RTCalibration.__repr__
 """
         s = 'RTCalibration(\n\tlipid, measured rt, reference rt\n'
         for lipid, ref, meas in zip(self.lipids, self.ref_rt, self.meas_rt):
-            s += '\t{}, {:.2f}, {:.2f}\n'.format(lipid, meas, ref)
+            s += '\t{}, {:.2f} min, {:.2f} min\n'.format(lipid, meas, ref)
         s += ')'
         return s
 
