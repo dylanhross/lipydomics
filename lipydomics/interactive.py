@@ -675,20 +675,59 @@ calibrate_rt
         return False
 
 
+def abbreviate_sheet(sheet_name):
+    """
+abbreviate_sheet
+    description:
+        For a pandas Dataframe to be exported into an Excel spreadsheet, the sheet names must be no longer than 31
+        characters. In order to export the sheets containing computed statistics, the statistic labels often need to be
+        shortened because they contain information on the statistic and the groups used to calculate it. This function
+        attempts to abbreviate such labels to 31 characters. If a suitable abbreviation cannot be made, then the
+        original name is simply truncated down to 31 characters. All group names are truncated to their first 3
+        characters as well.
+    parameters:
+        sheet_name (str) -- sheet name
+    returns:
+        (str) -- abbreviated sheet name
+"""
+    # just in case this is called in error, always return the sheet name if it is already <32 characters
+    if len(sheet_name) < 32:
+        return sheet_name
+    # abbreviations
+    stat_abbrev = {'PCA3': 'PC3', 'PLS-DA': 'PLS', 'ANOVA': 'ANV', '2-group-corr': '2GC'}
+    load_or_proj_abbrev = {'': '', 'loadings': 'L', 'projections': 'P'}
+    nrm_abbrev = {'raw': 'R', 'normed': 'N'}
+    # parse the stat label for relevant info
+    sheet_name_split = sheet_name.split('_')
+    stat = sheet_name_split[0]
+    if stat not in stat_abbrev:
+        # fall back to simple truncation
+        return sheet_name[:31]
+    nrm = sheet_name_split[-1]
+    load_or_proj = '' if sheet_name_split[-2] not in ['loadings', 'projections'] else sheet_name_split[-2]
+    groups = '-'.join([name[:3] if len(name) > 3 else name for name in sheet_name_split[1].split('-')])
+    # construct the abbreviated name
+    abbrev = stat_abbrev[stat] + load_or_proj_abbrev[load_or_proj] + nrm_abbrev[nrm] + '_' + groups
+    if len(abbrev) > 31:
+        # fall back to simple truncation
+        return sheet_name[:31]
+    return abbrev
+
+
 def export(dset, df):
     """
-    export
-        description:
-            Prompts the user to save a excel file of the current lipidomics dataset:
-                - The user specifies a path where to save the file and it creates an
-                  excel file with all the information that current lipidomics dataset
-                  has.
-        parameters:
-            dset (lipydomics.data.Dataset) -- lipidomics dataset instance
-            df (Pandas DataFrame) -- DataFrame version of lipidomics dataset
-        returns:
-            (bool) -- finished exporting data to excel file
-    """
+export
+    description:
+        Prompts the user to save a excel file of the current lipidomics dataset:
+            - The user specifies a path where to save the file and it creates an
+              excel file with all the information that current lipidomics dataset
+              has.
+    parameters:
+        dset (lipydomics.data.Dataset) -- lipidomics dataset instance
+        df (Pandas DataFrame) -- DataFrame version of lipidomics dataset
+    returns:
+        (bool) -- finished exporting data to excel file
+"""
     print("Exporting data... Where would you like to save the file? \n\texample: 'jang_ho/results.xlsx'")
     print('\t"back" to go back')
     path = input('> ')
@@ -700,6 +739,7 @@ def export(dset, df):
         stats_df = pd.DataFrame(dset.stats[key])
         if "PCA3" in key and "loadings" in key:
             stats_df = stats_df.transpose()
+        key = abbreviate_sheet(key) if len(key) > 31 else key
         stats_df.to_excel(writer, sheet_name=key)
     m = 0
     feat_dict = {}
@@ -732,10 +772,10 @@ def export(dset, df):
         iden_df = pd.DataFrame(feat_dict)
         level_df = pd.DataFrame(dset.feat_id_levels)
         identification_df = pd.concat([label_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
-        identification_df.to_excel(writer, sheet_name='Identification')
+        identification_df.to_excel(writer, sheet_name='Identifications')
     try:
         writer.save()
-        print('! INFO: Successfully exported excel version of the data to {}.'.format(path))
+        print('! INFO: Successfully exported dataset to Excel spreadsheet: {}.'.format(path))
     except:
         print("! ERROR: Unable to export data.")
     return True

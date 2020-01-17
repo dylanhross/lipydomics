@@ -28,6 +28,7 @@ from lipydomics.test.rt_calibration import (
     get_ref_rt_lipids1, rtcal_init_mismatch_len, rtcal_calibrate_rtc1_c12, rtcal_calibrate_rtc1_c13,
     rtcal_calibrate_rtc2_c12, rtcal_calibrate_rtc2_c13
 )
+from lipydomics.test.interactive import abbrev_xl_sheet_names
 
 
 def run_all_tests():
@@ -69,7 +70,9 @@ run_all_tests
         rtcal_calibrate_rtc1_c12,
         rtcal_calibrate_rtc1_c13,
         rtcal_calibrate_rtc2_c12,
-        rtcal_calibrate_rtc2_c13
+        rtcal_calibrate_rtc2_c13,
+        # test/interactive
+        abbrev_xl_sheet_names
     ]
 
     # run the tests
