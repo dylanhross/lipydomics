@@ -2,10 +2,8 @@
     lipydomics/plotting.py
     Dylan H. Ross
     2019/09/23
-
     description:
         A set of functions for generating plots of various features, statistical analyses, etc.
-
 """
 
 
@@ -16,7 +14,8 @@ from matplotlib import rcParams
 
 
 rcParams['font.size'] = 8
-
+cs = ['#2FA2AB', '#9BD0B9', 'Purple', 'Blue', 'Green', 'Orange', 'Red', 'Yellow', 
+      '#E8ACF6', 'Grey', '#D6BF49', '#412F88', '#A2264B', '#3ACBE8', '#1CA3DE', '#0D85D8']
 
 def barplot_feature_bygroup(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 1.)):
     """
@@ -75,7 +74,7 @@ barplot_feature_bygroup
         x = [_ for _ in range(len(group_data))]
         y = [np.mean(_) for _ in group_data]
         e = [np.std(_) for _ in group_data]
-        c = [c_ for _, c_ in zip(x, ['r', 'b', '#ffa600', 'purple', 'green', 'm'])]
+        c = [c_ for _, c_ in zip(x, cs)]
 
         fig = plt.figure(figsize=(1. + 0.5 * len(group_names), 2))
         ax = fig.add_subplot(111)
@@ -107,7 +106,6 @@ scatter_pca3_projections_bygroup
         generates a scatter plot of the PCA projections for a specified set of groups and saves the image to a 
         specified directory. The filename of the image is:
             'PCA3_{group_name1}-{group_name2}-{etc.}_projections_{raw or normed}.png'
-
         * The same group names (in the same order) as were used in the call to add_pca3(...) must be used. *
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
@@ -138,7 +136,7 @@ scatter_pca3_projections_bygroup
         si.append(len(dataset.group_indices[gn]) + i)
         i += l
 
-    for dg, c, gn in zip(np.split(d, si), ['r', 'b', '#ffa600', 'purple', 'green', 'm'], group_names):
+    for dg, c, gn in zip(np.split(d, si), cs, group_names):
         ax.scatter(*dg.T[:2], marker='.', s=24, c=c, label=gn)
 
     for d in ['top', 'right', 'bottom', 'left']:
@@ -163,7 +161,6 @@ scatter_plsda_projections_bygroup
         generates a scatter plot of the PLS-DA projections for a specified set of groups and saves the image to a 
         specified directory. The filename of the image is:
             'PLS-DA_projections_{group_A}-{group_B}_{raw or normed}.png'
-
         * The same group names (in the same order) as were used in the call to add_plsda(...) must be used. *
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
@@ -267,4 +264,3 @@ splot_plsda_pcorr_bygroup
     plt.tight_layout()
     plt.savefig(fig_path, dpi=300, bbox_inches='tight')
     plt.close()
-
