@@ -10,13 +10,14 @@ and computed statistics. The `stats` module contains functions for computing sta
 instance and the `plotting` module has functions for generating various plots using computed statistics or the data
 itself. The `identification` module has functions for identifying lipid features using different levels of information. 
 The `interactive` module provides a more user-friendly text-based interface for performing lipidomics data analysis
-for those who are not as familiar/comfortable with the more flexible Python API. Documentation for all of the above
-modules is available in HTML format under `lipydomics/doc/lipydomics.html`.
+for those who are not as familiar/comfortable with the more flexible Python API. 
+
+**Complete documentation for all modules is available in HTML format under `lipydomics/doc/lipydomics.html`.**
   
   
 # API 
 
-## Dataset
+## Data
 The `lipydomics.data` module contains the `Dataset` object, which organizes all of the relevant data from a lipidomics 
 analysis together. This includes raw data, normalized data, group assignments, experimental metadata, computed 
 statistics, retention time calibration, and compound identifications. 
@@ -118,5 +119,64 @@ dset.save_bin('saved_dataset.pickle')
 ```
 
 ## Stats
-The `lipydomics.stats` module contains several functions for applying statistical analyses to a `Dataset` instance.
+The `lipydomics.stats` module contains several functions for applying statistical analyses to a `Dataset` instance. All
+stats functions have a similar interface, taking a reference to the `Dataset` instance, a list of group names to use for
+the analysis, and an optional boolean indicating whether to use raw or normalized intensities as input. Depending on the
+statistic being applied, one or more entries may be added to the `Dataset.stats` instance variable, which is a 
+dictionary that maps statistic labels (`str`) to their corresponding data (typically `numpy.ndarray`).
+
+
+### ANOVA p-value
+Adds a single column containing ANOVA p-values calculated using the specified groups.
+
+```python
+from lipydomics.stats import add_anova_p
+
+# compute ANOVA between groups A, B, C, and D with normalized data
+add_anova_p(dset, ['A', 'B', 'C', 'D'], normed=True)
+```
+The above example would add an entry to `dset.stats` with the label `ANOVA_A-B-C-D_normed`.
+
+
+### Pearson Correlation
+Computes per-feature Pearson correlation coefficients between two specified groups.
+
+```python
+from lipydomics.stats import add_2group_corr
+
+# compute correlation between 'wt' and 'ko' using raw data
+add_2group_corr(dset, ['wt', 'ko'])
+```
+The above example would add an entry to `dset.stats` with the label `2-group-corr_wt-ko_raw`.
+
+
+### Principle Components Analysis
+Computes a 3-component PCA using the specified groups, storing the PCA projections for each sample and the component
+loadings for each feature separately.
+
+```python
+from lipydomics.stats import add_pca3
+
+# compute the PCA for 4 groups using normalized data
+add_pca3(dset, ['sweet', 'sour', 'salty', 'bitter'], normed=True)
+```
+The above example would add two entries to `dset.stats` with labels `PCA3_sweet-sour-salty-bitter_loadings_normed` and 
+`PCA3_sweet-sour-salty-bitter_projections_normed`.
+
+
+### Partial Least-Squares Discriminant Analysis
+Computes a PLS-DA between two specified groups, storing the projections for each sample and the component
+loadings for each feature separately.
+
+```python
+from lipydomics.stats import add_plsda
+
+# compute PLS-DA between 'wt' and 'ko' using raw data
+add_plsda(dset, ['wt', 'ko'])
+```
+
+
+## Plotting
+
+
 
