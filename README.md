@@ -177,6 +177,64 @@ add_plsda(dset, ['wt', 'ko'])
 
 
 ## Plotting
+The `lipydomics.plotting` module contains several functions for generating plots from the data stored in a `Dataset` 
+instance. All plotting  functions have a similar interface, taking a reference to the `Dataset` instance, a list of 
+group names, a directory name to save the image under, and an optional boolean indicating whether to use raw or 
+normalized intensities. The list of group names and raw/normalized data indicator are used to reference `Dataset.stats`
+and retrieve the relevant data for plotting.
 
 
+### Barplot Feature by Group
+The `barplot_feature_bygroup` function generates barplots of average intensities (and standard deviations) for features 
+from a defined set of groups. Feature identifiers (m/z, retention time, and CCS) are provided as input, along with 
+search tolerances for each, and plots are generated for all matching features in the `Dataset`.
+
+```python
+from lipydomics.plotting import barplot_feature_bygroup
+
+# m/z = 234.65678, retention time = 2.34, CCS = 123.4
+feature = (234.5678, 2.34, 123.4)
+# tight search tolerance
+tol = (0.01, 0.1, 1.0)
+barplot_feature_bygroup(dset, ['A, B, C'], 'analysis/features/', feature, tolerance=tol)
+```
+
+
+### Scatter PCA Projections by Group
+Generate a scatter plot of PCA projections for a specified set of groups. Requires the corresponding statistic to
+already be present in `Dataset.stats`.
+
+```python
+from lipydomics.plotting import scatter_pca3_projections_bygroup
+
+# groups A, B, C, and D, normalized data
+scatter_pca3_projections_bygroup(dset, ['A', 'B', 'C', 'D'], 'analysis/', normed=True)
+```
+
+
+### Scatter PLS-DA Projections by Group
+Generate a scatter plot of PLS-DA projections for two specified set of groups. Requires the corresponding statistic to
+already be present in `Dataset.stats`.
+
+```python
+from lipydomics.plotting import scatter_plsda_projections_bygroup
+
+# groups wt vs. ko, normalized data
+scatter_plsda_projections_bygroup(dset, ['wt', 'ko'], 'analysis/wt_ko/', normed=True)
+```
+
+
+### S-Plot 
+Generates an S-Plot using the x-loadings and Pearson correlation coefficients for all features, computed using the same
+two groups. Requires the corresponding statistics to already be present in `Dataset.stats`.
+
+```python
+from lipydomics.plotting import splot_plsda_pcorr_bygroup
+
+# groups wt vs. ko, raw data
+splot_plsda_pcorr_bygroup(dset, ['wt', 'ko'], 'analysis/wt_ko/')
+```
+
+
+## Identification
 
