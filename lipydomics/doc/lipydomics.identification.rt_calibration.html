@@ -105,7 +105,19 @@ Data descriptors defined here:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-connect"><strong>connect</strong></a>(...)</dt><dd><tt><a href="#-connect">connect</a>(database[,&nbsp;timeout,&nbsp;detect_types,&nbsp;isolation_level,<br>
+<td width="100%"><dl><dt><a name="-add_rt_calibration"><strong>add_rt_calibration</strong></a>(dataset, lipids, meas_rt, ref_rt)</dt><dd><tt>add_feature_ids<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates&nbsp;an&nbsp;<a href="#RTCalibration">RTCalibration</a>&nbsp;instance&nbsp;and&nbsp;stores&nbsp;it&nbsp;in&nbsp;a&nbsp;Dataset&nbsp;<a href="builtins.html#object">object</a><br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;<a href="#RTCalibration">RTCalibration</a>&nbsp;instance&nbsp;is&nbsp;stored&nbsp;in&nbsp;`Dataset.rt_calibration`<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;subsequent&nbsp;calls&nbsp;to&nbsp;this&nbsp;function&nbsp;will&nbsp;override&nbsp;previous&nbsp;results&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lipids&nbsp;(list(str))&nbsp;--&nbsp;lipid&nbsp;calibrants<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;meas_rt&nbsp;(list(float))&nbsp;--&nbsp;measured&nbsp;retention&nbsp;times<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ref_rt&nbsp;(list(float))&nbsp;--&nbsp;reference&nbsp;retention&nbsp;times</tt></dd></dl>
+ <dl><dt><a name="-connect"><strong>connect</strong></a>(...)</dt><dd><tt><a href="#-connect">connect</a>(database[,&nbsp;timeout,&nbsp;detect_types,&nbsp;isolation_level,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;check_same_thread,&nbsp;factory,&nbsp;cached_statements,&nbsp;uri])<br>
 &nbsp;<br>
 Opens&nbsp;a&nbsp;connection&nbsp;to&nbsp;the&nbsp;SQLite&nbsp;database&nbsp;file&nbsp;*database*.&nbsp;You&nbsp;can&nbsp;use<br>

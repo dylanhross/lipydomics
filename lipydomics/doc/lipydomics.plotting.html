@@ -12,7 +12,6 @@
     <p><tt>lipydomics/plotting.py<br>
 Dylan&nbsp;H.&nbsp;Ross<br>
 2019/09/23<br>
-&nbsp;<br>
 description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;set&nbsp;of&nbsp;functions&nbsp;for&nbsp;generating&nbsp;plots&nbsp;of&nbsp;various&nbsp;features,&nbsp;statistical&nbsp;analyses,&nbsp;etc.</tt></p>
 <p>
@@ -52,7 +51,6 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;scatter&nbsp;plot&nbsp;of&nbsp;the&nbsp;PCA&nbsp;projections&nbsp;for&nbsp;a&nbsp;specified&nbsp;set&nbsp;of&nbsp;groups&nbsp;and&nbsp;saves&nbsp;the&nbsp;image&nbsp;to&nbsp;a&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PCA3_{group_name1}-{group_name2}-{etc.}_projections_{raw&nbsp;or&nbsp;normed}.png'<br>
-&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;The&nbsp;same&nbsp;group&nbsp;names&nbsp;(in&nbsp;the&nbsp;same&nbsp;order)&nbsp;as&nbsp;were&nbsp;used&nbsp;in&nbsp;the&nbsp;call&nbsp;to&nbsp;add_pca3(...)&nbsp;must&nbsp;be&nbsp;used.&nbsp;*<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
@@ -64,7 +62,6 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;scatter&nbsp;plot&nbsp;of&nbsp;the&nbsp;PLS-DA&nbsp;projections&nbsp;for&nbsp;a&nbsp;specified&nbsp;set&nbsp;of&nbsp;groups&nbsp;and&nbsp;saves&nbsp;the&nbsp;image&nbsp;to&nbsp;a&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PLS-DA_projections_{group_A}-{group_B}_{raw&nbsp;or&nbsp;normed}.png'<br>
-&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;The&nbsp;same&nbsp;group&nbsp;names&nbsp;(in&nbsp;the&nbsp;same&nbsp;order)&nbsp;as&nbsp;were&nbsp;used&nbsp;in&nbsp;the&nbsp;call&nbsp;to&nbsp;add_plsda(...)&nbsp;must&nbsp;be&nbsp;used.&nbsp;*<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
@@ -88,7 +85,8 @@ description:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>rcParams</strong> = RcParams({'_internal.classic_mode': False,
+<td width="100%"><strong>cs</strong> = ['#2FA2AB', '#9BD0B9', 'Purple', 'Blue', 'Green', 'Orange', 'Red', 'Yellow', '#E8ACF6', 'Grey', '#D6BF49', '#412F88', '#A2264B', '#3ACBE8', '#1CA3DE', '#0D85D8']<br>
+<strong>rcParams</strong> = RcParams({'_internal.classic_mode': False,
      ...nor.width': 0.6,
           'ytick.right': False})</td></tr></table>
 </body></html>
