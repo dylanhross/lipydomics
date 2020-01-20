@@ -138,3 +138,20 @@ RTCalibration.get_calibrated_rt
 
         return None
 
+
+def add_rt_calibration(dataset, lipids, meas_rt, ref_rt):
+    """
+add_feature_ids
+    description:
+        Creates an RTCalibration instance and stores it in a Dataset object
+
+        The RTCalibration instance is stored in `Dataset.rt_calibration`
+
+        * subsequent calls to this function will override previous results *
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        lipids (list(str)) -- lipid calibrants
+        meas_rt (list(float)) -- measured retention times
+        ref_rt (list(float)) -- reference retention times
+"""
+    dataset.rt_calibration = RTCalibration(lipids, meas_rt, ref_rt)

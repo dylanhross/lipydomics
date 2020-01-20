@@ -327,6 +327,7 @@ add_feature_ids
             (low)
             'theo_mz' -- simple matching based on theoretical m/z
             'theo_mz_ccs' -- match on theoretical m/z and CCS
+            'theo_mz_rt_ccs' -- match on theoretical m/z, rt, and CCS
             'meas_mz_ccs' -- match on measured m/z and CCS
             'meas_mz_rt_ccs' -- match on m/z, rt, and CCS
             (high)

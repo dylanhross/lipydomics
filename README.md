@@ -237,4 +237,52 @@ splot_plsda_pcorr_bygroup(dset, ['wt', 'ko'], 'analysis/wt_ko/')
 
 
 ## Identification
+The `lipydomics.identification` module allows lipid features to be identified on the basis of their m/z, retention time,
+and CCS. Lipid identifications are produced by comparison against a database of experimentally observed lipids, as well
+as a database of theoretical values. Different levels of identification can be specified as follows:
 
+| identification level | description |
+| :---: | :--- |
+| `theo_mz` | match only on theoretical m/z |
+| `theo_mz_ccs` | match on theoretical m/z and CCS |
+| `meas_mz_ccs` | match on measured m/z and CCS |
+| `meas_mz_rt_ccs` | match on measured m/z, rt, and CCS |
+| `any` | start at the highest level (`meas_mz_rt_ccs`) then work down until an identification can be made |
+
+_Example:_
+```python
+from lipydomics.identification import add_feature_ids
+
+tol = (0.02, 0.2, 2.0)
+# identify features at the highest level possible
+add_feature_ids(dset, tol, level='any')
+```
+The resulting lipid identifications are stored in the `Dataset.feat_ids` instance variable as lists of putative IDs for 
+each feature. The `Dataset.feat_id_levels` instance variable holds the identification level for each feature, and the 
+`Dataset.feat_id_scores` instance variable holds the scores for each putative lipid ID. Multiple calls to 
+`add_feature_ids` with different parameters will override results from previous calls. 
+
+
+### Retention Time Calibration
+All of the retention times (measured or theoretical) in the lipid database correspond to a reference HILIC method 
+(Hines, _et al. J. Lipid Res._ **58**, 2017). The `lipydomics.identification.rt_calibration` module allows comparison 
+between retention times measured on other (HILIC) methods via the `add_rt_calibration` method:
+
+```python
+from lipydomics.identification.rt_calibration import add_rt_calibration
+
+# lipid calibrants, measured and reference retention times
+lipids = ['FFA(18:0)', 'PG(36:0)', 'CL(60:0)', 'LysylPG(34:0)']
+meas_rt = [0.673, 1.549, 2.843, 3.996]
+ref_rt = [0.673, 1.549, 4.393, 7.252]
+
+# apply RT calibration to Dataset
+add_rt_calibration(dset, lipids, meas_rt, ref_rt)
+```
+
+**Once a retention time calibration has been set up, `add_feature_ids` automatically uses calibrated retention times 
+when trying to identify lipids**
+
+
+## Interactive
+Documentation for the `lipydomics.interactive` module are available separately in [interactive.md](interactive.md).
