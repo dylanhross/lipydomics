@@ -245,8 +245,9 @@ as a database of theoretical values. Different levels of identification can be s
 | :---: | :--- |
 | `theo_mz` | match only on theoretical m/z |
 | `theo_mz_ccs` | match on theoretical m/z and CCS |
+| `theo_mz_rt_ccs` | match on theoretical m/z, retention time, and CCS |
 | `meas_mz_ccs` | match on measured m/z and CCS |
-| `meas_mz_rt_ccs` | match on measured m/z, rt, and CCS |
+| `meas_mz_rt_ccs` | match on measured m/z, retention time, and CCS |
 | `any` | start at the highest level (`meas_mz_rt_ccs`) then work down until an identification can be made |
 
 _Example:_
