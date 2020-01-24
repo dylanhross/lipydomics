@@ -230,6 +230,7 @@ as a database of theoretical values. Different levels of identification can be s
 | identification level | description |
 | :---: | :--- |
 | `theo_mz` | match only on theoretical m/z |
+| `theo_mz_rt` | match on theoretical m/z and retention time |
 | `theo_mz_ccs` | match on theoretical m/z and CCS |
 | `theo_mz_rt_ccs` | match on theoretical m/z, retention time, and CCS |
 | `meas_mz_ccs` | match on measured m/z and CCS |

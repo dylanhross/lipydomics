@@ -459,6 +459,7 @@ identify_lipids
     tol = [float(t) for t in tolerance]
     print("Please specify an identification level")
     print("\t'theo_mz' - match on theoretical m/z")
+    print("\t'theo_mz_rt' - match on theoretical m/z and retention time")
     print("\t'theo_mz_ccs' - match on theoretical m/z and CCS")
     print("\t'theo_mz_rt_ccs' - match on theoretical m/z, retention time, and CCS")
     print("\t'meas_mz_ccs' - match on measured m/z and CCS")
@@ -467,7 +468,7 @@ identify_lipids
     print("\t'back' to go back")
     option = input('> ')
 
-    if option in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
+    if option in ['theo_mz', 'theo_mz_rt', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
         # make the identifications
         try:
             add_feature_ids(dset, tol, level=option)
