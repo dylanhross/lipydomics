@@ -211,7 +211,12 @@ filter_data
     elif option == "2":
         print("Please provide the path of the file with batch-query information")
         path = input('> ')
-        query = pd.read_csv(path)
+        try:
+            query = pd.read_csv(path)
+        except:
+            print("! ERROR: Failed to load the file. Please make sure the file exists at the right path.")
+            return False
+
         print("Which group would you like to choose? ('All' to select the whole data)")
         group = input('> ')
         try:
@@ -734,7 +739,11 @@ export
     if path == "back":
         return True
     writer = pd.ExcelWriter(path, engine='xlsxwriter')
-    df.to_excel(writer, sheet_name='Data')
+    new_df = df
+    columns = [x - 3 for x in df.columns.values]
+    columns = ['mz', 'rt', 'ccs'] + columns[3:]
+    new_df.columns = columns
+    new_df.to_excel(writer, sheet_name='Data')
     for key in dset.stats:
         stats_df = pd.DataFrame(dset.stats[key])
         if "PCA3" in key and "loadings" in key:
@@ -763,6 +772,11 @@ export
                 else:
                     s.append("")
         feat_dict[i] = s
+    if dset.rt_calibration is not None:
+        cal_rts = [dset.rt_calibration.get_calibrated_rt(rt) for mz, rt, ccs in dset.labels]
+        cal_df = pd.DataFrame(cal_rts)
+        cal_df.to_excel(writer, sheet_name="rt_calibration")
+
     if dset.normed_intensities is not None:
         norm_df = pd.DataFrame(dset.normed_intensities)
         norm_df = pd.concat([label_df, norm_df], axis=1, ignore_index=True, sort=False)
@@ -772,6 +786,9 @@ export
         iden_df = pd.DataFrame(feat_dict)
         level_df = pd.DataFrame(dset.feat_id_levels)
         identification_df = pd.concat([label_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
+        id_columns = [x - 5 for x in identification_df.columns.values]
+        id_columns = ['mz', 'rt', 'ccs', 'id_level', 'putative_id'] + id_columns[5:]
+        identification_df.columns = id_columns
         identification_df.to_excel(writer, sheet_name='Identifications')
     try:
         writer.save()
