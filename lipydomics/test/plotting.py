@@ -10,12 +10,13 @@
 
 import os
 import numpy as np
+from csv import reader
 
 from lipydomics.data import Dataset
 from lipydomics.stats import add_pca3, add_plsda, add_2group_corr
 from lipydomics.plotting import (
-    barplot_feature_bygroup, scatter_pca3_projections_bygroup, scatter_plsda_projections_bygroup, 
-    splot_plsda_pcorr_bygroup
+    barplot_feature_bygroup, batch_barplot_feature_bygroup, scatter_pca3_projections_bygroup,
+    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup
 )
 
 
@@ -56,6 +57,44 @@ barplot_feature_bygroup_mock1
             # delete the image file 
             os.remove(img_path)
 
+    return True
+
+
+def batch_barplot_feature_bygroup_real1():
+    """
+batch_barplot_feature_bygroup_mock1
+    description:
+        Using the normalized data from real_data_1.csv, extract and plot average values for each feature defined in
+        real1_features1.csv
+        Image files are saved in the lipydomics/test directory, then deleted.
+
+        Test fails if there are any errors, or if the image files are not produced
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    dset.assign_groups({'A': [0, 2, 4], 'B': [1, 3, 5]})
+    dset.normalize(np.array([0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75,
+                             0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75]))
+    group_names = ['Par', 'Dap2', 'Dal2', 'Van4', 'Van8']
+    dset.assign_groups_with_replicates(group_names, 4)
+    img_dir = os.path.dirname(__file__)
+    in_csv = os.path.join(os.path.dirname(__file__), 'real1_features1.csv')
+    batch_barplot_feature_bygroup(dset, group_names, img_dir, in_csv, normed=True)
+    # go through and remove all of the barplots
+    with open(in_csv, 'r') as inf:
+        next(inf)
+        rdr = reader(inf)
+        for mz, rt, ccs in rdr:
+            mz, rt, ccs = float(mz), float(rt), float(ccs)
+            img_path = os.path.join(img_dir,
+                                    'bar_{:.4f}-{:.2f}-{:.1f}_{}_normed.png'.format(mz, rt, ccs, '-'.join(group_names)))
+            if not os.path.isfile(img_path):
+                m = 'batch_barplot_feature_bygroup_real1: image file {} not found'
+                raise RuntimeError(m.format(img_path))
+            else:
+                # delete the image file
+                os.remove(img_path)
     return True
 
 
