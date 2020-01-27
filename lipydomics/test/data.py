@@ -122,3 +122,35 @@ dataset_save_load_bin_mock1
     os.remove(bin_path)
     return True
 
+
+def dataset_export_feature_data_real1():
+    """
+dataset_export_feature_data_real1
+    description:
+        Loads a dataset (real_data_1.csv) then exports a selection of features, first with a Dataset that has only
+        raw data, then with a Dataset that has raw and normalized data.
+
+        Test fails if there are any errors, or if either of the output .csv files do not get produced
+        (bool) -- test pass (True) or fail (False)
+"""
+    incsv = os.path.join(os.path.dirname(__file__), 'real1_features1.csv')
+    outcsv1 = os.path.join(os.path.dirname(__file__), 'real1_export_raw1.csv')
+    outcsv2 = os.path.join(os.path.dirname(__file__), 'real1_export_norm1.csv')
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    dset.export_feature_data(incsv, outcsv1)
+    # make sure the output file gets created
+    if not os.path.isfile(outcsv1):
+        m = 'dataset_export_feature_data_real1: output {} not found'
+        raise RuntimeError(m.format(outcsv1))
+    # normalize the data and try again
+    dset.normalize(np.array([0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75,
+                             0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75]))
+    dset.export_feature_data(incsv, outcsv2)
+    if not os.path.isfile(outcsv2):
+        m = 'dataset_export_feature_data_real1: output {} not found'
+        raise RuntimeError(m.format(outcsv2))
+    # remove the output files
+    os.remove(outcsv1)
+    os.remove(outcsv2)
+    return True
+

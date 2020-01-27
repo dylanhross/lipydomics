@@ -10,6 +10,7 @@
 
 import numpy as np
 import pickle
+from csv import reader
 
 
 class Dataset:
@@ -229,4 +230,50 @@ Dataset.__repr__
             s += '\t}\n'
         s += ')'
         return s
+
+    def export_feature_data(self, in_csv, out_csv, tolerance=(0.01, 0.1, 1.0)):
+        """
+Dataset.export_feature_data
+    description:
+        Searches features using values from an input .csv file and adds corresponding data for matching features to
+        an output .csv file.
+    parameters:
+        in_csv (str) -- input file path, .csv format
+        out_csv (str) -- output file path, .csv format
+        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search [optional, default=(0.01, 0.1, 1.)]
+    returns:
+        (bool) -- success (True), failure (no features found, False)
+"""
+        mzt, rtt, ccst = tolerance
+        to_export = []
+        with open(in_csv, 'r') as inf:
+            next(inf)  # expects  a header row
+            rdr = reader(inf)
+            for mz, rt, ccs in rdr:  # iterate through query values
+                mz, rt, ccs = float(mz), float(rt), float(ccs)
+                for i in range(self.n_features): # iterate through all of the feature labels
+                    mz_f, rt_f, ccs_f = self.labels[i]
+                    if abs(mz - mz_f) <= mzt and abs(rt - rt_f) <= rtt and abs(ccs - ccs_f) <= ccst:
+                        # matched feature
+                        line = [mz_f, rt_f, ccs_f] + self.intensities[i].tolist()
+                        # check for normalized data
+                        if self.normed_intensities is not None:
+                            line += self.normed_intensities[i].tolist()
+                        to_export.append(line)
+        # check if any features were found
+        if to_export != []:
+            # determine the header(s)
+            top_line = 'm/z,retention time,CCS,raw intensities' + ''.join([',' for _ in range(self.n_samples - 1)])
+            if self.normed_intensities is not None:
+                top_line += ',normalized intensities' + ''.join([',' for _ in range(self.n_samples - 1)])
+            top_line += '\n'
+            # write the output file
+            with open(out_csv, 'w') as outf:
+                outf.write(top_line)
+                for line in to_export:
+                    outf.write(','.join(str(_) for _ in line) + '\n')
+            return True
+        else:
+            return False
+
 
