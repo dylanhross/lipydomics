@@ -101,6 +101,47 @@ id_feat_theo_mz
         return '', '', []
 
 
+def id_feat_theo_mz_rt(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
+    """
+id_feat_theo_mz_rt
+    description:
+        identifies a feature on the basis of theoretical m/z and retention time
+    parameters:
+        cursor (sqlite3.Cursor) -- cursor for querying lipids.db
+        mz (float) -- m/z to match
+        rt (float) -- retention time to match
+        ccs (float) -- CCS to match
+        tol_mz (float) -- tolerance for m/z 
+        tol_rt (float) -- tolerance for retention time
+        tol_ccs (float) -- tolerance for CCS
+        esi_mode (str) -- filter results by ionization mode: 'neg', 'pos', or None for unspecified
+        [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
+    returns:
+        (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
+"""
+    qry = 'SELECT name, adduct, mz, rt FROM theoretical_mz JOIN theoretical_rt ON ' \
+            + 'theoretical_mz.t_id=theoretical_rt.t_id WHERE mz BETWEEN ? AND ? AND rt BETWEEN ? and ?'
+    if esi_mode == 'pos':
+        qry += ' AND adduct LIKE "%+"'
+    elif esi_mode == 'neg':
+        qry += ' AND adduct LIKE "%-"'
+
+    mz_min = mz - tol_mz
+    mz_max = mz + tol_mz
+    rt_min = rt - tol_rt
+    rt_max = rt + tol_rt
+
+    putative_ids, putative_scores = [], []
+    for name, adduct, mz_x, rt_x in cursor.execute(qry, (mz_min, mz_max, rt_min, rt_max)).fetchall():
+        putative_ids.append('{}_{}'.format(name, adduct))
+        putative_scores.append(get_score(tol_mz, tol_rt, tol_ccs, mz_q=mz, rt_q=rt, mz_x=mz_x, rt_x=rt_x))
+
+    if putative_ids:
+        return putative_ids, 'theo_mz_rt', putative_scores
+    else:
+        return '', '', []
+
+
 def id_feat_theo_mz_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
     """
 id_feat_theo_mz_ccs
@@ -111,7 +152,7 @@ id_feat_theo_mz_ccs
         mz (float) -- m/z to match
         rt (float) -- retention time to match
         ccs (float) -- CCS to match
-        tol_mz (float) -- tolerance for m/z 
+        tol_mz (float) -- tolerance for m/z
         tol_rt (float) -- tolerance for retention time
         tol_ccs (float) -- tolerance for CCS
         esi_mode (str) -- filter results by ionization mode: 'neg', 'pos', or None for unspecified
@@ -301,6 +342,7 @@ id_feat_any
         id_feat_meas_mz_ccs,
         id_feat_theo_mz_rt_ccs,
         id_feat_theo_mz_ccs,
+        id_feat_theo_mz_rt,
         id_feat_theo_mz
     ]
 
@@ -368,6 +410,7 @@ add_feature_ids
         'meas_mz_ccs': id_feat_meas_mz_ccs,
         'theo_mz_rt_ccs': id_feat_theo_mz_rt_ccs,
         'theo_mz_ccs': id_feat_theo_mz_ccs,
+        'theo_mz_rt': id_feat_theo_mz_rt,
         'theo_mz': id_feat_theo_mz
     } 
 

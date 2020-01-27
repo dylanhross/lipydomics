@@ -201,12 +201,3 @@ Functionalities
 	- `! ERROR: Make sure the path specified is correct and the file exists.` message is shown upon failure. Make sure to check the file exits and is in right format specified below
 
 
-Support
--------
-
-If you are having issues, please let us know.
-
-License
--------
-
-The project is licensed under a license.
