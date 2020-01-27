@@ -715,6 +715,40 @@ abbreviate_sheet
     return abbrev
 
 
+def batch_feature_selection(dset):
+    """
+batch_feature_selection
+    description:
+        Prompts the user to
+    parameters:
+        dset (lipydomics.data.Dataset) -- lipidomics dataset instance
+    returns:
+        (bool) -- success exporting features
+"""
+    print("Batch Feature Selection... Enter the name of the file with features to select")
+    print("\texample: 'select_these_features.csv'")
+    print('\t"back" to go back')
+    inpath = input('> ')
+    if inpath == "back":
+        return True
+    if not os.path.isfile(inpath):
+        print('! ERROR: unable to find input file: "{}", check path and try again'.format(inpath))
+        return False
+    print("Enter the name of file to save the selected data in\n\texample: 'selected_features_raw.csv'")
+    outpath = input('> ')
+    success = False
+    try:
+        success = dset.export_feature_data(inpath, outpath)
+        if not success:
+            print('! ERROR: no matching features found in dataset')
+            return False
+        else:
+            print('! INFO: selected features exported to: "{}"'.format(outpath))
+    except Exception as e:
+        print('! ERROR: unable to select feature data ({})'.format(e))
+    return True
+
+
 def export(dset, df):
     """
 export
@@ -815,8 +849,9 @@ main
         print("\t6.  Normalize Intensities")
         print("\t7.  Calibrate Retention Time")
         print("\t8.  Overview of Dataset")
-        print("\t9.  Export Current Dataset to Spreadsheet")
-        print("\t10. Save Current Dataset to File")
+        print("\t9.  Batch Feature Selection")
+        print("\t10. Export Current Dataset to Spreadsheet")
+        print("\t11. Save Current Dataset to File")
         print('\t"exit" to quit the interface')
         option = input('> ')
         # Manage Groups
@@ -855,11 +890,14 @@ main
         # Overview of Dataset
         elif option == '8':
             print(dset)
-        # Export Current Dataset to Spreadsheet
+        # Batch Feature Selection
         elif option == '9':
+            batch_feature_selection(dset)
+        # Export Current Dataset to Spreadsheet
+        elif option == '10':
             export(dset, df)
         # Save Current Dataset to File
-        elif option == '10':
+        elif option == '11':
             print("Saving Current Dataset to File... Please enter the full path and file name to save the Dataset "
                   "under.\n\t* .pickle file\n\t* no spaces in path)\n\texample: 'jang_ho/191120_bacterial_pos.pickle'")
             pickle_path = input('> ')
