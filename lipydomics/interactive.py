@@ -738,7 +738,7 @@ batch_feature_selection
     outpath = input('> ')
     success = False
     try:
-        success = dset.export_feature_data(inpath, outpath)
+        success = dset.select_feature_data(inpath, outpath)
         if not success:
             print('! ERROR: no matching features found in dataset')
             return False

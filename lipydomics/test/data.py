@@ -137,7 +137,7 @@ dataset_export_feature_data_real1
     outcsv1 = os.path.join(os.path.dirname(__file__), 'real1_export_raw1.csv')
     outcsv2 = os.path.join(os.path.dirname(__file__), 'real1_export_norm1.csv')
     dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
-    dset.export_feature_data(incsv, outcsv1)
+    dset.select_feature_data(incsv, outcsv1)
     # make sure the output file gets created
     if not os.path.isfile(outcsv1):
         m = 'dataset_export_feature_data_real1: output {} not found'
@@ -145,7 +145,7 @@ dataset_export_feature_data_real1
     # normalize the data and try again
     dset.normalize(np.array([0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75,
                              0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75]))
-    dset.export_feature_data(incsv, outcsv2)
+    dset.select_feature_data(incsv, outcsv2)
     if not os.path.isfile(outcsv2):
         m = 'dataset_export_feature_data_real1: output {} not found'
         raise RuntimeError(m.format(outcsv2))

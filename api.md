@@ -104,6 +104,34 @@ library.
 dset.save_bin('saved_dataset.pickle')
 ```
 
+### Batch Selecting Features
+Feature data can be selected and exported to a .csv file using the `Dataset.select_feature_data` method. This method
+takes as input the name of a .csv file containing the features to select, the name of the output .csv file to generate,
+and optional search tolerances for m/z, retention time, and CCS. All matching features and their corresponding 
+intensities (raw and normalized, if available) are written to the output file. This method is useful for selecting out
+data for features that you know about ahead of time. If no matching features are found, then the output file is not 
+written.
+
+**Example:**
+```python
+dset.select_feature_data('input.csv', 'output.csv', tolerance=(0.025, 0.25, 2.5))
+```
+
+*Structure of `input.csv`*:
+
+| m/z | rt | ccs |
+|:---:|:---:|:---:|
+| 234.5678 | 3.45 | 123.4 |
+| ... | ... | ... |
+
+*Structure of `output.csv`*:
+
+| m/z | retention time | CCS | raw intensities | | ... |  |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 234.5678 | 3.45 | 123.4 | 45678 | 56789 | ... | 23456 |
+| ... | ... | ... | ... | ... | ... | ... |
+
+
 ## Stats
 The `lipydomics.stats` module contains several functions for applying statistical analyses to a `Dataset` instance. All
 stats functions have a similar interface, taking a reference to the `Dataset` instance, a list of group names to use for

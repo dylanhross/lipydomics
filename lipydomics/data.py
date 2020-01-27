@@ -231,9 +231,9 @@ Dataset.__repr__
         s += ')'
         return s
 
-    def export_feature_data(self, in_csv, out_csv, tolerance=(0.01, 0.1, 1.0)):
+    def select_feature_data(self, in_csv, out_csv, tolerance=(0.01, 0.1, 1.0)):
         """
-Dataset.export_feature_data
+Dataset.select_feature_data
     description:
         Searches features using values from an input .csv file and adds corresponding data for matching features to
         an output .csv file.
