@@ -9,6 +9,7 @@
 
 import os
 import numpy as np
+from csv import reader
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
@@ -16,6 +17,7 @@ from matplotlib import rcParams
 rcParams['font.size'] = 8
 cs = ['#2FA2AB', '#9BD0B9', 'Purple', 'Blue', 'Green', 'Orange', 'Red', 'Yellow', 
       '#E8ACF6', 'Grey', '#D6BF49', '#412F88', '#A2264B', '#3ACBE8', '#1CA3DE', '#0D85D8']
+
 
 def barplot_feature_bygroup(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 1.)):
     """
@@ -46,8 +48,10 @@ barplot_feature_bygroup
             found_feat.append(i)
 
     if not found_feat:
-        print('did not find a feature matching mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz_r, rt_r, ccs_r), 
-              'within tolerances:', tolerance)
+        # we should not be printing messages at this level... let the interface handle that, this is why we have a
+        # return status to check
+        #print('did not find a feature matching mz: {:.4f} rt: {:.2f} ccs: {:.1f}'.format(mz_r, rt_r, ccs_r),
+        #      'within tolerances:', tolerance)
         return False
 
     # go through each matched feature and generate a plot
@@ -97,6 +101,30 @@ barplot_feature_bygroup
         plt.close()
     # if we made it here, at least one feature was found
     return True
+
+
+def batch_barplot_feature_bygroup(dataset, group_names, img_dir, in_csv, normed=False, tolerance=(0.01, 0.1, 1.)):
+    """
+barplot_feature_bygroup
+    description:
+        generates bar plots of features from an input .csv file, comparing the mean intensities of the specified groups
+        and saves the images to a specified directory. The filename of the images are:
+            'bar_{mz}-{rt}-{ccs}_{group_name1}-{group_name2}-{etc.}_{raw or normed}.png'
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- pick groups to plot against
+        img_dir (str) -- directory to save the image under
+        in_csv (str) -- filename of a .csv file with features to search for
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search [optional, default=(0.01, 0.1, 1.)]
+"""
+    with open(in_csv, 'r') as inf:
+        next(inf)  # expects  a header row
+        rdr = reader(inf)
+        for mz, rt, ccs in rdr:  # iterate through query values
+            feat = (float(mz), float(rt), float(ccs))
+            # make successive calls to barplot_feature_bygroup
+            barplot_feature_bygroup(dataset, group_names, img_dir, feat, normed=normed, tolerance=tolerance)
 
 
 def scatter_pca3_projections_bygroup(dataset, group_names, img_dir, normed=False):

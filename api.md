@@ -104,6 +104,34 @@ library.
 dset.save_bin('saved_dataset.pickle')
 ```
 
+### Batch Selecting Features
+Feature data can be selected and exported to a .csv file using the `Dataset.select_feature_data` method. This method
+takes as input the name of a .csv file containing the features to select, the name of the output .csv file to generate,
+and optional search tolerances for m/z, retention time, and CCS. All matching features and their corresponding 
+intensities (raw and normalized, if available) are written to the output file. This method is useful for selecting out
+data for features that you know about ahead of time. If no matching features are found, then the output file is not 
+written.
+
+**Example:**
+```python
+dset.select_feature_data('input.csv', 'output.csv', tolerance=(0.025, 0.25, 2.5))
+```
+
+*Structure of `input.csv`*:
+
+| m/z | rt | ccs |
+|:---:|:---:|:---:|
+| 234.5678 | 3.45 | 123.4 |
+| ... | ... | ... |
+
+*Structure of `output.csv`*:
+
+| m/z | retention time | CCS | raw intensities | | ... |  |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| 234.5678 | 3.45 | 123.4 | 45678 | 56789 | ... | 23456 |
+| ... | ... | ... | ... | ... | ... | ... |
+
+
 ## Stats
 The `lipydomics.stats` module contains several functions for applying statistical analyses to a `Dataset` instance. All
 stats functions have a similar interface, taking a reference to the `Dataset` instance, a list of group names to use for
@@ -182,8 +210,29 @@ from lipydomics.plotting import barplot_feature_bygroup
 feature = (234.5678, 2.34, 123.4)
 # tight search tolerance
 tol = (0.01, 0.1, 1.0)
-barplot_feature_bygroup(dset, ['A, B, C'], 'analysis/features/', feature, tolerance=tol)
+barplot_feature_bygroup(dset, ['A', 'B', 'C'], 'analysis/features/', feature, tolerance=tol)
 ```
+
+### Batch Barplot Features by Group
+The `batch_barplot_feature_bygroup` function can generate bar plots for multiple features at once using the same groups
+and search tolerance. The call signature is the same as the normal `barplot_feature_bygroup` function, except that
+instead of taking a tuple defining an individual feature to plot, it takes the path to a .csv file defining all of the 
+features to look for and try to plot. 
+
+```python
+from lipydomics.plotting import batch_barplot_feature_bygroup
+
+# tight search tolerance
+tol = (0.01, 0.1, 1.0)
+batch_barplot_feature_bygroup(dset, ['A', 'B', 'C'], 'analysis/features/', 'plot_these_features.csv', tolerance=tol)
+```
+
+*Where `plot_these_features.csv` has the following structure:*
+
+| m/z | rt | ccs |
+|:---:|:---:|:---:|
+| 234.5678 | 3.45 | 123.4 |
+| ... | ... | ... |
 
 
 ### Scatter PCA Projections by Group
