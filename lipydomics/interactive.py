@@ -15,8 +15,8 @@ import os
 from lipydomics.data import Dataset
 from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr
 from lipydomics.plotting import (
-    barplot_feature_bygroup, scatter_pca3_projections_bygroup, scatter_plsda_projections_bygroup,
-    splot_plsda_pcorr_bygroup
+    barplot_feature_bygroup, batch_barplot_feature_bygroup, scatter_pca3_projections_bygroup,
+    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup
 )
 from lipydomics.identification import add_feature_ids
 from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
@@ -384,20 +384,22 @@ make_plots
         (bool) -- finished making plots
 """
     print('Making Plots... What would you like to do?')
-    print("\t1. Bar plot feature(s) by group")
-    print("\t2. Scatter PCA3 Projections by group")
-    print("\t3. Scatter PLS-DA Projections by group")
-    print("\t4. S-Plot PLSA-DA and Pearson correlation by group")
+    print("\t1. Bar plot feature by group")
+    print("\t2. Batch bar plot features by group")
+    print("\t3. Scatter PCA3 Projections by group")
+    print("\t4. Scatter PLS-DA Projections by group")
+    print("\t5. S-Plot PLSA-DA and Pearson correlation by group")
     print('\t"back" to go back')
     option = input('> ')
 
     # map the options to plotting functions
-    plots_f_map = {'1': barplot_feature_bygroup, '2': scatter_pca3_projections_bygroup,
-                   '3': scatter_plsda_projections_bygroup, '4': splot_plsda_pcorr_bygroup}
+    plots_f_map = {'1': barplot_feature_bygroup, '2': batch_barplot_feature_bygroup,
+                   '3': scatter_pca3_projections_bygroup, '4': scatter_plsda_projections_bygroup,
+                   '5': splot_plsda_pcorr_bygroup}
     if option in plots_f_map:
-        print("Where would you like to save the plot? (default = current directory)")
+        print("Where would you like to save the plot(s)? (default = current directory)")
         plot_dir = input('> ')
-        print("Which groups would you like to plot?")
+        print("Which groups would you like to plot (separated by spaces)?")
         groups = input('> ').split()
         print('Would you like to use normalized data? (y/N)')
         norm = input('> ') == 'y'
@@ -406,20 +408,31 @@ make_plots
             if dset.normed_intensities is None:
                 print('! ERROR: No normalization has been performed yet')
                 return False
-        if option == '1':
+        if option in ['1', '2']:
             try:
-                # get the m/z, rt, and CCS of the feature
-                print("Please enter the m/z, retention time, and CCS of the feature\n\t* separated by spaces\n\t*"
-                      " example: '345.6789 1.23 123.45'")
-                feature = input('> ').split()
-                feat = [float(f) for f in feature]
+                if option == '1':
+                    # get the m/z, rt, and CCS of the feature
+                    print("Please enter the m/z, retention time, and CCS of the feature\n\t* separated by spaces\n\t*"
+                          " example: '345.6729 1.23 123.45'")
+                    feature = input('> ').split()
+                    feat = [float(f) for f in feature]
+                else:
+                    # get the name of the input file
+                    print('Please enter the path to the .csv file containing features to plot...',
+                          "\n\t* example: 'plot_these_features.csv'")
+                    feat = input('> ')  # store the .csv file name in feat
+                    # check that the file exists
+                    if not os.path.isfile(feat):
+                        print('! ERROR: cannot find input file "{}", check path and try again'.format(feat))
+                        return False
                 # get the m/z, rt, and CCS tolerance
                 print("Please enter the search tolerances for m/z, retention time, and CCS\n\t* separated by spaces"
-                      "\n\t* example: '0.05 0.5 1.0'")
+                      "\n\t* example: '0.01 0.5 8.0'")
                 tolerance = input('> ').split()
                 tol = [float(t) for t in tolerance]
-                if plots_f_map[option](dset, groups, plot_dir, feat, normed=norm, tolerance=tol):
-                    print('! INFO: Generated plot for groups: {}'.format(groups))
+                result = plots_f_map[option](dset, groups, plot_dir, feat, normed=norm, tolerance=tol)
+                if result or option == '2':
+                    print('! INFO: Generated plot(s) for groups: {}'.format(groups))
                 else:
                     print('! ERROR: Could not match feature')
             except ValueError as ve:
@@ -454,7 +467,7 @@ identify_lipids
         dset (lipydomics.data.Dataset) -- lipidomics dataset instance
 """
     print("Identifying Lipids... Please enter the tolerances for m/z, retention time and CCS matching"
-          "\n\t* separated by spaces\n\t* example: '0.05 0.5 5.'")
+          "\n\t* separated by spaces\n\t* example: '0.01 0.5 8.0'")
     tolerance = input('> ').split()
     tol = [float(t) for t in tolerance]
     print("Please specify an identification level")

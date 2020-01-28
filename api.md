@@ -210,8 +210,29 @@ from lipydomics.plotting import barplot_feature_bygroup
 feature = (234.5678, 2.34, 123.4)
 # tight search tolerance
 tol = (0.01, 0.1, 1.0)
-barplot_feature_bygroup(dset, ['A, B, C'], 'analysis/features/', feature, tolerance=tol)
+barplot_feature_bygroup(dset, ['A', 'B', 'C'], 'analysis/features/', feature, tolerance=tol)
 ```
+
+### Batch Barplot Features by Group
+The `batch_barplot_feature_bygroup` function can generate bar plots for multiple features at once using the same groups
+and search tolerance. The call signature is the same as the normal `barplot_feature_bygroup` function, except that
+instead of taking a tuple defining an individual feature to plot, it takes the path to a .csv file defining all of the 
+features to look for and try to plot. 
+
+```python
+from lipydomics.plotting import batch_barplot_feature_bygroup
+
+# tight search tolerance
+tol = (0.01, 0.1, 1.0)
+batch_barplot_feature_bygroup(dset, ['A', 'B', 'C'], 'analysis/features/', 'plot_these_features.csv', tolerance=tol)
+```
+
+*Where `plot_these_features.csv` has the following structure:*
+
+| m/z | rt | ccs |
+|:---:|:---:|:---:|
+| 234.5678 | 3.45 | 123.4 |
+| ... | ... | ... |
 
 
 ### Scatter PCA Projections by Group
