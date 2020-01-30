@@ -740,7 +740,10 @@ export
         return True
     writer = pd.ExcelWriter(path, engine='xlsxwriter')
     new_df = df
-    columns = [x - 3 for x in df.columns.values]
+    columns = ['' for x in df.columns.values]
+    for group in dset.group_indices:
+        for i in dset.group_indices[group]:
+            columns[i + 3] = group if columns[i + 3] == "" else columns[i + 3] + "/" + group
     columns = ['mz', 'rt', 'ccs'] + columns[3:]
     new_df.columns = columns
     new_df.to_excel(writer, sheet_name='Data')
@@ -772,9 +775,11 @@ export
                 else:
                     s.append("")
         feat_dict[i] = s
+    cal_df = None
     if dset.rt_calibration is not None:
         cal_rts = [dset.rt_calibration.get_calibrated_rt(rt) for mz, rt, ccs in dset.labels]
         cal_df = pd.DataFrame(cal_rts)
+        cal_df.columns = ['calibrated_ rt']
         cal_df.to_excel(writer, sheet_name="rt_calibration")
 
     if dset.normed_intensities is not None:
@@ -785,9 +790,14 @@ export
     if feat_dict:
         iden_df = pd.DataFrame(feat_dict)
         level_df = pd.DataFrame(dset.feat_id_levels)
-        identification_df = pd.concat([label_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
-        id_columns = [x - 5 for x in identification_df.columns.values]
-        id_columns = ['mz', 'rt', 'ccs', 'id_level', 'putative_id'] + id_columns[5:]
+        if dset.rt_calibration is not None:
+            identification_df = pd.concat([label_df, cal_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
+            id_columns = ["putative_id" for x in identification_df.columns.values]
+            id_columns = ['mz', 'rt', 'ccs', 'calibrated_rt', 'id_level', 'putative_id'] + id_columns[6:]
+        else:
+            identification_df = pd.concat([label_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
+            id_columns = ["putative_id" for x in identification_df.columns.values]
+            id_columns = ['mz', 'rt', 'ccs', 'id_level', 'putative_id'] + id_columns[5:]
         identification_df.columns = id_columns
         identification_df.to_excel(writer, sheet_name='Identifications')
     try:
