@@ -92,7 +92,8 @@ if __name__ == '__main__':
         "hine1217",
         "hine0217",
         "hine0119",
-        'leap0219'
+        'leap0219',
+        'blaz0818'
     ]
 
     # CCS metadata by source
@@ -101,7 +102,8 @@ if __name__ == '__main__':
         "hine1217": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
         "hine0217": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
         "hine0119": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
-        'leap0219': {"type": "DT", "method": "stepped-field"}
+        'leap0219': {"type": "DT", "method": "stepped-field"},
+        'blaz0818': {'type': 'DT', "method": 'single field'}
     }
 
     # add each src dataset
