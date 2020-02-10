@@ -154,9 +154,10 @@ def filter_d(mzs, rts, ccss, data):
         given M/Z, RT, CCS ranges and a DataFrame containing data,
         find and returns all data within that range.
     """
-    filtered = data[(data[0] < float(mzs[0]) + float(mzs[1])) & (data[0] > float(mzs[0]) - float(mzs[1])) &
-                    (data[1] < float(rts[0]) + float(rts[1])) & (data[1] > float(rts[0]) - float(rts[1])) &
-                    (data[2] < float(ccss[0]) + float(ccss[1])) & (data[2] > float(ccss[0]) - float(ccss[1]))]
+    # removed all of the casts to float, that should happen at input time not here
+    filtered = data[(data[0] < mzs[0] + mzs[1]) & (data[0] > mzs[0] - mzs[1]) &
+                    (data[1] < rts[0] + rts[1]) & (data[1] > rts[0] - rts[1]) &
+                    (data[2] < ccss[0] + ccss[1]) & (data[2] > ccss[0] - ccss[1])]
     return filtered
 
 
@@ -200,9 +201,9 @@ filter_data
                 cur_data = dset.get_data_bygroup(group)
             int_df = pd.DataFrame(cur_data)
             cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
-            mzs = mz.split()
-            rts = rt.split()
-            ccss = ccs.split()
+            mzs = [float(_) for _ in mz.split()]
+            rts = [float(_) for _ in rt.split()]
+            ccss = [float(_) for _ in ccs.split()]
             filtered = filter_d(mzs, rts, ccss, cur_df)
         except ValueError:
             return False
@@ -525,14 +526,14 @@ normalize_data
     option = input('> ')
     if option == "1":
         print("Please provide the feature m/z, rt and CCS respectively (Ex. 150, 1, 150)")
-        feat = input()
-        feat = feat.split()
+        feat = input('> ')
+        feat = [float(_) for _ in feat.split()]
         print("Please type the tolerance for m/z, rt, and CCS, respectively (Ex. '0.1 0.1 0.01')")
-        tol = input()
-        tol = tol.split()
-        mzs = [int(feat[0]), int(tol[0])]
-        rts = [int(feat[1]), int(tol[1])]
-        ccses = [int(feat[2]), int(tol[2])]
+        tol = input('> ')
+        tol = [float(_) for _ in tol.split()]
+        mzs = [feat[0], tol[0]]
+        rts = [feat[1], tol[1]]
+        ccses = [feat[2], tol[2]]
         filtered = filter_d(mzs, rts, ccses, df)
         try:
             max_inten = max(filtered.iloc[0][3:])
