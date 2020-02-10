@@ -231,16 +231,18 @@ Dataset.__repr__
         s += ')'
         return s
 
-    def select_feature_data(self, in_csv, out_csv, tolerance=(0.01, 0.1, 1.0)):
+    def select_feature_data(self, in_csv, out_csv, tolerance=(0.01, 0.1, 3.0)):
         """
 Dataset.select_feature_data
     description:
         Searches features using values from an input .csv file and adds corresponding data for matching features to
         an output .csv file.
+        * m/z tolerance is in Da, rt tolerance is in min, CCS tolerance is in percent *
     parameters:
         in_csv (str) -- input file path, .csv format
         out_csv (str) -- output file path, .csv format
-        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search [optional, default=(0.01, 0.1, 1.)]
+        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search, CCS tolerance is a percentage not
+                                        an absolute tolerance [optional, default=(0.01, 0.1, 3.)]
     returns:
         (bool) -- success (True), failure (no features found, False)
 """
@@ -253,7 +255,7 @@ Dataset.select_feature_data
                 mz, rt, ccs = float(mz), float(rt), float(ccs)
                 for i in range(self.n_features): # iterate through all of the feature labels
                     mz_f, rt_f, ccs_f = self.labels[i]
-                    if abs(mz - mz_f) <= mzt and abs(rt - rt_f) <= rtt and abs(ccs - ccs_f) <= ccst:
+                    if abs(mz - mz_f) <= mzt and abs(rt - rt_f) <= rtt and (100. * (abs(ccs - ccs_f) / ccs)) <= ccst:
                         # matched feature
                         line = [mz_f, rt_f, ccs_f] + self.intensities[i].tolist()
                         # check for normalized data

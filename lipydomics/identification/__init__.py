@@ -385,7 +385,8 @@ add_feature_ids
 
         * whenever multiple identifications are returned, always sort in order of descending scores *
 
-        The same tolerances are used for all levels of identification.
+        The same tolerances are used for all levels of identification, and CCS tolerance is a percentage NOT an absolute
+        number
 
         Potential identifications are automatically restricted on the basis of electrospray ionization mode (taken from
         Dataset.esi_mode) if it is set to 'pos' or 'neg'
@@ -427,8 +428,12 @@ add_feature_ids
         # use calibrated retention time if a retention time calibration has been set up
         rt = dataset.rt_calibration.get_calibrated_rt(rt) if dataset.rt_calibration is not None else rt
 
+        # convert the CCS tolerance into an absolute from the percentage
+        tol2 = tol
+        tol2[2] = tol2[2] / 100. * ccs
+
         # try to get identification(s)
-        feat_id, feat_id_level, feat_id_score = id_funcs[level](cur, mz, rt, ccs, *tol, esi, norm=norm)
+        feat_id, feat_id_level, feat_id_score = id_funcs[level](cur, mz, rt, ccs, *tol2, esi, norm=norm)
 
         if feat_id:
             if len (feat_id) > 1:

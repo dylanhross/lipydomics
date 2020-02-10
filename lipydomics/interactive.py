@@ -150,13 +150,23 @@ manage_groups
 
 
 def filter_d(mzs, rts, ccss, data):
-    """ a helper function for filtering data
+    """
+filter_d
+    description:
+        a helper function for filtering data
         given M/Z, RT, CCS ranges and a DataFrame containing data,
         find and returns all data within that range.
-    """
-    filtered = data[(data[0] < float(mzs[0]) + float(mzs[1])) & (data[0] > float(mzs[0]) - float(mzs[1])) &
-                    (data[1] < float(rts[0]) + float(rts[1])) & (data[1] > float(rts[0]) - float(rts[1])) &
-                    (data[2] < float(ccss[0]) + float(ccss[1])) & (data[2] > float(ccss[0]) - float(ccss[1]))]
+        * CCS tolerance is absolute in this case, NOT a percentage *
+    parameters:
+        mzs (list(flaot)) -- mz [0] and tolerance [1]
+        rts (list(float)) -- rt [0] and tolerance [1]
+        ccss (list(float)) -- ccs [0] and tolerance [1]
+        data (pandas.DataFrame) -- DataFrame representation of the data
+"""
+    # removed all of the casts to float, that should happen at input time not here
+    filtered = data[(data[0] < mzs[0] + mzs[1]) & (data[0] > mzs[0] - mzs[1]) &
+                    (data[1] < rts[0] + rts[1]) & (data[1] > rts[0] - rts[1]) &
+                    (data[2] < ccss[0] + ccss[1]) & (data[2] > ccss[0] - ccss[1])]
     return filtered
 
 
@@ -185,11 +195,11 @@ filter_data
     label_dat = dset.labels
     label_df = pd.DataFrame(label_dat)
     if option == "1":
-        print("Please Provide M/Z range? (Ex. '150 10'  <--- This would be 150 plus or minus 10)")
+        print("Please Provide m/z and tolerance (Ex. '150 1'  <--- This would be 150 plus or minus 1)")
         mz = input('> ')
-        print("Please Provide Retention Time range? (Ex. '1 1' <--- This would be 1 plus or minus 1)")
+        print("Please Provide Retention Time and tolerance (Ex. '1 1' <--- This would be 1 plus or minus 1)")
         rt = input('> ')
-        print("Please Provide CCS range? (Ex. '150 10'  <--- This would be 150 plus or minus 10)")
+        print("Please Provide CCS and tolerance (Ex. '150 3'  <--- This would be 150 plus or minus 3%)")
         ccs = input('> ')
         print("Which group would you like to choose? ('All' to select the whole data)")
         group = input('> ')
@@ -200,9 +210,11 @@ filter_data
                 cur_data = dset.get_data_bygroup(group)
             int_df = pd.DataFrame(cur_data)
             cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
-            mzs = mz.split()
-            rts = rt.split()
-            ccss = ccs.split()
+            mzs = [float(_) for _ in mz.split()]
+            rts = [float(_) for _ in rt.split()]
+            ccss = [float(_) for _ in ccs.split()]
+            # convert CCS tolerance from percentage to an absolute value
+            ccss[1] = ccss[1] / 100. * ccss[0]
             filtered = filter_d(mzs, rts, ccss, cur_df)
         except ValueError:
             return False
@@ -432,7 +444,7 @@ make_plots
                         return False
                 # get the m/z, rt, and CCS tolerance
                 print("Please enter the search tolerances for m/z, retention time, and CCS\n\t* separated by spaces"
-                      "\n\t* example: '0.01 0.5 8.0'")
+                      "\n\t* example: '0.01 0.5 3.0'\n\t* CCS tolerance is a percentage, not an absolute value")
                 tolerance = input('> ').split()
                 tol = [float(t) for t in tolerance]
                 result = plots_f_map[option](dset, groups, plot_dir, feat, normed=norm, tolerance=tol)
@@ -471,8 +483,8 @@ identify_lipids
     parameters:
         dset (lipydomics.data.Dataset) -- lipidomics dataset instance
 """
-    print("Identifying Lipids... Please enter the tolerances for m/z, retention time and CCS matching"
-          "\n\t* separated by spaces\n\t* example: '0.01 0.5 8.0'")
+    print("Identifying Lipids... Please enter the tolerances for m/z, retention time and CCS matching\n\t* separated by"
+          " spaces\n\t* example: '0.01 0.5 3.0'\n\t* CCS tolerance is a percentage, not an absolute value")
     tolerance = input('> ').split()
     tol = [float(t) for t in tolerance]
     print("Please specify an identification level")
@@ -525,14 +537,15 @@ normalize_data
     option = input('> ')
     if option == "1":
         print("Please provide the feature m/z, rt and CCS respectively (Ex. 150, 1, 150)")
-        feat = input()
-        feat = feat.split()
-        print("Please type the tolerance for m/z, rt, and CCS, respectively (Ex. '0.1 0.1 0.01')")
-        tol = input()
-        tol = tol.split()
-        mzs = [int(feat[0]), int(tol[0])]
-        rts = [int(feat[1]), int(tol[1])]
-        ccses = [int(feat[2]), int(tol[2])]
+        feat = input('> ')
+        feat = [float(_) for _ in feat.split()]
+        print("Please type the tolerance for m/z, rt, and CCS, respectively (Ex. '0.01 0.1 3.')\n\t"
+              "* separated by spaces\n\t* CCS tolerance is a percentage, not an absolute value")
+        tol = input('> ')
+        tol = [float(_) for _ in tol.split()]
+        mzs = [feat[0], tol[0]]
+        rts = [feat[1], tol[1]]
+        ccses = [feat[2], tol[2]]
         filtered = filter_d(mzs, rts, ccses, df)
         try:
             max_inten = max(filtered.iloc[0][3:])
@@ -754,9 +767,13 @@ batch_feature_selection
         return False
     print("Enter the name of file to save the selected data in\n\texample: 'selected_features_raw.csv'")
     outpath = input('> ')
+    print("Please type the search tolerance for m/z, rt, and CCS, respectively (Ex. '0.01 0.1 3.')\n\t"
+          "* separated by spaces\n\t* CCS tolerance is a percentage, not an absolute value")
+    tol = input('> ')
+    tol = [float(_) for _ in tol.split()]
     success = False
     try:
-        success = dset.select_feature_data(inpath, outpath)
+        success = dset.select_feature_data(inpath, outpath, tolerance=tol)
         if not success:
             print('! ERROR: no matching features found in dataset')
             return False

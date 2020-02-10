@@ -19,7 +19,7 @@ cs = ['#2FA2AB', '#9BD0B9', 'Purple', 'Blue', 'Green', 'Orange', 'Red', 'Yellow'
       '#E8ACF6', 'Grey', '#D6BF49', '#412F88', '#A2264B', '#3ACBE8', '#1CA3DE', '#0D85D8']
 
 
-def barplot_feature_bygroup(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 1.)):
+def barplot_feature_bygroup(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 3.)):
     """
 barplot_feature_bygroup
     description:
@@ -27,13 +27,15 @@ barplot_feature_bygroup
         the image to a specified directory. The filename of the image is:
             'bar_{mz}-{rt}-{ccs}_{group_name1}-{group_name2}-{etc.}_{raw or normed}.png'
         returns a boolean indicating whether a feature was found (and therefore a plot was generated)
+        * m/z tolerance is in Da, rt tolerance is in min, CCS tolerance is in percent *
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- pick groups to plot against
         img_dir (str) -- directory to save the image under
         feature (tuple(float)) -- m/z, rt, and ccs of feature
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
-        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search [optional, default=(0.01, 0.1, 1.)]
+        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search, CCS tolerance is a percentage not
+                                        an absolute tolerance [optional, default=(0.01, 0.1, 3.)]
     returns:
         (bool) -- at least one feature was found
 """
@@ -43,7 +45,7 @@ barplot_feature_bygroup
     found_feat = []
     for i in range(len(dataset.labels)):
         mz, rt, ccs = dataset.labels[i]
-        if abs(mz - mz_r) <= mz_t and abs(rt - rt_r) <= rt_t and abs(ccs - ccs_r) <= ccs_t:
+        if abs(mz - mz_r) <= mz_t and abs(rt - rt_r) <= rt_t and (100. * (abs(ccs - ccs_r) / ccs)) <= ccs_t:
             # matched a feature
             found_feat.append(i)
 
@@ -103,20 +105,22 @@ barplot_feature_bygroup
     return True
 
 
-def batch_barplot_feature_bygroup(dataset, group_names, img_dir, in_csv, normed=False, tolerance=(0.01, 0.1, 1.)):
+def batch_barplot_feature_bygroup(dataset, group_names, img_dir, in_csv, normed=False, tolerance=(0.01, 0.1, 3.)):
     """
 barplot_feature_bygroup
     description:
         generates bar plots of features from an input .csv file, comparing the mean intensities of the specified groups
         and saves the images to a specified directory. The filename of the images are:
             'bar_{mz}-{rt}-{ccs}_{group_name1}-{group_name2}-{etc.}_{raw or normed}.png'
+        * m/z tolerance is in Da, rt tolerance is in min, CCS tolerance is in percent *
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         group_names (list(str)) -- pick groups to plot against
         img_dir (str) -- directory to save the image under
         in_csv (str) -- filename of a .csv file with features to search for
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
-        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search [optional, default=(0.01, 0.1, 1.)]
+        [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search, CCS tolerance is a percentage not
+                                        an absolute tolerance [optional, default=(0.01, 0.1, 3.)]
 """
     with open(in_csv, 'r') as inf:
         next(inf)  # expects  a header row
