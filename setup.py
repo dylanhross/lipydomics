@@ -18,7 +18,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='lipydomics',
-    version='1.2.0',
+    version='1.2.1',
     author='Dylan H. Ross',
     author_email='dhross92@uw.edu',
     description='a library for streamlining lipidomics data analysis',

@@ -68,9 +68,17 @@ description:</tt></p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;df&nbsp;(Pandas&nbsp;DataFrame)&nbsp;--&nbsp;DataFrame&nbsp;version&nbsp;of&nbsp;lipidomics&nbsp;dataset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;finished&nbsp;exporting&nbsp;data&nbsp;to&nbsp;excel&nbsp;file</tt></dd></dl>
- <dl><dt><a name="-filter_d"><strong>filter_d</strong></a>(mzs, rts, ccss, data)</dt><dd><tt>a&nbsp;helper&nbsp;function&nbsp;for&nbsp;filtering&nbsp;data<br>
-given&nbsp;M/Z,&nbsp;RT,&nbsp;CCS&nbsp;ranges&nbsp;and&nbsp;a&nbsp;DataFrame&nbsp;containing&nbsp;data,<br>
-find&nbsp;and&nbsp;returns&nbsp;all&nbsp;data&nbsp;within&nbsp;that&nbsp;range.</tt></dd></dl>
+ <dl><dt><a name="-filter_d"><strong>filter_d</strong></a>(mzs, rts, ccss, data)</dt><dd><tt>filter_d<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;helper&nbsp;function&nbsp;for&nbsp;filtering&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;given&nbsp;M/Z,&nbsp;RT,&nbsp;CCS&nbsp;ranges&nbsp;and&nbsp;a&nbsp;DataFrame&nbsp;containing&nbsp;data,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;find&nbsp;and&nbsp;returns&nbsp;all&nbsp;data&nbsp;within&nbsp;that&nbsp;range.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;CCS&nbsp;tolerance&nbsp;is&nbsp;absolute&nbsp;in&nbsp;this&nbsp;case,&nbsp;NOT&nbsp;a&nbsp;percentage&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mzs&nbsp;(list(flaot))&nbsp;--&nbsp;mz&nbsp;[0]&nbsp;and&nbsp;tolerance&nbsp;[1]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rts&nbsp;(list(float))&nbsp;--&nbsp;rt&nbsp;[0]&nbsp;and&nbsp;tolerance&nbsp;[1]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccss&nbsp;(list(float))&nbsp;--&nbsp;ccs&nbsp;[0]&nbsp;and&nbsp;tolerance&nbsp;[1]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(pandas.DataFrame)&nbsp;--&nbsp;DataFrame&nbsp;representation&nbsp;of&nbsp;the&nbsp;data</tt></dd></dl>
  <dl><dt><a name="-filter_data"><strong>filter_data</strong></a>(dset)</dt><dd><tt>filter_data<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;for&nbsp;filtering&nbsp;the&nbsp;data:<br>
