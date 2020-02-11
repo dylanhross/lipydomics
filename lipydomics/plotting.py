@@ -15,8 +15,9 @@ from matplotlib import rcParams
 
 
 rcParams['font.size'] = 8
-cs = ['#2FA2AB', '#9BD0B9', 'Purple', 'Blue', 'Green', 'Orange', 'Red', 'Yellow', 
+CS = ['#2FA2AB', '#9BD0B9', 'Purple', 'Blue', 'Green', 'Orange', 'Red', 'Yellow',
       '#E8ACF6', 'Grey', '#D6BF49', '#412F88', '#A2264B', '#3ACBE8', '#1CA3DE', '#0D85D8']
+IMG_RES = 350  # image resolution
 
 
 def barplot_feature_bygroup(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 3.)):
@@ -80,7 +81,7 @@ barplot_feature_bygroup
         x = [_ for _ in range(len(group_data))]
         y = [np.mean(_) for _ in group_data]
         e = [np.std(_) for _ in group_data]
-        c = [c_ for _, c_ in zip(x, cs)]
+        c = [c_ for _, c_ in zip(x, CS)]
 
         fig = plt.figure(figsize=(1. + 0.5 * len(group_names), 2))
         ax = fig.add_subplot(111)
@@ -99,7 +100,7 @@ barplot_feature_bygroup
         ax.set_title(ttl, fontsize=6, y=1.075)
 
         plt.tight_layout()
-        plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+        plt.savefig(fig_path, dpi=IMG_RES, bbox_inches='tight')
         plt.close()
     # if we made it here, at least one feature was found
     return True
@@ -168,7 +169,7 @@ scatter_pca3_projections_bygroup
         si.append(len(dataset.group_indices[gn]) + i)
         i += l
 
-    for dg, c, gn in zip(np.split(d, si), cs, group_names):
+    for dg, c, gn in zip(np.split(d, si), CS, group_names):
         ax.scatter(*dg.T[:2], marker='.', s=24, c=c, label=gn)
 
     for d in ['top', 'right', 'bottom', 'left']:
@@ -182,7 +183,7 @@ scatter_pca3_projections_bygroup
     ax.legend(fontsize=6, borderpad=0.2)
 
     plt.tight_layout()
-    plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.savefig(fig_path, dpi=IMG_RES, bbox_inches='tight')
     plt.close()
 
 
@@ -237,7 +238,7 @@ scatter_plsda_projections_bygroup
     ax.legend(fontsize=6, borderpad=0.2)
 
     plt.tight_layout()
-    plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.savefig(fig_path, dpi=IMG_RES, bbox_inches='tight')
     plt.close()
 
 
@@ -294,5 +295,60 @@ splot_plsda_pcorr_bygroup
     ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
 
     plt.tight_layout()
-    plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+    plt.savefig(fig_path, dpi=IMG_RES, bbox_inches='tight')
+    plt.close()
+
+
+def scatter_plsra_projections_bygroup(dataset, group_names, img_dir, normed=False):
+    """
+scatter_plsra_projections_bygroup
+    description:
+        generates a scatter plot of the PLS-RA projections for a specified set of groups and saves the image to a
+        specified directory. The filename of the image is:
+            'PLS-RA_{group_name1}-{group_name2}-{etc.}_projections_{raw or normed}.png'
+        * The same group names (in the same order) as were used in the call to add_plsra(...) must be used. *
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- pick groups used to calculate the PCA
+        img_dir (str) -- directory to save the image under
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+"""
+    # generate the path to save the figure under
+    if normed:
+        nrm = 'normed'
+    else:
+        nrm = 'raw'
+    fig_name = 'PLS-RA_{}_projections_{}.png'.format('-'.join(group_names), nrm)
+    fig_path = os.path.join(img_dir, fig_name)
+
+    # make the plot
+    fig = plt.figure(figsize=(3, 3))
+    ax = fig.add_subplot(111)
+
+    ax.axvline(lw=0.5, c='k', zorder=0)
+    ax.axhline(lw=0.5, c='k', zorder=0)
+
+    d = dataset.stats['PLS-RA_{}_projections_{}'.format('-'.join(group_names), nrm)]
+    si = []
+    i = 0
+    for gn in group_names:
+        l = len(dataset.group_indices[gn])
+        si.append(len(dataset.group_indices[gn]) + i)
+        i += l
+
+    for dg, c, gn in zip(np.split(d, si), CS, group_names):
+        ax.scatter(*dg.T[:2], marker='.', s=24, c=c, label=gn)
+
+    for d in ['top', 'right', 'bottom', 'left']:
+        ax.spines[d].set_visible(False)
+    ax.set_xlabel('scores[0]', fontsize=8)
+    ax.set_ylabel('scores[1]', fontsize=8)
+    ax.set_title('PLS-RA', fontsize=8, fontweight='bold')
+
+    ax.ticklabel_format(style='sci', scilimits=(0, 0))
+
+    ax.legend(fontsize=6, borderpad=0.2)
+
+    plt.tight_layout()
+    plt.savefig(fig_path, dpi=IMG_RES, bbox_inches='tight')
     plt.close()
