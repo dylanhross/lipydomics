@@ -58,6 +58,8 @@ Dataset.__init__
         self.stats = {}
         # ESI mode used for identification purposes
         self.esi_mode = esi_mode
+        # store an external variable (for regression)
+        self.ext_var = None
 
     @staticmethod
     def load_bin(bin_path):
@@ -214,6 +216,7 @@ Dataset.__repr__
         s += '\tidentified={},\n'.format(len([_ for _ in self.feat_id_levels if _]) if self.feat_ids else 'False')
         s += '\tnormalized={},\n'.format(self.normed_intensities is not None)
         s += '\trt_calibrated={},\n'.format(self.rt_calibration is not None)
+        s += '\text_var={},\n'.format(self.ext_var is not None)
         if self.group_indices is not None:
             s += '\tgroup_indices={\n'
             for name in self.group_indices:

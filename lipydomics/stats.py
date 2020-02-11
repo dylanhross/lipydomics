@@ -244,3 +244,6 @@ add_plsra
     dataset.stats['PLS-RA_{}_loadings_{}'.format('-'.join(group_names), nrm)] = loadings
     dataset.stats['PLS-RA_{}_projections_{}'.format('-'.join(group_names), nrm)] = projections
 
+    # add the external variable into the Dataset
+    dataset.ext_var = y
+
