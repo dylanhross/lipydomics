@@ -223,6 +223,11 @@ add_plsra
     # get the group data, reshape and concatenate -> X
     X = np.concatenate([_.T for _ in dataset.get_data_bygroup(group_names, normed=normed)])
 
+    # make sure y has the proper shape for the selected groups
+    if False:
+        m = 'add_plsra: selected groups have {} samples but external variable has {} values'
+        raise ValueError(m.format())
+
     # initialize the PLSRegression object, add to the Dataset, fit the group data
     dataset.plsra_ = PLSRegression(scale=scaled)
     dataset.plsra_.fit(X, y)
