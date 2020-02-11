@@ -210,7 +210,7 @@ scatter_plsda_projections_bygroup
         nrm = 'normed'
     else: 
         nrm = 'raw'
-    fig_name = 'PLS-DA_projections_{}_{}.png'.format('-'.join(group_names), nrm)
+    fig_name = 'PLS-DA_{}_projections_{}.png'.format('-'.join(group_names), nrm)
     fig_path = os.path.join(img_dir, fig_name)
 
     # make the plot

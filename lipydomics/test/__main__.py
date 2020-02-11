@@ -17,11 +17,11 @@ from lipydomics.test.data import (
 )
 from lipydomics.test.stats import (
     addanovap_mock1, addanovap_real1, addpca3_mock1, addpca3_real1, addplsda_mock1, addplsda_3groups_mock1, 
-    addplsda_real1, add2groupcorr_mock1, add2groupcorr_3groups_mock1, add2groupcorr_real1
+    addplsda_real1, add2groupcorr_mock1, add2groupcorr_3groups_mock1, add2groupcorr_real1, addplsra_real1
 )
 from lipydomics.test.plotting import (
     barplot_feature_bygroup_mock1, batch_barplot_feature_bygroup_real1, scatter_pca3_projections_bygroup_mock1,
-    scatter_plsda_projections_bygroup_mock1, splot_plsda_pcorr_bygroup_mock1
+    scatter_plsda_projections_bygroup_mock1, splot_plsda_pcorr_bygroup_mock1, scatter_plsra_projections_bygroup_real1
 )
 from lipydomics.test.identification import add_feature_ids_any_real1
 from lipydomics.test.rt_calibration import (
@@ -58,12 +58,14 @@ run_all_tests
         add2groupcorr_mock1,
         add2groupcorr_3groups_mock1,
         add2groupcorr_real1,
+        addplsra_real1,
         # test/plotting
         barplot_feature_bygroup_mock1,
         batch_barplot_feature_bygroup_real1,
         scatter_pca3_projections_bygroup_mock1,
         scatter_plsda_projections_bygroup_mock1,
         splot_plsda_pcorr_bygroup_mock1,
+        scatter_plsra_projections_bygroup_real1,
         # test/identification
         add_feature_ids_any_real1,
         # test/rt_calibration
