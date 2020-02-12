@@ -189,6 +189,21 @@ from lipydomics.stats import add_plsda
 add_plsda(dset, ['wt', 'ko'])
 ```
 
+### Partial Least-Squares Regression Analysis
+Computes a PLS-RA using specified groups and an external continuous variable, storing the projections for each sample
+and the component loadings for each feature separately. 
+
+```python
+from lipydomics.stats import add_plsra
+
+# load the external continuous variable
+with open('external.txt', 'r') as f:
+    external = [float(_.strip()) for _ in f.readlines()]
+
+# compute PLS-RA with multiple groups, using normalized data
+add_plsra(dset, ['elf', 'halforc', 'drow', 'aasimar'], external, normed=True)
+```
+
 
 ## Plotting
 The `lipydomics.plotting` module contains several functions for generating plots from the data stored in a `Dataset` 
@@ -268,6 +283,18 @@ from lipydomics.plotting import splot_plsda_pcorr_bygroup
 
 # groups wt vs. ko, raw data
 splot_plsda_pcorr_bygroup(dset, ['wt', 'ko'], 'analysis/wt_ko/')
+```
+
+
+### Scatter PLS-RA Projections by Group
+Generate a scatter plot of the PLS-RA projections for a specified set of groups. Requires the corresponding statistic to
+already be present in `Dataset.stats`.
+
+```python
+from lipydomics.plotting import scatter_plsra_projections_bygroup
+
+# groups elf, halforc, drow, and aasimar; normalized data
+scatter_plsra_projections_bygroup(dset, ['elf', 'halforc', 'drow', 'aasimar'], 'analysis/group1/')
 ```
 
 
