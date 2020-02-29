@@ -1,4 +1,3 @@
-#!/usr/local/Cellar/python3/3.7.3/bin/python3
 """
     lipydomics/identification/characterize_lipid_ccs_pred.py
     Dylan H. Ross
@@ -10,6 +9,8 @@
 """
 
 
+import os
+from sqlite3 import connect
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
@@ -62,7 +63,9 @@ single_class_plot
         mz_t.append(float(mz))
         ccs_t.append(float(ccs))
 
-    fig_path = 'ccs_pred_perf/{}_{}{}_{}.png'.format(len(ccs_m), lipid_class, fa_mod if fa_mod else '', adduct)
+    this_dir = os.path.dirname(__file__)
+    fig_fname = 'ccs_pred_perf/{}_{}{}_{}.png'.format(len(ccs_m), lipid_class, fa_mod if fa_mod else '', adduct)
+    fig_path = os.path.join(this_dir, fig_fname)
 
     fig = plt.figure(figsize=(3.33, 2))
     ax = fig.add_subplot(111)
@@ -85,13 +88,12 @@ single_class_plot
     plt.close()
 
 
-if __name__ == '__main__':
+def main():
+    """ main build function """
 
-    from sqlite3 import connect
-    import os
-
-    # connect to the database
-    con = connect('lipids.db')
+    # connect to database
+    db_path = os.path.join(os.path.dirname(__file__), 'lipids.db')
+    con = connect(db_path)
     cur = con.cursor()
 
     print('characterizing CCS prediction performance ...', end=' ')

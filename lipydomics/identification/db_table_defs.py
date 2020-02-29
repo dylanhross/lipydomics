@@ -1,5 +1,13 @@
+"""
+    db_table_defs.py
+    Dylan H. Ross
+    2020/02/29
+
+        CREATE TABLE statements for the lipids SQLite3 database
+"""
 
 
+measured = """
 -- table in which to combine all of the measured datasets
 CREATE TABLE measured (
     -- unique integer identifier
@@ -28,8 +36,9 @@ CREATE TABLE measured (
     -- describe method used for CCS measurement (e.g. stepped-field, calibrated with polyalanine)
     ccs_method TEXT
 );
+"""
 
-
+theo_mz = """
 -- table to store theoretical masses from enumeration on composition and MS adducts
 CREATE TABLE theoretical_mz (
     -- unique integer identifier
@@ -47,8 +56,9 @@ CREATE TABLE theoretical_mz (
     -- theoretical m/z
     mz REAL NOT NULL
 );
+"""
 
-
+theo_ccs = """
 -- table to store theoretical CCS values, associated with theoretical m/z values
 CREATE TABLE theoretical_ccs (
     -- unique integer identifier
@@ -56,8 +66,9 @@ CREATE TABLE theoretical_ccs (
     -- theoretical CCS
     ccs REAL NOT NULL
 );
+"""
 
-
+theo_rt = """
 -- table to store theoretical retention time values, associated with theoretical m/z values
 CREATE TABLE theoretical_rt (
     -- unique integer identifier
@@ -65,3 +76,5 @@ CREATE TABLE theoretical_rt (
     -- theoretical retention time
     rt REAL NOT NULL
 );
+"""
+

@@ -1,4 +1,3 @@
-#!/usr/local/Cellar/python3/3.7.3/bin/python3
 """
     lipydomics/identification/characterize_lipid_rt_pred.py
     Dylan H. Ross
@@ -10,6 +9,8 @@
 """
 
 
+from sqlite3 import connect
+import os
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 from numpy import median
@@ -53,7 +54,9 @@ single_class_plot
     for rt in cursor.execute(qry).fetchall():
         rt_m.append(float(rt[0]))
 
-    fig_path = 'rt_pred_perf/{}_{}{}.png'.format(len(rt_m), lipid_class, fa_mod if fa_mod else '')
+    this_dir = os.path.dirname(__file__)
+    fig_fname = 'rt_pred_perf/{}_{}{}.png'.format(len(rt_m), lipid_class, fa_mod if fa_mod else '')
+    fig_path = os.path.join(this_dir, fig_fname)
 
     if len(rt_m) > 0 and len(rt_t) > 0:
 
@@ -91,13 +94,12 @@ single_class_plot
         plt.close()
 
 
-if __name__ == '__main__':
+def main():
+    """ main build function """
 
-    from sqlite3 import connect
-    import os
-
-    # connect to the database
-    con = connect('lipids.db')
+    # connect to database
+    db_path = os.path.join(os.path.dirname(__file__), 'lipids.db')
+    con = connect(db_path)
     cur = con.cursor()
 
     print('characterizing RT prediction performance ...', end=' ')

@@ -1,4 +1,3 @@
-#!/usr/local/Cellar/python3/3.7.3/bin/python3
 """
     fill_theo_mz_from_gen.py
     Dylan H. Ross
@@ -9,8 +8,11 @@
 """
 
 
-from generation import enumerate_all_lipids
-from lipid_parser import parse_lipid
+import os
+from sqlite3 import connect
+
+from .generation import enumerate_all_lipids
+from .lipid_parser import parse_lipid
 
 
 def add_enumerated_mz(cursor):
@@ -37,15 +39,15 @@ add_src_dataset
         t_id += 1
 
 
-if __name__ == '__main__':
-
-    from sqlite3 import connect
+def main():
+    """ main build function """
 
     # connect to database
-    con = connect("lipids.db")
+    db_path = os.path.join(os.path.dirname(__file__), 'lipids.db')
+    con = connect(db_path)
     cur = con.cursor()
 
-    print('adding theoretical m/z into lipds.db ...', end=' ')
+    print('adding theoretical m/z into lipids.db ...', end=' ')
     add_enumerated_mz(cur)
     print('ok')
     print()

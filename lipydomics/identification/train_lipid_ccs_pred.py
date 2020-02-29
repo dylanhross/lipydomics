@@ -1,4 +1,3 @@
-#!/usr/local/Cellar/python3/3.7.3/bin/python3
 """
     lipydomics/identification/train_lipid_ccs_pred.py
     Dylan H. Ross
@@ -11,6 +10,8 @@
 """
 
 
+from sqlite3 import connect
+import os
 import pickle
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -176,7 +177,10 @@ train_new_model
     print('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_test, y_test_pred))))
 
     # save the model and the scaler
-    with open('lipid_ccs_pred.pickle', 'wb') as pf1, open('lipid_ccs_scale.pickle', 'wb') as pf2:
+    this_dir = os.path.dirname(__file__)
+    model_path = os.path.join(this_dir, 'lipid_ccs_pred.pickle')
+    scaler_path = os.path.join(this_dir, 'lipid_ccs_scale.pickle')
+    with open(model_path, 'wb') as pf1, open(scaler_path, 'wb') as pf2:
         pickle.dump(model, pf1)
         pickle.dump(scaler, pf2)
 
@@ -184,31 +188,21 @@ train_new_model
     return model, scaler
 
 
-if __name__ == '__main__':
+def main():
+    """ main build function """
 
-    from sqlite3 import connect
-    import os
-
-    # connect to the database
-    con = connect('lipids.db')
+    # connect to database
+    db_path = os.path.join(os.path.dirname(__file__), 'lipids.db')
+    con = connect(db_path)
     cur = con.cursor()
 
     # prepare encoders
     c_encoder, f_encoder, a_encoder = prep_encoders() 
     
-    # load the trained model if available, or train a new one
-    model_path = 'lipid_ccs_pred.pickle'
-    scaler_path = 'lipid_ccs_scale.pickle' 
-    if not os.path.isfile(model_path) or not os.path.isfile(scaler_path):
-        print('training new predictive CCS model (and input scaler) ...',)
-        model, scaler = train_new_model(cur, 'svr')
-        print('... ok')
-    else:
-        print('loading pre-trained predictive CCS model (and input scaler) ...', end=' ')
-        with open(model_path, 'rb') as pf1, open(scaler_path, 'rb') as pf2:
-            model = pickle.load(pf1)
-            scaler = pickle.load(pf2)
-        print('ok')
+    # train the new model
+    print('training new predictive CCS model (and input scaler) ...',)
+    model, scaler = train_new_model(cur, 'svr')
+    print('... ok')
 
     # add theoretical CCS to the database
     print('\nadding predicted CCS to database ...', end=' ')

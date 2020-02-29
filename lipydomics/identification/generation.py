@@ -8,12 +8,11 @@
 """
 
 
-from LipidMass.lipids.glycerolipids import DG, DGDG, GlcADG, MGDG, TG
-from LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG
-from LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS, LCL
-from LipidMass.lipids.sphingolipids import Cer, HexCer, GlcCer, SM
-from LipidMass.lipids.misc import FA
-
+from .LipidMass.lipids.glycerolipids import DG, DGDG, GlcADG, MGDG, TG
+from .LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG
+from .LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS, LCL
+from .LipidMass.lipids.sphingolipids import Cer, HexCer, GlcCer, SM
+from .LipidMass.lipids.misc import FA
 
 
 def enumerate_lipid_class(lipid_class_obj, n_carbon_bounds, n_unsat_bounds, adducts, fa_mod=None, limit_nu=True):
