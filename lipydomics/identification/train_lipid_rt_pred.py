@@ -82,13 +82,14 @@ featurize
     return np.concatenate([lc_enc, fm_enc, lnc, lnu])
 
 
-def train_new_model(cursor):
+def train_new_model(cursor, bl):
     """
 train_new_model
     description:
         trains a predictive model
     parameters:
         cursor (sqlite3.cursor) -- cursor for querying lipids.db
+        bl (file) -- build log
     returns:
         mdl, scaler -- trained predictive model and input scaler instances
 """
@@ -104,6 +105,8 @@ train_new_model
     X, y = np.array(X), np.array(y)
     print('X: ', X.shape)
     print('y: ', y.shape)
+    print('X: ', X.shape, file=bl)
+    print('y: ', y.shape, file=bl)
 
     # split into test/train sets, scale data (do not center)
     print('splitting data into training and test sets')
@@ -116,22 +119,33 @@ train_new_model
     print('X_test: ', X_test.shape)
     print('y_test: ', y_test.shape)
     print('scaling input data')
+    print('X_train: ', X_train.shape, file=bl)
+    print('y_train: ', y_train.shape, file=bl)
+    print('X_test: ', X_test.shape, file=bl)
+    print('y_test: ', y_test.shape, file=bl)
+    print('scaling input data', file=bl)
     scaler = StandardScaler(with_mean=False)
     X_train_s = scaler.fit_transform(X_train)
     print('X_train_s: ', X_train_s.shape)
+    print('X_train_s: ', X_train_s.shape, file=bl)
 
     # train model
     print('training model')
+    print('training model', file=bl)
     model = LinearRegression(n_jobs=-1)
     model.fit(X_train_s, y_train)
 
     # performance on training set
     print('TRAINING SET PERFORMANCE')
+    print('TRAINING SET PERFORMANCE', file=bl)
     y_train_pred = model.predict(X_train_s)
     y_train_abs_err = np.abs(y_train_pred - y_train)
     print('mean absolute error: {:.2f} min'.format(np.mean(y_train_abs_err)))
     print('median absolute error: {:.2f} min'.format(np.median(y_train_abs_err)))
     print('RMSE: {:.2f} min'.format(np.sqrt(mean_squared_error(y_train, y_train_pred))))
+    print('mean absolute error: {:.2f} min'.format(np.mean(y_train_abs_err)), file=bl)
+    print('median absolute error: {:.2f} min'.format(np.median(y_train_abs_err)), file=bl)
+    print('RMSE: {:.2f} min'.format(np.sqrt(mean_squared_error(y_train, y_train_pred))), file=bl)
 
     # performance on test set
     print('TEST SET PERFORMANCE')
@@ -140,6 +154,10 @@ train_new_model
     print('mean absolute error: {:.2f} min'.format(np.mean(y_test_abs_err)))
     print('median absolute error: {:.2f} min'.format(np.median(y_test_abs_err)))
     print('RMSE: {:.2f} min'.format(np.sqrt(mean_squared_error(y_test, y_test_pred))))
+    print('TEST SET PERFORMANCE', file=bl)
+    print('mean absolute error: {:.2f} min'.format(np.mean(y_test_abs_err)), file=bl)
+    print('median absolute error: {:.2f} min'.format(np.median(y_test_abs_err)), file=bl)
+    print('RMSE: {:.2f} min'.format(np.sqrt(mean_squared_error(y_test, y_test_pred))), file=bl)
 
     # save the model and the scaler
     this_dir = os.path.dirname(__file__)
@@ -153,7 +171,7 @@ train_new_model
     return model, scaler
 
 
-def main():
+def main(tstamp):
     """ main build function """
 
     # connect to database
@@ -164,24 +182,31 @@ def main():
     # prepare encoders
     c_encoder, f_encoder = prep_encoders()
 
-    # train a new model
-    print('training new predictive RT model (and input scaler) ...', )
-    model, scaler = train_new_model(cur)
-    print('... ok')
+    build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
+    with open(build_log, 'a') as bl:
 
-    # add theoretical CCS to the database
-    print('\nadding predicted RT to database ...', end=' ')
-    qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod FROM theoretical_mz'
-    tid_to_rt = {}
-    for tid, lc, lnc, lnu, fam in cur.execute(qry).fetchall():
-        if int(sum(c_encoder.transform([[lc]])[0])) != 0: # make sure lipid class is encodable
-            x = [featurize(lc, lnc, lnu, fam, c_encoder, f_encoder)]
-            tid_to_rt[int(tid)] = model.predict(scaler.transform(x))[0]
-    qry = 'INSERT INTO theoretical_rt VALUES (?, ?)'
-    for tid in tid_to_rt:
-        cur.execute(qry, (tid, tid_to_rt[tid]))
-    print('ok\n')
+        # train a new model
+        print('training new predictive RT model (and input scaler) ...')
+        print('training new predictive RT model (and input scaler) ...', file=bl)
+        model, scaler = train_new_model(cur, bl)
+        print('... ok')
+        print('... ok', file=bl)
 
-    # commit changes to the database and close connection
-    con.commit()
-    con.close()
+        # add theoretical CCS to the database
+        print('\nadding predicted RT to database ...', end=' ')
+        print('\nadding predicted RT to database ...', end=' ', file=bl)
+        qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod FROM theoretical_mz'
+        tid_to_rt = {}
+        for tid, lc, lnc, lnu, fam in cur.execute(qry).fetchall():
+            if int(sum(c_encoder.transform([[lc]])[0])) != 0: # make sure lipid class is encodable
+                x = [featurize(lc, lnc, lnu, fam, c_encoder, f_encoder)]
+                tid_to_rt[int(tid)] = model.predict(scaler.transform(x))[0]
+        qry = 'INSERT INTO theoretical_rt VALUES (?, ?)'
+        for tid in tid_to_rt:
+            cur.execute(qry, (tid, tid_to_rt[tid]))
+        print('ok\n')
+        print('ok\n', file=bl)
+
+        # commit changes to the database and close connection
+        con.commit()
+        con.close()

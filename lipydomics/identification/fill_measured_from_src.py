@@ -80,7 +80,7 @@ add_src_dataset
     return m_id
 
 
-def main():
+def main(tstamp):
     """ main build function """
 
     # connect to database
@@ -109,14 +109,20 @@ def main():
     }
 
     # add each src dataset
-    print("\nadding cleaned datasets into lipids.db")
-    gid_next = 0
-    for dset in dsets:
-        print("\tadding dataset: {} ...".format(dset), end=" ")
-        gid_next = add_src_dataset(cur, dset, metadata[dset], gid_start=gid_next)
-        print("ok")
-    print()
+    build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
+    with open(build_log, 'w') as bl:  # this is the first build script so OK to clear out the log file
+        print("\nadding cleaned datasets into lipids.db")
+        print("\nadding cleaned datasets into lipids.db", file=bl)
 
-    # save changes to the database
-    con.commit()
-    con.close()
+        gid_next = 0
+        for dset in dsets:
+            print("\tadding dataset: {} ...".format(dset), end=" ")
+            print("\tadding dataset: {} ...".format(dset), end=" ", file=bl)
+            gid_next = add_src_dataset(cur, dset, metadata[dset], gid_start=gid_next)
+            print("ok")
+            print("ok", file=bl)
+        print()
+
+        # save changes to the database
+        con.commit()
+        con.close()

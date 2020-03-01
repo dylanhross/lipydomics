@@ -39,7 +39,7 @@ add_src_dataset
         t_id += 1
 
 
-def main():
+def main(tstamp):
     """ main build function """
 
     # connect to database
@@ -47,11 +47,16 @@ def main():
     con = connect(db_path)
     cur = con.cursor()
 
-    print('adding theoretical m/z into lipids.db ...', end=' ')
-    add_enumerated_mz(cur)
-    print('ok')
-    print()
+    build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
+    with open(build_log, 'a') as bl:
 
-    # save changes to the database
-    con.commit()
-    con.close()
+        print('adding theoretical m/z into lipids.db ...', end=' ')
+        print('adding theoretical m/z into lipids.db ...', end=' ', file=bl)
+        add_enumerated_mz(cur)
+        print('ok')
+        print('ok\n', file=bl)
+        print()
+
+        # save changes to the database
+        con.commit()
+        con.close()

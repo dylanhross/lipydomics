@@ -88,7 +88,7 @@ single_class_plot
     plt.close()
 
 
-def main():
+def main(tstamp):
     """ main build function """
 
     # connect to database
@@ -96,16 +96,21 @@ def main():
     con = connect(db_path)
     cur = con.cursor()
 
-    print('characterizing CCS prediction performance ...', end=' ')
+    build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
+    with open(build_log, 'a') as bl:
 
-    # automatically generate plots for all combinations having at least 10 measured values
-    qry = 'SELECT lipid_class, fa_mod, adduct, COUNT(*) as c FROM measured '
-    qry += 'GROUP BY lipid_class, fa_mod, adduct HAVING c > 9'
-    for lipid_class, fa_mod, adduct, c in cur.execute(qry).fetchall():
-        single_class_plot(cur, lipid_class, adduct, fa_mod=fa_mod)
+        print('characterizing CCS prediction performance ...', end=' ')
+        print('characterizing CCS prediction performance ...', end=' ', file=bl)
 
-    print('ok\n')
+        # automatically generate plots for all combinations having at least 10 measured values
+        qry = 'SELECT lipid_class, fa_mod, adduct, COUNT(*) as c FROM measured '
+        qry += 'GROUP BY lipid_class, fa_mod, adduct HAVING c > 9'
+        for lipid_class, fa_mod, adduct, c in cur.execute(qry).fetchall():
+            single_class_plot(cur, lipid_class, adduct, fa_mod=fa_mod)
 
-    # close database connection
-    con.close()
+        print('ok\n')
+        print('ok\n', file=bl)
+
+        # close database connection
+        con.close()
 

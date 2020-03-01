@@ -9,7 +9,9 @@
 
 
 import os
+import shutil
 from sqlite3 import connect
+from datetime import datetime
 
 from .db_table_defs import measured, theo_mz, theo_ccs, theo_rt
 from .fill_measured_from_src import main as fill_from_src
@@ -47,7 +49,14 @@ def initialize_db():
     con.close()
 
 
-def main():
+def make_database_copy(tstamp):
+    """ makes a copy of the database and stores it in the builds directory """
+    src = os.path.join(os.path.dirname(__file__), 'lipids.db')
+    dst = os.path.join(os.path.dirname(__file__), 'builds/lipids_{}.db'.format(tstamp))
+    shutil.copy(src, dst)
+
+
+def main(tstamp):
     """ set up and run all of the individual build scripts """
 
     # get rid of old files
@@ -57,14 +66,25 @@ def main():
     initialize_db()
 
     # run all of the build scripts
-    fill_from_src()
-    gen_theo_mz()
-    train_ccs_pred()
-    charac_ccs_pred()
-    train_rt_pred()
-    charac_rt_pred()
+    fill_from_src(tstamp)
+    gen_theo_mz(tstamp)
+    train_ccs_pred(tstamp)
+    charac_ccs_pred(tstamp)
+    train_rt_pred(tstamp)
+    charac_rt_pred(tstamp)
+
+    # make a copy of the database and store it in the builds directory
+    make_database_copy(tstamp)
+
+
+def gen_tstamp():
+    """ generate a timestamp for the build log and lipid database """
+    now = datetime.now()
+    s = '{:02d}{:02d}{:02d}'
+    return s.format(now.year % 100, now.month, now.day)
 
 
 # run the main function if this module is called directly
 if __name__ == '__main__':
-    main()
+    main(gen_tstamp())
+
