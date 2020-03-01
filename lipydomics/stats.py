@@ -90,8 +90,8 @@ add_plsda
 
         Uses the PLSRegression class from sklearn with the target variable being simply 1 for group A or -1 for group B
         which effectively converts the task from regression to calssification. The fitted PLSRegression object is stored 
-        in an instance variable (Dataset.plsr_). The feature loadings (n_features, 2) and projections (n_samples, 2) are 
-        added to Dataset.stats with the labels 'PLS-DA_A-B_loadings_{raw/normed}' and 
+        in an instance variable (Dataset.plsda_). The feature loadings (n_features, 2) and projections (n_samples, 2)
+        are added to Dataset.stats with the labels 'PLS-DA_A-B_loadings_{raw/normed}' and
         'PLS-DA_A-B_projections_{raw/normed}', respectively.
 
         ! the projections and loadings are checked before the statistics are added to the Dataset to ensure that their
@@ -101,7 +101,7 @@ add_plsda
           from the two analyses are consistent and interpretable. If this condition is not met, the X component of the
           projections and loadings are simply flipped !
     
-        If the Dataset.plsr_ instance variable or either of the Dataset.stats entries are already present, then they 
+        If the Dataset.plsda_ instance variable or either of the Dataset.stats entries are already present, then they
         will be overridden.
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
@@ -121,16 +121,16 @@ add_plsda
     y = np.array([-1 for _ in range(n_A)] + [1 for _ in range(n_B)])
 
     # initialize the PLSRegression object, add to the Dataset, fit the group data
-    dataset.plsr_ = PLSRegression(scale=scaled)
-    dataset.plsr_.fit(X, y)
+    dataset.plsda_ = PLSRegression(scale=scaled)
+    dataset.plsda_.fit(X, y)
 
     if normed:
         nrm = 'normed'
     else:
         nrm = 'raw'
 
-    loadings = dataset.plsr_.x_loadings_
-    projections = dataset.plsr_.transform(X)
+    loadings = dataset.plsda_.x_loadings_
+    projections = dataset.plsda_.transform(X)
 
     # check to see if the X dimension needs to be flipped
     ordered = True
@@ -198,4 +198,52 @@ add_2group_corr
 
     # add the statistic into the Dataset
     dataset.stats['2-group-corr_{}_{}'.format('-'.join(group_names), nrm)] = corr
+
+
+def add_plsra(dataset, group_names, y, normed=False, scaled=False):
+    """
+add_plsra
+    description:
+        Performs PLS-RA using the specified groups and a target external continuous variable.
+
+        Uses the PLSRegression class from sklearn with the target variable being an external continuous variable. The
+        fitted PLSRegression object is stored in an instance variable (Dataset.plsra_). The feature loadings
+        (n_features, 2) and projections (n_samples, 2) are added to Dataset.stats with the labels
+        'PLS-RA_A-B_loadings_{raw/normed}' and 'PLS-RA_A-B_projections_{raw/normed}', respectively.
+
+        If the Dataset.plsra_ instance variable or either of the Dataset.stats entries are already present, then they
+        will be overridden.
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- groups to use to compute the PLS-DA, only 2 groups allowed
+        y (numpy.array(float)) -- external continuous variable, shape = (n_samples,)
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+        [scaled (bool)] -- whether to let the PLSRegression scale the X data [optional, default=False]
+"""
+    # get the group data, reshape and concatenate -> X
+    X = np.concatenate([_.T for _ in dataset.get_data_bygroup(group_names, normed=normed)])
+
+    # make sure y has the proper shape for the selected groups
+    if False:
+        m = 'add_plsra: selected groups have {} samples but external variable has {} values'
+        raise ValueError(m.format())
+
+    # initialize the PLSRegression object, add to the Dataset, fit the group data
+    dataset.plsra_ = PLSRegression(scale=scaled)
+    dataset.plsra_.fit(X, y)
+
+    if normed:
+        nrm = 'normed'
+    else:
+        nrm = 'raw'
+
+    loadings = dataset.plsra_.x_loadings_
+    projections = dataset.plsra_.transform(X)
+
+    # add the statistics into the Dataset
+    dataset.stats['PLS-RA_{}_loadings_{}'.format('-'.join(group_names), nrm)] = loadings
+    dataset.stats['PLS-RA_{}_projections_{}'.format('-'.join(group_names), nrm)] = projections
+
+    # add the external variable into the Dataset
+    dataset.ext_var = y
 

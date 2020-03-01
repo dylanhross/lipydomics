@@ -13,10 +13,10 @@ import numpy as np
 import os
 
 from lipydomics.data import Dataset
-from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr
+from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra
 from lipydomics.plotting import (
     barplot_feature_bygroup, batch_barplot_feature_bygroup, scatter_pca3_projections_bygroup,
-    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup
+    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup
 )
 from lipydomics.identification import add_feature_ids
 from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
@@ -337,10 +337,11 @@ manage_statistics
         print("\t2. PCA3")
         print("\t3. PLS-DA")
         print("\t4. Two Group Correlation")
+        print("\t5. PLS-RA (using external continuous variable)")
         print('\t"back" to go back')
         opt2 = input('> ')
         # map options to stats functions
-        stats_f_map = {'1': add_anova_p, '2': add_pca3, '3': add_plsda, '4': add_2group_corr}
+        stats_f_map = {'1': add_anova_p, '2': add_pca3, '3': add_plsda, '4': add_2group_corr, '5': add_plsra}
         if opt2 in stats_f_map:
             print('Would you like to use normalized data? (y/N)')
             norm = input('> ') == 'y'
@@ -352,10 +353,22 @@ manage_statistics
             print('Please enter group names to use in this analysis, separated by spaces')
             groups = input('> ').split()
             try:
-                stats_f_map[opt2](dset, groups, normed=norm)
+                if opt2 == '5':
+                    # get the y variable
+                    print('Please enter the path to a text file with the target variable values for regression')
+                    print('\tExample: external.txt')
+                    target_path = input('> ')
+                    with open(target_path, 'r') as f:
+                        y = np.array([float(_.strip()) for _ in f.readlines()])
+                    stats_f_map[opt2](dset, groups, y, normed=norm)
+                else:
+                    stats_f_map[opt2](dset, groups, normed=norm)
                 print('! INFO: Applied new statistical analysis using groups: {}'.format(groups))
-            except ValueError:
+            except ValueError as ve:
+                print('! ERROR:', ve)
                 print('! ERROR: Unable to perform statistical analysis, check group names and try again')
+            except FileNotFoundError:
+                print('! ERROR: Unable to find file with target variable values: {}'.format(target_path))
         elif opt2 == 'back':
             pass
         else:
@@ -406,13 +419,14 @@ make_plots
     print("\t3. Scatter PCA3 Projections by group")
     print("\t4. Scatter PLS-DA Projections by group")
     print("\t5. S-Plot PLSA-DA and Pearson correlation by group")
+    print("\t6. Scatter PLS-RA Projections by group")
     print('\t"back" to go back')
     option = input('> ')
 
     # map the options to plotting functions
     plots_f_map = {'1': barplot_feature_bygroup, '2': batch_barplot_feature_bygroup,
                    '3': scatter_pca3_projections_bygroup, '4': scatter_plsda_projections_bygroup,
-                   '5': splot_plsda_pcorr_bygroup}
+                   '5': splot_plsda_pcorr_bygroup, '6': scatter_plsra_projections_bygroup}
     if option in plots_f_map:
         print("Where would you like to save the plot(s)? (default = current directory)")
         plot_dir = input('> ')
@@ -453,17 +467,17 @@ make_plots
                 else:
                     print('! ERROR: Could not match feature')
             except ValueError as ve:
-                print(ve)
+                print('! ERROR:', ve)
                 print('! ERROR: Unable to generate plot using groups: {}'.format(groups))
         else:
             try:
                 plots_f_map[option](dset, groups, plot_dir, normed=norm)
                 print('! INFO: Generated plot for groups: {}'.format(groups))
             except KeyError as ke:
-                print(ke)
+                print('! ERROR:', ke)
                 print('! ERROR: Required statistic(s) have not been computed for groups: {}'.format(groups))
             except ValueError as ve:
-                print(ve)
+                print('! ERROR:', ve)
                 print('! ERROR: Unable to generate plot using groups: {}'.format(groups))
         return False
 
@@ -674,7 +688,7 @@ calibrate_rt
         try:
             dset.rt_calibration = build_new_calibration()
         except Exception as e:
-            print(e)
+            print('! ERROR:', e)
             print('! ERROR: failed to create a new RT calibration.')
         # prompt again
         return False
@@ -780,6 +794,7 @@ batch_feature_selection
         else:
             print('! INFO: selected features exported to: "{}"'.format(outpath))
     except Exception as e:
+        print('! ERROR:', e)
         print('! ERROR: unable to select feature data ({})'.format(e))
     return True
 
@@ -868,7 +883,8 @@ export
     try:
         writer.save()
         print('! INFO: Successfully exported dataset to Excel spreadsheet: {}.'.format(path))
-    except:
+    except Exception as e:
+        print('! ERROR:', e)
         print("! ERROR: Unable to export data.")
     return True
 

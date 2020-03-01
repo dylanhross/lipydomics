@@ -187,3 +187,42 @@ LPS.__init__
         # the lipid class is LPS
         self.lipid_class = 'LPS'
 
+
+class LCL(Lysoglycerophospholipid):
+    r"""
+LCL
+    description:
+        Lyso-Cardiolipin
+        Glycerophospholipid with core structure:
+
+                                OH
+                                |
+                  O   O__    O--P==O
+                  \\ /   \__/   |
+         O__    O--P     /      O    __OH
+        /   \__/   |   HO        \__/
+    O==|    /      OH               \
+        \   O                        O
+        Ac1  \                      /
+              |==O              O==|
+             /                      \
+           Ac2                      Ac3
+"""
+
+    def __init__(self, sum_carbon, sum_unsaturation):
+        """
+LCL.__init__
+    description:
+        Sets the core formula for Lyso-Cardiolipins and determines the formula contribution from the acyl chains
+    parameters:
+        sum_carbon (int) -- sum acyl carbons
+        sum_unsaturation (int) -- sum acyl unsaturations
+"""
+        # formula is initially set to the core formula (only partial head group, no fatty acid tails)
+        self.formula = {'C': 12, 'H': 19, 'O': 16, 'P': 2}
+        # two acyl chains are added to the chemical formula
+        acyl_formula = self.gen_acyl_formula(3, sum_carbon, sum_unsaturation)
+        self.add_to_formula(acyl_formula)
+        # store the sum composition
+        self.sum_composition = (sum_carbon, sum_unsaturation)
+        self.lipid_class = 'LCL'

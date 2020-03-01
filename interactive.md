@@ -109,6 +109,8 @@ Functionalities
 		- PLS-DA
 		
 		- Two Group Correlation
+		
+		- PLS-RA (using an external continuous variable)
 
 
 - **Plotting**:
@@ -126,6 +128,8 @@ Functionalities
 		- Scatter PLS-DA Projections by group
 		
 		- S-Plot PLSA-DA and Pearson correlation by group
+		
+		- Scatter PLS-RA projections by group
 
 
 - **Lipid Identification**:
@@ -134,15 +138,19 @@ Functionalities
 	
 	- Levels of Confidence:
 	
-		- 'theo_mz' - match on theoretical m/z
+		- `theo_mz` - match on theoretical m/z
 		
-		- theo_mz_ccs' - match on theoretical m/z and CCS
+		- `theo_mz` - match on theoretical m/z and retention time
 		
-		- 'meas_mz_ccs' - match on measured m/z and CCS
+		- `theo_mz_ccs` - match on theoretical m/z and CCS
 		
-		- 'meas_mz_rt_ccs' - match on measured m/z, retention time, and CCS
+		- `theo_mz_rt_ccs` - match on theoretical m/z, retention time, and CCS
 		
-		'any' - try all criteria (highest confidence first)
+		- `meas_mz_ccs` - match on measured m/z and CCS
+		
+		- `meas_mz_rt_ccs` - match on measured m/z, retention time, and CCS
+		
+		- `any` - try all criteria (highest confidence first)
 
 
 - **Normalization**

@@ -13,10 +13,10 @@ import numpy as np
 from csv import reader
 
 from lipydomics.data import Dataset
-from lipydomics.stats import add_pca3, add_plsda, add_2group_corr
+from lipydomics.stats import add_pca3, add_plsda, add_2group_corr, add_plsra
 from lipydomics.plotting import (
     barplot_feature_bygroup, batch_barplot_feature_bygroup, scatter_pca3_projections_bygroup,
-    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup
+    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup
 )
 
 
@@ -147,7 +147,7 @@ scatter_plsda_projections_bygroup_mock1
     add_plsda(dset, group_names, normed=True)
 
     img_dir = os.path.dirname(__file__)
-    img_path = os.path.join(img_dir, 'PLS-DA_projections_{}_normed.png'.format('-'.join(group_names)))
+    img_path = os.path.join(img_dir, 'PLS-DA_{}_projections_normed.png'.format('-'.join(group_names)))
 
     scatter_plsda_projections_bygroup(dset, group_names, img_dir, normed=True)
     if not os.path.isfile(img_path):
@@ -189,5 +189,45 @@ splot_plsda_pcorr_bygroup_mock1
         # delete the image file 
         os.remove(img_path)
         
+    return True
+
+
+def scatter_plsra_projections_bygroup_real1():
+    """
+scatter_plsra_projections_bygroup_real1
+    description:
+        Using the normalized data from real_data_1.csv, perform PLS-RA and plot the projections
+        Image file is saved in the lipydomics/test directory, then deleted.
+
+        Test fails if there are any errors, or if the image file is not produced
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    dset.assign_groups({
+        'Par': [0, 1, 2, 3],
+        'Dap2': [4, 5, 6, 7],
+        'Dal2': [8, 9, 10, 11],
+        'Van4': [12, 13, 14, 15],
+        'Van8': [16, 17, 18, 19]
+    })
+    dset.normalize(np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.1, 0.2, 0.3, 0.4,
+                             0.5, 0.6, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.1, 0.2]))
+    with open(os.path.join(os.path.dirname(__file__), 'external_real1.txt'), 'r') as f:
+        y = np.array([float(_.strip()) for _ in f.readlines()])
+    group_names = ['Par', 'Dap2', 'Dal2', 'Van4', 'Van8']
+    add_plsra(dset, group_names, y, normed=True)
+
+    img_dir = os.path.dirname(__file__)
+    img_path = os.path.join(img_dir, 'PLS-RA_{}_projections_normed.png'.format('-'.join(group_names)))
+
+    scatter_plsra_projections_bygroup(dset, group_names, img_dir, normed=True)
+    if not os.path.isfile(img_path):
+        m = 'scatter_plsra_projections_bygroup_real1: image file {} not found'
+        raise RuntimeError(m.format(img_path))
+    else:
+        # delete the image file
+        os.remove(img_path)
+
     return True
 

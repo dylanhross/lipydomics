@@ -12,7 +12,7 @@ import os
 import numpy as np
 
 from lipydomics.data import Dataset
-from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr
+from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra
 
 
 def addanovap_mock1():
@@ -128,10 +128,10 @@ addplsda_mock1
     dset.assign_groups({'A': [0, 2, 4], 'B': [1, 3, 5]})
     add_plsda(dset, ['A', 'B'])
     if dset.stats['PLS-DA_A-B_loadings_raw'].shape != (5, 2):
-        m = 'addplsda_mock1: PCA3_loadings_raw should have shape (5, 2), has shape: {}'
+        m = 'addplsda_mock1: PLS-DA_A-B_loadings_raw should have shape (5, 2), has shape: {}'
         raise RuntimeError(m.format(dset.stats['PLS-DA_A-B_loadings_raw'].shape))
     if dset.stats['PLS-DA_A-B_projections_raw'].shape != (6, 2):
-        m = 'addplsda_mock1: PCA3_projections_raw should have shape (6, 2), has shape: {}'
+        m = 'addplsda_mock1: PLS-DA_A-B_projections_raw should have shape (6, 2), has shape: {}'
         raise RuntimeError(m.format(dset.stats['PLS-DA_A-B_projections_raw'].shape))
 
     return True
@@ -159,7 +159,7 @@ addplsda_3groups_mock1
 
 def addplsda_real1():
     """
-addplsda_mock1
+addplsda_real1
     description:
         Uses the raw data from real_data_1.csv to perform PLS-DA.
 
@@ -189,10 +189,10 @@ addplsda_mock1
     for pair in pairs:
         add_plsda(dset, pair)
         if dset.stats['PLS-DA_{}_loadings_raw'.format('-'.join(pair))].shape != (773, 2):
-            m = 'addplsda_mock1: PCA3_loadings_raw should have shape (773, 2), has shape: {}'
+            m = 'addplsda_real1: PLS-DA_loadings_raw should have shape (773, 2), has shape: {}'
             raise RuntimeError(m.format(dset.stats['PLS-DA_{}_loadings_raw'.format('-'.join(pair))].shape))
         if dset.stats['PLS-DA_{}_projections_raw'.format('-'.join(pair))].shape != (8, 2):
-            m = 'addplsda_mock1: PCA3_projections_raw should have shape (8, 2), has shape: {}'
+            m = 'addplsda_real1: PLS-DA_projections_raw should have shape (8, 2), has shape: {}'
             raise RuntimeError(m.format(dset.stats['PLS-DA_{}_projections_raw'.format('-'.join(pair))].shape))
 
     return True
@@ -265,9 +265,43 @@ add2groupcorr_real1
     for pair in pairs:
         add_2group_corr(dset, pair)
         if dset.stats['2-group-corr_{}_raw'.format('-'.join(pair))].shape != (773,):
-            m = 'addplsda_mock1: PCA3_loadings_raw should have shape (773, 2), has shape: {}'
+            m = 'add2groupcorr_real1: PLS-DA_loadings_raw should have shape (773, 2), has shape: {}'
             raise RuntimeError(m.format(dset.stats['2-group-corr_{}_raw'.format('-'.join(pair))].shape))
 
     return True
 
 
+def addplsra_real1():
+    """
+addplsra_real1
+    description:
+        Uses the raw data from real_data_1.csv to perform PLS-RA with all groups.
+
+        Test fails if there are any errors or if the shapes of the following stats entries are incorrect:
+            dset.stats['PLS-DA_..._loadings_raw'].shape = (773, 2)
+            dset.stats['PLS-DA_..._projections_raw'].shape = (20, 2)
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    dset.assign_groups({
+        'Par': [0, 1, 2, 3],
+        'Dap2': [4, 5, 6, 7],
+        'Dal2': [8, 9, 10, 11],
+        'Van4': [12, 13, 14, 15],
+        'Van8': [16, 17, 18, 19]
+    })
+
+    with open(os.path.join(os.path.dirname(__file__), 'external_real1.txt'), 'r') as f:
+        y = np.array([float(_.strip()) for _ in f.readlines()])
+
+    groups = ['Par', 'Dap2', 'Dal2', 'Van4', 'Van8']
+    add_plsra(dset, groups, y)
+    if dset.stats['PLS-RA_{}_loadings_raw'.format('-'.join(groups))].shape != (773, 2):
+        m = 'addplsra_real1: PLS-RA_loadings_raw should have shape (773, 2), has shape: {}'
+        raise RuntimeError(m.format(dset.stats['PLS-RA_{}_loadings_raw'.format('-'.join(groups))].shape))
+    if dset.stats['PLS-RA_{}_projections_raw'.format('-'.join(groups))].shape != (20, 2):
+        m = 'addplsra_real1: PLS-RA_projections_raw should have shape (20, 2), has shape: {}'
+        raise RuntimeError(m.format(dset.stats['PLS-RA_{}_projections_raw'.format('-'.join(groups))].shape))
+
+    return True

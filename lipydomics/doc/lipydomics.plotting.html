@@ -97,6 +97,17 @@ of&nbsp;the&nbsp;CSV&nbsp;file&nbsp;(which&nbsp;can&nbsp;span&nbsp;multiple&nbsp
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;pick&nbsp;groups&nbsp;to&nbsp;plot&nbsp;against<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img_dir&nbsp;(str)&nbsp;--&nbsp;directory&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
+ <dl><dt><a name="-scatter_plsra_projections_bygroup"><strong>scatter_plsra_projections_bygroup</strong></a>(dataset, group_names, img_dir, normed=False)</dt><dd><tt>scatter_plsra_projections_bygroup<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;scatter&nbsp;plot&nbsp;of&nbsp;the&nbsp;PLS-RA&nbsp;projections&nbsp;for&nbsp;a&nbsp;specified&nbsp;set&nbsp;of&nbsp;groups&nbsp;and&nbsp;saves&nbsp;the&nbsp;image&nbsp;to&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'PLS-RA_{group_name1}-{group_name2}-{etc.}_projections_{raw&nbsp;or&nbsp;normed}.png'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;The&nbsp;same&nbsp;group&nbsp;names&nbsp;(in&nbsp;the&nbsp;same&nbsp;order)&nbsp;as&nbsp;were&nbsp;used&nbsp;in&nbsp;the&nbsp;call&nbsp;to&nbsp;add_plsra(...)&nbsp;must&nbsp;be&nbsp;used.&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;pick&nbsp;groups&nbsp;used&nbsp;to&nbsp;calculate&nbsp;the&nbsp;PCA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img_dir&nbsp;(str)&nbsp;--&nbsp;directory&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
  <dl><dt><a name="-splot_plsda_pcorr_bygroup"><strong>splot_plsda_pcorr_bygroup</strong></a>(dataset, group_names, img_dir, normed=False)</dt><dd><tt>splot_plsda_pcorr_bygroup<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generate&nbsp;an&nbsp;S-Plot&nbsp;using&nbsp;x_loadings&nbsp;from&nbsp;PLS-DA&nbsp;and&nbsp;Pearson&nbsp;correlation&nbsp;coefficients,&nbsp;and&nbsp;save&nbsp;the&nbsp;image&nbsp;to&nbsp;a&nbsp;<br>
@@ -114,7 +125,8 @@ of&nbsp;the&nbsp;CSV&nbsp;file&nbsp;(which&nbsp;can&nbsp;span&nbsp;multiple&nbsp
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>cs</strong> = ['#2FA2AB', '#9BD0B9', 'Purple', 'Blue', 'Green', 'Orange', 'Red', 'Yellow', '#E8ACF6', 'Grey', '#D6BF49', '#412F88', '#A2264B', '#3ACBE8', '#1CA3DE', '#0D85D8']<br>
+<td width="100%"><strong>CS</strong> = ['#2FA2AB', '#9BD0B9', 'Purple', 'Blue', 'Green', 'Orange', 'Red', 'Yellow', '#E8ACF6', 'Grey', '#D6BF49', '#412F88', '#A2264B', '#3ACBE8', '#1CA3DE', '#0D85D8']<br>
+<strong>IMG_RES</strong> = 350<br>
 <strong>rcParams</strong> = RcParams({'_internal.classic_mode': False,
      ...nor.width': 0.6,
           'ytick.right': False})</td></tr></table>

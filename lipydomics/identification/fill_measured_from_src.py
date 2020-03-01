@@ -1,4 +1,3 @@
-#!/usr/local/Cellar/python3/3.7.3/bin/python3
 """
     fill_measured_from_src.py
     Dylan H. Ross
@@ -10,9 +9,11 @@
 """
 
 
+import os
+from sqlite3 import connect
 from json import load as jload
 
-from lipid_parser import parse_lipid
+from .lipid_parser import parse_lipid
 
 
 def add_src_dataset(cursor, src_tag, metadata, gid_start=0):
@@ -28,7 +29,8 @@ add_src_dataset
     returns:
         (int) -- the next available m_id value
 """
-    with open("reference_data/{}.json".format(src_tag), "r") as j:
+    ref_file = os.path.join(os.path.dirname(__file__), "reference_data/{}.json".format(src_tag))
+    with open(ref_file, "r") as j:
         jdata = jload(j)
     # query string
     # m_id, name, adduct, mz, ccs, smi, src_tag
@@ -78,12 +80,12 @@ add_src_dataset
     return m_id
 
 
-if __name__ == '__main__':
-
-    from sqlite3 import connect
+def main(tstamp):
+    """ main build function """
 
     # connect to database
-    con = connect("lipids.db")
+    db_path = os.path.join(os.path.dirname(__file__), 'lipids.db')
+    con = connect(db_path)
     cur = con.cursor()
 
     # source datasets
@@ -107,14 +109,20 @@ if __name__ == '__main__':
     }
 
     # add each src dataset
-    print("\nadding cleaned datasets into lipids.db")
-    gid_next = 0
-    for dset in dsets:
-        print("\tadding dataset: {} ...".format(dset), end=" ")
-        gid_next = add_src_dataset(cur, dset, metadata[dset], gid_start=gid_next)
-        print("ok")
-    print()
+    build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
+    with open(build_log, 'w') as bl:  # this is the first build script so OK to clear out the log file
+        print("\nadding cleaned datasets into lipids.db")
+        print("\nadding cleaned datasets into lipids.db", file=bl)
 
-    # save changes to the database
-    con.commit()
-    con.close()
+        gid_next = 0
+        for dset in dsets:
+            print("\tadding dataset: {} ...".format(dset), end=" ")
+            print("\tadding dataset: {} ...".format(dset), end=" ", file=bl)
+            gid_next = add_src_dataset(cur, dset, metadata[dset], gid_start=gid_next)
+            print("ok")
+            print("ok", file=bl)
+        print()
+
+        # save changes to the database
+        con.commit()
+        con.close()

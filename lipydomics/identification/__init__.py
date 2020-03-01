@@ -354,7 +354,7 @@ id_feat_any
     return '', '', []
 
 
-def add_feature_ids(dataset, tol, level='any', norm='l2'):
+def add_feature_ids(dataset, tol, level='any', norm='l2', db_version_tstamp=None):
     """
 add_feature_ids
     description:
@@ -399,10 +399,21 @@ add_feature_ids
         tol (tuple(float, float, float)) -- tolerance for m/z, rt, and CCS, respectively 
         [level (str)] -- specify the level of identification [optional, default='all']
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
+        [db_version_tstamp (str or None)] -- use a specific time-stamped version of the lipids database instead of the
+                                             default (most recent build) [optional, default=None]
 """
     if level not in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
         m = 'add_feature_ids: identification level "{}" not recognized'
         raise ValueError(m.format(level))
+
+    if db_version_tstamp:  # option to use a time-stamped version from the builds directory
+        db_path = os.path.join(os.path.dirname(__file__), 'builds/lipids_{}.db'.format(db_version_tstamp))
+    else:
+        db_path = os.path.join(os.path.dirname(__file__), 'lipids.db')
+    # make sure we can find the database
+    if not os.path.isfile(db_path):
+        m = 'add_feature_ids: unable to find lipid database ({})'.format(db_path)
+        raise RuntimeError(m)
 
     # available identification functions
     id_funcs = {
@@ -419,7 +430,7 @@ add_feature_ids
     esi = dataset.esi_mode
 
     # initialize connection to lipids.db (stored within the lipydomics package)
-    con = connect(os.path.join(os.path.dirname(__file__), 'lipids.db'))
+    con = connect(db_path)
     cur = con.cursor()
 
     feat_ids, feat_id_levels, feat_id_scores = [], [], []

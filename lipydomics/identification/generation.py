@@ -8,12 +8,11 @@
 """
 
 
-from LipidMass.lipids.glycerolipids import DG, DGDG, GlcADG, MGDG, TG
-from LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG
-from LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS
-from LipidMass.lipids.sphingolipids import Cer, HexCer, GlcCer, SM
-from LipidMass.lipids.misc import FA
-
+from .LipidMass.lipids.glycerolipids import DG, DGDG, GlcADG, MGDG, TG
+from .LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG
+from .LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS, LCL
+from .LipidMass.lipids.sphingolipids import Cer, HexCer, GlcCer, SM
+from .LipidMass.lipids.misc import FA
 
 
 def enumerate_lipid_class(lipid_class_obj, n_carbon_bounds, n_unsat_bounds, adducts, fa_mod=None, limit_nu=True):
@@ -62,7 +61,7 @@ enumerate_all_lipids
         (str, str, float) -- name, adduct, monoisotopic mass
 """
     # general carbon count bounds for diacyl lipids 12,12 to 22,22
-    diacyl_nc = (24, 44)
+    diacyl_nc = (24, 48)
     # general unsaturation bounds for diacyl lipids :0 to :12
     diacyl_nu = (0, 12)
 
@@ -77,7 +76,7 @@ enumerate_all_lipids
     for l in enumerate_lipid_class(TG, (24, 64), (0, 18), ['[M+NH4]+', '[M+Na]+', '[M+K]+']):
         yield l
     mgdg_adducts = ['[M+NH4]+', '[M+Na]+', '[M+K]+', '[M-H]-', '[M+CH3COO]-', '[M+Cl]-']
-    for l in enumerate_lipid_class(MGDG, (12, 22), (0, 6), mgdg_adducts):
+    for l in enumerate_lipid_class(MGDG, (12, 24), (0, 6), mgdg_adducts):
         yield l
 
     # diacyl-glycerophospholipids (with plasmalogen and ether derivatives)
@@ -91,10 +90,12 @@ enumerate_all_lipids
             for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu_, diagpl_adducts, fa_mod=fa_mod):
                 yield l
 
-    # AcylPG and CL
+    # AcylPG, CL, and LCL
     for l in enumerate_lipid_class(AcylPG, (24, 64), (0, 18), ['[M-H]-', '[M+Na]+']):
         yield l
-    for l in enumerate_lipid_class(CL, (36, 72), (0, 12), ['[M-2H]2-', '[M+2K]2+']):
+    for l in enumerate_lipid_class(CL, (36, 72), (0, 24), ['[M-2H]2-', '[M+2K]2+']):
+        yield l
+    for l in enumerate_lipid_class(LCL, (24, 64), (0, 18), ['[M-2H]2-', '[M+2K]2+']):
         yield l
 
     # (monoacyl) lysoglycerophospholipids
@@ -104,7 +105,7 @@ enumerate_all_lipids
         for fa_mod in [None, 'p', 'o']:
             # for plasmalogen lipids, minimum unsaturation must be 1
             lgpl_nu = (1, 6) if fa_mod == 'p' else (0, 6)
-            for l in enumerate_lipid_class(lc, (12, 22), lgpl_nu, lgpl_adducts, fa_mod=fa_mod):
+            for l in enumerate_lipid_class(lc, (12, 24), lgpl_nu, lgpl_adducts, fa_mod=fa_mod):
                 yield l
 
     # sphingolipids (Cer, HexCer, SM)
@@ -115,7 +116,7 @@ enumerate_all_lipids
             yield l
 
     # fatty acids
-    for l in enumerate_lipid_class(FA, (12, 22), (0, 6), ['[M-H]-']):
+    for l in enumerate_lipid_class(FA, (10, 24), (0, 6), ['[M-H]-']):
         yield l
 
 

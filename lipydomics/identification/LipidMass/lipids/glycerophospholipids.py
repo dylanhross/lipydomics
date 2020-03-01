@@ -382,7 +382,7 @@ CL.__init__
 """
         # formula is initially set to the core formula (only partial head group, no fatty acid tails)
         self.formula = {'C': 13, 'H': 18, 'O': 17, 'P': 2}
-        # two acyl chains are added to the chemical formula
+        # four acyl chains are added to the chemical formula
         acyl_formula = self.gen_acyl_formula(4, sum_carbon, sum_unsaturation)
         self.add_to_formula(acyl_formula)
         # store the sum composition
@@ -422,9 +422,10 @@ acylPG.__init__
 """
         # formula is initially set to the core formula (only partial head group, no fatty acid tails)
         self.formula = {'C': 9, 'H': 12, 'O': 11, 'P': 1}
-        # two acyl chains are added to the chemical formula
+        # three acyl chains are added to the chemical formula
         acyl_formula = self.gen_acyl_formula(3, sum_carbon, sum_unsaturation)
         self.add_to_formula(acyl_formula)
         # store the sum composition
         self.sum_composition = (sum_carbon, sum_unsaturation)
         self.lipid_class = 'AcylPG'
+

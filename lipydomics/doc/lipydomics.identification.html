@@ -23,15 +23,17 @@ description:<br>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="lipydomics.identification.LipidMass.html"><strong>LipidMass</strong>&nbsp;(package)</a><br>
+<a href="lipydomics.identification.build_database.html">build_database</a><br>
 <a href="lipydomics.identification.characterize_lipid_ccs_pred.html">characterize_lipid_ccs_pred</a><br>
-<a href="lipydomics.identification.characterize_lipid_rt_pred.html">characterize_lipid_rt_pred</a><br>
-</td><td width="25%" valign=top><a href="lipydomics.identification.fill_measured_from_src.html">fill_measured_from_src</a><br>
-<a href="lipydomics.identification.fill_theo_mz_from_gen.html">fill_theo_mz_from_gen</a><br>
+</td><td width="25%" valign=top><a href="lipydomics.identification.characterize_lipid_rt_pred.html">characterize_lipid_rt_pred</a><br>
+<a href="lipydomics.identification.db_table_defs.html">db_table_defs</a><br>
+<a href="lipydomics.identification.fill_measured_from_src.html">fill_measured_from_src</a><br>
+</td><td width="25%" valign=top><a href="lipydomics.identification.fill_theo_mz_from_gen.html">fill_theo_mz_from_gen</a><br>
 <a href="lipydomics.identification.generation.html">generation</a><br>
-</td><td width="25%" valign=top><a href="lipydomics.identification.lipid_parser.html">lipid_parser</a><br>
-<a href="lipydomics.identification.rt_calibration.html">rt_calibration</a><br>
+<a href="lipydomics.identification.lipid_parser.html">lipid_parser</a><br>
+</td><td width="25%" valign=top><a href="lipydomics.identification.rt_calibration.html">rt_calibration</a><br>
 <a href="lipydomics.identification.train_lipid_ccs_pred.html">train_lipid_ccs_pred</a><br>
-</td><td width="25%" valign=top><a href="lipydomics.identification.train_lipid_rt_pred.html">train_lipid_rt_pred</a><br>
+<a href="lipydomics.identification.train_lipid_rt_pred.html">train_lipid_rt_pred</a><br>
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
@@ -39,7 +41,7 @@ description:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-add_feature_ids"><strong>add_feature_ids</strong></a>(dataset, tol, level='any', norm='l2')</dt><dd><tt>add_feature_ids<br>
+<td width="100%"><dl><dt><a name="-add_feature_ids"><strong>add_feature_ids</strong></a>(dataset, tol, level='any', norm='l2', db_version_tstamp=None)</dt><dd><tt>add_feature_ids<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Goes&nbsp;through&nbsp;the&nbsp;list&nbsp;of&nbsp;features&nbsp;(mz,&nbsp;rt,&nbsp;ccs)&nbsp;in&nbsp;Dataset.labels&nbsp;and&nbsp;provides&nbsp;an&nbsp;identification&nbsp;for&nbsp;each.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
@@ -81,7 +83,9 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol&nbsp;(tuple(float,&nbsp;float,&nbsp;float))&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;CCS,&nbsp;respectively&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[level&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;the&nbsp;level&nbsp;of&nbsp;identification&nbsp;[optional,&nbsp;default='all']<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[db_version_tstamp&nbsp;(str&nbsp;or&nbsp;None)]&nbsp;--&nbsp;use&nbsp;a&nbsp;specific&nbsp;time-stamped&nbsp;version&nbsp;of&nbsp;the&nbsp;lipids&nbsp;database&nbsp;instead&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default&nbsp;(most&nbsp;recent&nbsp;build)&nbsp;[optional,&nbsp;default=None]</tt></dd></dl>
  <dl><dt><a name="-connect"><strong>connect</strong></a>(...)</dt><dd><tt><a href="#-connect">connect</a>(database[,&nbsp;timeout,&nbsp;detect_types,&nbsp;isolation_level,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;check_same_thread,&nbsp;factory,&nbsp;cached_statements,&nbsp;uri])<br>
 &nbsp;<br>
