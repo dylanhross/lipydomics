@@ -80,8 +80,8 @@ def main(tstamp):
 def gen_tstamp():
     """ generate a timestamp for the build log and lipid database """
     now = datetime.now()
-    s = '{:02d}{:02d}{:02d}'
-    return s.format(now.year % 100, now.month, now.day)
+    s = '{:02d}{:02d}{:02d}{:02d}{:02d}'
+    return s.format(now.year % 100, now.month, now.day, now.hour, now.minute)
 
 
 # run the main function if this module is called directly

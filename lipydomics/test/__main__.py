@@ -23,7 +23,9 @@ from lipydomics.test.plotting import (
     barplot_feature_bygroup_mock1, batch_barplot_feature_bygroup_real1, scatter_pca3_projections_bygroup_mock1,
     scatter_plsda_projections_bygroup_mock1, splot_plsda_pcorr_bygroup_mock1, scatter_plsra_projections_bygroup_real1
 )
-from lipydomics.test.identification import add_feature_ids_any_real1
+from lipydomics.test.identification import (
+    add_feature_ids_any_real1, add_feature_ids_any_real1_tstamp, add_feature_ids_real1_bad_tstamp
+)
 from lipydomics.test.rt_calibration import (
     get_ref_rt_lipids1, rtcal_init_mismatch_len, rtcal_calibrate_rtc1_c12, rtcal_calibrate_rtc1_c13,
     rtcal_calibrate_rtc2_c12, rtcal_calibrate_rtc2_c13
@@ -68,6 +70,8 @@ run_all_tests
         scatter_plsra_projections_bygroup_real1,
         # test/identification
         add_feature_ids_any_real1,
+        add_feature_ids_any_real1_tstamp,
+        add_feature_ids_real1_bad_tstamp,
         # test/rt_calibration
         get_ref_rt_lipids1,
         rtcal_init_mismatch_len,
