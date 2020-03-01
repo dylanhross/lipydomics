@@ -3,9 +3,9 @@ include lipydomics/test/*.csv
 include lipydomics/test/*.txt
 include lipydomics/identification/*.pickle
 include lipydomics/identification/*.txt
-include lipydomcis/identification/build_new_db.sh
-include lipydomics/identification/lipds_schema.sql
 include lipydomics/identification/lipids.db
+include lipydomics/identification/builds/*.txt
+include lipydomics/identification/builds/*.db
 include lipydomics/identification/reference_data/*.json
 include lipydomics/identification/ccs_pred_perf/*.png
 include lipydomics/identification/rt_pred_perf/*.png
