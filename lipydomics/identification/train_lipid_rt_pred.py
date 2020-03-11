@@ -21,6 +21,8 @@ from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
+from .encoder_params import rt_lipid_classes, rt_fa_mods
+
 
 def prep_encoders():
     """
@@ -30,32 +32,9 @@ prep_encoders
     returns:
         c_encoder, f_encoder (sklearn.preprocessing.OneHotEncoder) -- encoders for lipid_class and fa_mod
 """
-    lipid_classes = [
-        ['PG'],
-        ['PE'],
-        ['DGDG'],
-        ['LPE'],
-        ['PC'],
-        ['CL'],
-        ['PI'],
-        ['PA'],
-        ['Cer'],
-        ['AcylPG'],
-        ['LysylPG'],
-        ['GlcCer'],
-        ['MGDG'],
-        ['LPG'],
-        ['AcylPE'],
-        ['SM'],
-        ['LPC'],
-        ['PS'],
-        ['DG'],
-        ['GlcADG'],
-        ['AlaPG'],
-        ['PIP']
-    ]
+    lipid_classes = [[_] for _ in rt_lipid_classes]
     c_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(lipid_classes)
-    fa_mods = [['p']]
+    fa_mods = [[_] for _ in rt_fa_mods]
     f_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(fa_mods)
     return c_encoder, f_encoder
 
@@ -100,8 +79,12 @@ train_new_model
     qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, rt FROM measured WHERE rt IS NOT NULL'
     X, y = [], []
     for lc, lnc, lnu, fam, c in cursor.execute(qry).fetchall():
-        X.append(featurize(lc, lnc, lnu, fam, c_encoder, f_encoder))
-        y.append(float(c))
+        # only use the classes and fa_mods that are explicitly encoded
+        lc_ok = lc in rt_lipid_classes
+        fam_ok = fam is None or fam in rt_fa_mods
+        if lc_ok and fam_ok:
+            X.append(featurize(lc, lnc, lnu, fam, c_encoder, f_encoder))
+            y.append(float(c))
     X, y = np.array(X), np.array(y)
     print('X: ', X.shape)
     print('y: ', y.shape)

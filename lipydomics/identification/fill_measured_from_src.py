@@ -95,7 +95,8 @@ def main(tstamp):
         "hine0217",
         "hine0119",
         'leap0219',
-        'blaz0818'
+        'blaz0818',
+        #'vasi0120'
     ]
 
     # CCS metadata by source
@@ -105,7 +106,8 @@ def main(tstamp):
         "hine0217": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
         "hine0119": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
         'leap0219': {"type": "DT", "method": "stepped-field"},
-        'blaz0818': {'type': 'DT', "method": 'single field'}
+        'blaz0818': {'type': 'DT', "method": 'single field'},
+        #'vasi0120': {'type': 'TIMS', 'method': 'calibrated with 4 ions from ESI LC/MS tuning mix (Agilent)'}
     }
 
     # add each src dataset

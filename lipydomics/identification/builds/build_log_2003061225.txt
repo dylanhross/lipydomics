@@ -1,0 +1,59 @@
+
+adding cleaned datasets into lipids.db
+	adding dataset: zhou0817 ... ok
+	adding dataset: hine1217 ... ok
+	adding dataset: hine0217 ... ok
+	adding dataset: hine0119 ... ok
+	adding dataset: leap0219 ... ok
+	adding dataset: blaz0818 ... ok
+	adding dataset: vasi0120 ... ok
+adding theoretical m/z into lipids.db ... ok
+
+training new predictive CCS model (and input scaler) ...
+X:  (4957, 45)
+y:  (4957,)
+X_train:  (3965, 45)
+y_train:  (3965,)
+X_test:  (992, 45)
+y_test:  (992,)
+scaling input data
+X_train_s:  (3965, 45)
+training model
+TRAINING SET PERFORMANCE
+mean absolute error: 1.69 Å^2
+median absolute error: 0.88 Å^2
+RMSE: 2.93 Å^2
+TEST SET PERFORMANCE
+mean absolute error: 1.92 Å^2
+median absolute error: 1.00 Å^2
+RMSE: 3.08 Å^2
+... ok
+
+adding predicted CCS to database ... ok
+
+characterizing CCS prediction performance ... ok
+
+training new predictive RT model (and input scaler) ...
+X:  (596, 25)
+y:  (596,)
+X_train:  (476, 25)
+y_train:  (476,)
+X_test:  (120, 25)
+y_test:  (120,)
+scaling input data
+X_train_s:  (476, 25)
+training model
+TRAINING SET PERFORMANCE
+mean absolute error: 0.10 min
+median absolute error: 0.07 min
+RMSE: 0.14 min
+TEST SET PERFORMANCE
+mean absolute error: 0.11 min
+median absolute error: 0.08 min
+RMSE: 0.15 min
+... ok
+
+adding predicted RT to database ... ok
+
+characterizing RT prediction performance ... ok
+

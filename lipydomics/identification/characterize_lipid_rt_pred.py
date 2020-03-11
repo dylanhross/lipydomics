@@ -15,6 +15,9 @@ from matplotlib import pyplot as plt
 from matplotlib import rcParams
 from numpy import median
 
+from .encoder_params import rt_lipid_classes, rt_fa_mods
+
+
 rcParams['font.size'] = 6
 
 
@@ -112,7 +115,11 @@ def main(tstamp):
         qry = 'SELECT lipid_class, fa_mod FROM measured '
         qry += 'WHERE rt IS NOT NULL GROUP BY lipid_class, fa_mod'
         for lipid_class, fa_mod in cur.execute(qry).fetchall():
-            single_class_plot(cur, lipid_class, fa_mod=fa_mod)
+            # only use the classes and fa_mods that are explicitly encoded
+            lc_ok = lipid_class in rt_lipid_classes
+            fam_ok = fa_mod is None or fa_mod in rt_fa_mods
+            if lc_ok and fam_ok:
+                single_class_plot(cur, lipid_class, fa_mod=fa_mod)
 
         print('ok\n')
         print('ok\n', file=bl)

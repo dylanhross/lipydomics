@@ -21,6 +21,8 @@ from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
+from .encoder_params import ccs_lipid_classes, ccs_fa_mods, ccs_ms_adducts
+
 
 def prep_encoders():
     """
@@ -31,53 +33,11 @@ prep_encoders
         c_encoder, f_encoder, a_encoder (sklearn.preprocessing.OneHotEncoder) -- encoders for lipid_class, fa_mod, and
                                                                                     adduct, respectively
 """
-    lipid_classes = [
-        ['PE'],
-        ['PC'],
-        ['PG'],
-        ['PS'],
-        ['SM'],
-        ['GlcCer'],
-        ['Cer'],
-        ['PI'],
-        ['LPE'],
-        ['DGDG'],
-        ['PA'],
-        ['TG'],
-        ['CL'],
-        ['LPC'],
-        ['AcylPG'],
-        ['LysylPG'],
-        ['MGDG'],
-        ['LPG'],
-        ['AcylPE'],
-        ['DG'],
-        ['LPS'],
-        ['GlcADG'],
-        ['LPI'],
-        ['AlaPG'],
-        ['PIP']
-    ]
+    lipid_classes = [[_] for _ in ccs_lipid_classes]
     c_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(lipid_classes)
-    fa_mods = [['o'], ['p']]
+    fa_mods = [[_] for _ in ccs_fa_mods]
     f_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(fa_mods)
-    adducts = [
-        ['[M+H]+'],
-        ['[M-H]-'],
-        ['[M+Na]+'],
-        ['[M+NH4]+'],
-        ['[M+2Na-H]+'],
-        ['[M+HCOO]-'],
-        ['[M+Cl]-'],
-        ['[M+K]+'],
-        ['[M+H-H2O]+'],
-        ['[M-2H]2-'],
-        ['[M+CH3COO]-'],
-        ['[M+2K]2+'],
-        ['[M+H-2H2O]+'],
-        ['[M+Na-2H2O]+'],
-        ['[M+Na-H2O]+']
-    ]
+    adducts = [[_] for _ in ccs_ms_adducts]
     a_encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(adducts)
     return c_encoder, f_encoder, a_encoder
 
@@ -127,8 +87,13 @@ train_new_model
     qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz, ccs FROM measured'
     X, y = [], []
     for lc, lnc, lnu, fam, add, m, c in cursor.execute(qry).fetchall():
-        X.append(featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder))
-        y.append(float(c))
+        # only use the classes, fa_mods and adducts that are explicitly encoded
+        lc_ok = lc in ccs_lipid_classes
+        fam_ok = fam is None or fam in ccs_fa_mods
+        add_ok = add in ccs_ms_adducts
+        if lc_ok and fam_ok and add_ok:
+            X.append(featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder))
+            y.append(float(c))
     X, y = np.array(X), np.array(y)
     print('X: ', X.shape)
     print('y: ', y.shape)
@@ -162,9 +127,9 @@ train_new_model
     if use_model == 'linear':
         model = LinearRegression(n_jobs=-1)
     elif use_model == 'svr':
-        model = SVR(kernel='rbf', cache_size=1024, gamma='scale', C=3000)
+        model = SVR(kernel='rbf', cache_size=1024, gamma='scale', C=4000)
     elif use_model == 'forest':
-        model = RandomForestRegressor(n_jobs=-1, random_state=1234, bootstrap=True, max_depth=16, n_estimators=8)
+        model = RandomForestRegressor(n_jobs=-1, random_state=1234, bootstrap=True, max_depth=16, n_estimators=16)
     else:
         m = 'train_new_model: ML model "{}" not recognized'
         raise ValueError(m.format(use_model))

@@ -14,6 +14,9 @@ from sqlite3 import connect
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
+from .encoder_params import ccs_lipid_classes, ccs_fa_mods, ccs_ms_adducts
+
+
 rcParams['font.size'] = 6
 
 
@@ -102,11 +105,16 @@ def main(tstamp):
         print('characterizing CCS prediction performance ...', end=' ')
         print('characterizing CCS prediction performance ...', end=' ', file=bl)
 
-        # automatically generate plots for all combinations having at least 10 measured values
+        # automatically generate plots for all data included in the model training
         qry = 'SELECT lipid_class, fa_mod, adduct, COUNT(*) as c FROM measured '
         qry += 'GROUP BY lipid_class, fa_mod, adduct HAVING c > 9'
         for lipid_class, fa_mod, adduct, c in cur.execute(qry).fetchall():
-            single_class_plot(cur, lipid_class, adduct, fa_mod=fa_mod)
+            # only use the classes, fa_mods and adducts that are explicitly encoded
+            lc_ok = lipid_class in ccs_lipid_classes
+            fam_ok = fa_mod is None or fa_mod in ccs_fa_mods
+            add_ok = adduct in ccs_ms_adducts
+            if lc_ok and fam_ok and add_ok:
+                single_class_plot(cur, lipid_class, adduct, fa_mod=fa_mod)
 
         print('ok\n')
         print('ok\n', file=bl)
