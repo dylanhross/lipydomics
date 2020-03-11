@@ -21,6 +21,7 @@ from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
+from .build_params import ccs_pred_ref_dsets
 from .encoder_params import ccs_lipid_classes, ccs_fa_mods, ccs_ms_adducts
 
 
@@ -81,17 +82,25 @@ train_new_model
         mdl, scaler -- trained predictive model and input scaler instances
 """
     # prepare encoders
-    c_encoder, f_encoder, a_encoder = prep_encoders() 
+    c_encoder, f_encoder, a_encoder = prep_encoders()
+
+    # report the datasets used to train the predictive model
+    print('using these datasets for CCS prediction:')
+    print('\t', ' '.join(ccs_pred_ref_dsets))
+    print('using these datasets for CCS prediction:', file=bl)
+    print('\t', ' '.join(ccs_pred_ref_dsets), file=bl)
 
     # get the raw data and featurize (encode lipid_class, fa_mod, and adduct)
-    qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz, ccs FROM measured'
+    qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz, ccs, src_tag FROM measured'
     X, y = [], []
-    for lc, lnc, lnu, fam, add, m, c in cursor.execute(qry).fetchall():
+    for lc, lnc, lnu, fam, add, m, c, st in cursor.execute(qry).fetchall():
         # only use the classes, fa_mods and adducts that are explicitly encoded
         lc_ok = lc in ccs_lipid_classes
         fam_ok = fam is None or fam in ccs_fa_mods
         add_ok = add in ccs_ms_adducts
-        if lc_ok and fam_ok and add_ok:
+        # only include data from the designated sources
+        src_ok = st in ccs_pred_ref_dsets
+        if lc_ok and fam_ok and add_ok and src_ok:
             X.append(featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder))
             y.append(float(c))
     X, y = np.array(X), np.array(y)

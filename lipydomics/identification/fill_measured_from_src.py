@@ -14,6 +14,7 @@ from sqlite3 import connect
 from json import load as jload
 
 from .lipid_parser import parse_lipid
+from .build_params import include_ref_dsets
 
 
 def add_src_dataset(cursor, src_tag, metadata, gid_start=0):
@@ -62,20 +63,23 @@ add_src_dataset
         # add lipid class and FA composition information in by parsing the name
         parsed = parse_lipid(cmpd['name'])
         if not parsed:
-            print('name: {} from src_tag: {} not parsed as a lipid'.format(cmpd['name'], src_tag))
-        l_cl, l_nc, l_nu = parsed['lipid_class'], parsed['n_carbon'], parsed['n_unsat']
-        
-        fa_mod = parsed['fa_mod'] if 'fa_mod' in parsed else None
+            #print('name: {} from src_tag: {} not parsed as a lipid'.format(cmpd['name'], src_tag))
+            # quitely skip unparsable lipids...
+            pass
+        else:
+            l_cl, l_nc, l_nu = parsed['lipid_class'], parsed['n_carbon'], parsed['n_unsat']
 
-        # CCS metadata
-        ccs_type, ccs_method = metadata["type"], metadata["method"]
+            fa_mod = parsed['fa_mod'] if 'fa_mod' in parsed else None
 
-        qdata = (
-            m_id, cmpd["name"], l_cl, l_nc, l_nu, fa_mod, adduct, cmpd["mz"], cmpd["ccs"], 
-            rt, smi, src_tag, ccs_type, ccs_method
-        )
-        cursor.execute(qry, qdata)
-        m_id += 1
+            # CCS metadata
+            ccs_type, ccs_method = metadata["type"], metadata["method"]
+
+            qdata = (
+                m_id, cmpd["name"], l_cl, l_nc, l_nu, fa_mod, adduct, cmpd["mz"], cmpd["ccs"],
+                rt, smi, src_tag, ccs_type, ccs_method
+            )
+            cursor.execute(qry, qdata)
+            m_id += 1
 
     return m_id
 
@@ -88,16 +92,8 @@ def main(tstamp):
     con = connect(db_path)
     cur = con.cursor()
 
-    # source datasets
-    dsets = [
-        "zhou0817",
-        "hine1217",
-        "hine0217",
-        "hine0119",
-        'leap0219',
-        'blaz0818',
-        #'vasi0120'
-    ]
+    # include reference datasets defined in build_params
+    dsets = include_ref_dsets
 
     # CCS metadata by source
     metadata = {
@@ -107,7 +103,8 @@ def main(tstamp):
         "hine0119": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
         'leap0219': {"type": "DT", "method": "stepped-field"},
         'blaz0818': {'type': 'DT', "method": 'single field'},
-        #'vasi0120': {'type': 'TIMS', 'method': 'calibrated with 4 ions from ESI LC/MS tuning mix (Agilent)'}
+        'vasi0120': {'type': 'TIMS', 'method': 'calibrated with 4 ions from ESI LC/MS tuning mix (Agilent)'},
+        'tsug0220': {'type': 'TIMS', 'method': 'single field, calibrated'}
     }
 
     # add each src dataset

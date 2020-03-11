@@ -14,6 +14,7 @@ from sqlite3 import connect
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
+from .build_params import ccs_pred_ref_dsets
 from .encoder_params import ccs_lipid_classes, ccs_fa_mods, ccs_ms_adducts
 
 
@@ -38,14 +39,21 @@ single_class_plot
 
     # fetch the measured data
     if fa_mod in ['o', 'p']:
-        qry = 'SELECT mz, ccs FROM measured WHERE lipid_class="{}" AND fa_mod=="{}" AND adduct="{}"'
+        qry = 'SELECT mz, ccs, src_tag FROM measured WHERE lipid_class="{}" AND fa_mod=="{}" AND adduct="{}"'
         qry = qry.format(lipid_class, fa_mod, adduct)
     else:
-        qry = 'SELECT mz, ccs FROM measured WHERE lipid_class="{}" AND fa_mod IS NULL AND adduct="{}"'
+        qry = 'SELECT mz, ccs, src_tag FROM measured WHERE lipid_class="{}" AND fa_mod IS NULL AND adduct="{}"'
         qry = qry.format(lipid_class, adduct)
-    for mz, ccs in cursor.execute(qry).fetchall():
-        mz_m.append(float(mz))
-        ccs_m.append(float(ccs))
+    for mz, ccs, st in cursor.execute(qry).fetchall():
+        # only include data from the designated sources
+        src_ok = st in ccs_pred_ref_dsets
+        if src_ok:
+            mz_m.append(float(mz))
+            ccs_m.append(float(ccs))
+
+    # if no measured data was found, return None to skip plotting this class
+    if len(mz_m) < 1:
+        return None
 
     # set bounds on the theoretical data to fetch and display
     mz_min, mz_max = int(min(mz_m)), int(max(mz_m))
@@ -53,12 +61,14 @@ single_class_plot
 
     # fetch the theoretical data
     if fa_mod in ['o', 'p']:
-        qry = 'SELECT mz, ccs FROM theoretical_mz JOIN theoretical_ccs ON theoretical_mz.t_id=theoretical_ccs.t_id '
+        qry = 'SELECT mz, ccs FROM theoretical_mz JOIN theoretical_ccs ON '
+        qry += 'theoretical_mz.t_id=theoretical_ccs.t_id '
         qry += 'WHERE lipid_class="{}" AND fa_mod=="{}" AND adduct="{}" AND (mz BETWEEN {} AND {}) AND '
         qry += '(ccs BETWEEN {} AND {})'
         qry = qry.format(lipid_class, fa_mod, adduct, mz_min, mz_max, ccs_min, ccs_max)
     else:
-        qry = 'SELECT mz, ccs FROM theoretical_mz JOIN theoretical_ccs ON theoretical_mz.t_id=theoretical_ccs.t_id '
+        qry = 'SELECT mz, ccs FROM theoretical_mz JOIN theoretical_ccs ON '
+        qry += 'theoretical_mz.t_id=theoretical_ccs.t_id '
         qry += 'WHERE lipid_class="{}" AND fa_mod IS NULL AND adduct="{}" AND (mz BETWEEN {} AND {}) AND '
         qry += '(ccs BETWEEN {} AND {})'
         qry = qry.format(lipid_class, adduct, mz_min, mz_max, ccs_min, ccs_max)
@@ -73,8 +83,8 @@ single_class_plot
     fig = plt.figure(figsize=(3.33, 2))
     ax = fig.add_subplot(111)
 
-    ax.scatter(mz_t, ccs_t, marker='.', s=32, c='#ffa600', label='theo')
-    ax.scatter(mz_m, ccs_m, marker='.', s=4, c='purple', label='meas (n={})'.format(len(mz_m)))
+    ax.scatter(mz_t, ccs_t, marker='.', s=32, c='#ffa600', label='theoretical')
+    ax.scatter(mz_m, ccs_m, marker='.', s=4, c='purple', label='measured\n(n={} in training data)'.format(len(mz_m)))
 
     ax.legend()
     ax.set_xlabel('m/z')
