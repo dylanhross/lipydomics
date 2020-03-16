@@ -83,13 +83,13 @@ single_class_plot
     fig = plt.figure(figsize=(3.33, 2))
     ax = fig.add_subplot(111)
 
-    ax.scatter(mz_t, ccs_t, marker='.', s=32, c='#ffa600', label='theoretical')
-    ax.scatter(mz_m, ccs_m, marker='.', s=4, c='purple', label='measured\n(n={} in training data)'.format(len(mz_m)))
+    ax.scatter(mz_t, ccs_t, marker='.', s=8, c='#ffa600', label='theoretical')
+    ax.scatter(mz_m, ccs_m, marker='.', s=1, c='purple', label='measured\n(n={} in training data)'.format(len(mz_m)))
 
     ax.legend()
     ax.set_xlabel('m/z')
     ax.set_ylabel(r'CCS ($\AA^2$)')
-    ax.set_title('{}{} {}'.format(lipid_class, fa_mod if fa_mod else '', adduct))
+    ax.set_title('{}{} {}'.format(lipid_class, fa_mod if fa_mod else '', adduct), fontweight='bold')
 
     for d in ['top', 'right']:
         ax.spines[d].set_visible(False)

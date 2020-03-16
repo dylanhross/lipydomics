@@ -103,7 +103,8 @@ def main(tstamp):
         "hine0119": {"type": "TW", "method": "calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)"},
         'leap0219': {"type": "DT", "method": "stepped-field"},
         'blaz0818': {'type': 'DT', "method": 'single field'},
-        'vasi0120': {'type': 'TIMS', 'method': 'calibrated with 4 ions from ESI LC/MS tuning mix (Agilent)'},
+        'vasi0120_pos': {'type': 'TIMS', 'method': 'calibrated with 4 ions from ESI LC/MS tuning mix (Agilent)'},
+        'vasi0120_neg': {'type': 'TIMS', 'method': 'calibrated with 4 ions from ESI LC/MS tuning mix (Agilent)'},
         'tsug0220': {'type': 'TIMS', 'method': 'single field, calibrated'}
     }
 
