@@ -20,7 +20,7 @@ from lipydomics.plotting import (
 )
 from lipydomics.identification import add_feature_ids
 from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
-from lipydomics.identification.lipid_parser import parse_lipid
+from lipydomics.util import abbreviate_sheet, filter_d, parse_lipid
 
 
 def load_dset():
@@ -149,28 +149,6 @@ manage_groups
         return False
 
 
-def filter_d(mzs, rts, ccss, data):
-    """
-filter_d
-    description:
-        a helper function for filtering data
-        given M/Z, RT, CCS ranges and a DataFrame containing data,
-        find and returns all data within that range.
-        * CCS tolerance is absolute in this case, NOT a percentage *
-    parameters:
-        mzs (list(flaot)) -- mz [0] and tolerance [1]
-        rts (list(float)) -- rt [0] and tolerance [1]
-        ccss (list(float)) -- ccs [0] and tolerance [1]
-        data (pandas.DataFrame) -- DataFrame representation of the data
-"""
-    # removed all of the casts to float, that should happen at input time not here
-    filtered = data[(data[0] < mzs[0] + mzs[1]) & (data[0] > mzs[0] - mzs[1]) &
-                    (data[1] < rts[0] + rts[1]) & (data[1] > rts[0] - rts[1]) &
-                    (data[2] < ccss[0] + ccss[1]) & (data[2] > ccss[0] - ccss[1])]
-    return filtered
-
-
-""" To Do: S plot filter, """
 def filter_data(dset):
     """
 filter_data
@@ -719,45 +697,6 @@ calibrate_rt
         print('! ERROR: unrecognized option: "{}"'.format(option))
         # prompt again
         return False
-
-
-def abbreviate_sheet(sheet_name):
-    """
-abbreviate_sheet
-    description:
-        For a pandas Dataframe to be exported into an Excel spreadsheet, the sheet names must be no longer than 31
-        characters. In order to export the sheets containing computed statistics, the statistic labels often need to be
-        shortened because they contain information on the statistic and the groups used to calculate it. This function
-        attempts to abbreviate such labels to 31 characters. If a suitable abbreviation cannot be made, then the
-        original name is simply truncated down to 31 characters. All group names are truncated to their first 3
-        characters as well.
-    parameters:
-        sheet_name (str) -- sheet name
-    returns:
-        (str) -- abbreviated sheet name
-"""
-    # just in case this is called in error, always return the sheet name if it is already <32 characters
-    if len(sheet_name) < 32:
-        return sheet_name
-    # abbreviations
-    stat_abbrev = {'PCA3': 'PC3', 'PLS-DA': 'PLS', 'ANOVA': 'ANV', '2-group-corr': '2GC'}
-    load_or_proj_abbrev = {'': '', 'loadings': 'L', 'projections': 'P'}
-    nrm_abbrev = {'raw': 'R', 'normed': 'N'}
-    # parse the stat label for relevant info
-    sheet_name_split = sheet_name.split('_')
-    stat = sheet_name_split[0]
-    if stat not in stat_abbrev:
-        # fall back to simple truncation
-        return sheet_name[:31]
-    nrm = sheet_name_split[-1]
-    load_or_proj = '' if sheet_name_split[-2] not in ['loadings', 'projections'] else sheet_name_split[-2]
-    groups = '-'.join([name[:3] if len(name) > 3 else name for name in sheet_name_split[1].split('-')])
-    # construct the abbreviated name
-    abbrev = stat_abbrev[stat] + load_or_proj_abbrev[load_or_proj] + nrm_abbrev[nrm] + '_' + groups
-    if len(abbrev) > 31:
-        # fall back to simple truncation
-        return sheet_name[:31]
-    return abbrev
 
 
 def batch_feature_selection(dset):

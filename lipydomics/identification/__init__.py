@@ -10,57 +10,8 @@
 
 from sqlite3 import connect
 import os
-from numpy import sqrt
 
-
-def get_score(tol_mz, tol_rt, tol_ccs, mz_q=None, rt_q=None, ccs_q=None, mz_x=None, rt_x=None, ccs_x=None, norm='l2'):
-    """
-get_score
-    description:
-        computes a score reflecting the quality of an identification, using mz rt and ccs or any combination
-
-        The score is determined by the residuals between the query values (q) and a potential match (x), normalized by
-        their respective tolerances. If only a single pair of values (q and x) is provided, the score is simply the
-        inverse of the normalized residual, otherwise, it is the inverse of the l1 or l2 norm of the normalized 
-        residuals vector. The norm kwarg controls whether the l1 or l2 norm is used in computing the score 
-    parameters:
-        cursor (sqlite3.Cursor) -- cursor for querying lipids.db
-        tol_mz (float) -- tolerance for m/z 
-        tol_rt (float) -- tolerance for retention time
-        tol_ccs (float) -- tolerance for CCS
-        [mz_q (None or float)] -- if specified, the query m/z [optional, default=None]
-        [rt_q (None or float)] -- if specified, the query retention time [optional, default=None]
-        [ccs_q (None or float)] -- if specified, the query CCS [optional, default=None]
-        [mz_q (None or float)] -- if specified, the m/z of a potential match [optional, default=None]
-        [rt_q (None or float)] -- if specified, the retention time of a potential match [optional, default=None]
-        [ccs_q (None or float)] -- if specified, the CCS of a potential match [optional, default=None]
-        [norm (str)] -- specify l1 or l2 norm [optional, default='l2']
-    returns:
-        (float) -- score (higher = more confidence in ID)
-"""
-    q = [mz_q, rt_q, ccs_q]
-    x = [mz_x, rt_x, ccs_x]
-    tol = [tol_mz, tol_rt, tol_ccs]
-    # compute the normalized residuals
-    rn = []
-    for q_, x_, tol_ in zip(q, x, tol):
-        if q_ and x_:
-            rn.append((x_ - q_) / tol_)
-    # if there was only a single value, just return the inverse of the absolute value
-    if not rn:
-        m = 'get_score: unable to compute residuals'
-        raise RuntimeError(m)
-    elif len(rn) == 1:
-        # prevent zero-division just in case ...
-        return 1. / max(abs(rn[0]), 0.000001)
-    else:
-        if norm == 'l1':
-            return 1. / sum([abs(_) for _ in rn])
-        elif norm == 'l2':
-            return 1. / sqrt(sum([_**2. for _ in rn]))
-        else:
-            m = 'get_score: norm method "{}" not recognized'
-            raise ValueError(m.format(norm))
+from lipydomics.util import get_score
 
 
 def id_feat_theo_mz(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm=None):

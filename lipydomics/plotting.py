@@ -9,9 +9,12 @@
 
 import os
 import numpy as np
+from scipy.sparse import coo_matrix
 from csv import reader
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt, colors as mcolors
 from matplotlib import rcParams
+
+from lipydomics.util import fetch_lipid_class_log2fc
 
 
 rcParams['font.size'] = 8
@@ -335,20 +338,84 @@ scatter_plsra_projections_bygroup
         l = len(dataset.group_indices[gn])
         si.append(len(dataset.group_indices[gn]) + i)
         i += l
-
     for dg, c, gn in zip(np.split(d, si), CS, group_names):
         ax.scatter(*dg.T[:2], marker='.', s=24, c=c, label=gn)
-
     for d in ['top', 'right', 'bottom', 'left']:
         ax.spines[d].set_visible(False)
     ax.set_xlabel('scores[0]', fontsize=8)
     ax.set_ylabel('scores[1]', fontsize=8)
     ax.set_title('PLS-RA', fontsize=8, fontweight='bold')
-
     ax.ticklabel_format(style='sci', scilimits=(0, 0))
-
     ax.legend(fontsize=6, borderpad=0.2)
-
     plt.tight_layout()
     plt.savefig(fig_path, dpi=IMG_RES, bbox_inches='tight')
     plt.close()
+
+
+def heatmap_lipid_class_log2fc(lipid_class, dataset, group_names, img_dir, normed=False):
+    """
+heatmap_lipid_class_log2fc
+    description:
+        generates a heatmap of log2(fold-chage) for all identified lipids in a lipid class and saves the image to a
+        specified directory. The filename of the image is:
+            '{lipid_class}_{group_name1}-{group_name2}_{etc.}_log2fc_{raw or normed}.png'
+        * The same group names (in the same order) as were used in the call to add_log2fc(...) must be used. *
+    parameters:
+        lipid_class (str) -- lipid class to analyze
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- groups used to compute fold-change, only 2 groups allowed
+        img_dir (str) -- directory to save the image under
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+    returns:
+        (bool) -- found data for the specified lipid class
+"""
+    # check that identifications have been made first
+    if dataset.feat_ids is None:
+        m = 'heatmap_lipid_class_log2fc: no lipid identifications have been made'
+        raise ValueError(m)
+
+    # check that log2fa has been computed
+    log2fa_label = 'LOG2FC_{}_{}'.format('-'.join(group_names), 'norm' if normed else 'raw')
+    if log2fa_label not in dataset.stats:
+        m = 'heatmap_lipid_class_log2fc: required statistic "{}" not in dataset.stats'
+        raise ValueError(m.format(log2fa_label))
+
+    # assemble the data
+    nc, nu, l2 = fetch_lipid_class_log2fc(lipid_class, dataset, group_names, normed=normed)
+    if nc is None:
+        # no matching data was found
+        return False
+
+    # get the min/max n_carbon, n_unsat, and log2fc
+    min_nc, max_nc = np.min(nc), np.max(nc)
+    min_nu, max_nu = np.min(nu), np.max(nu)
+    max_abs_l2 = np.max(np.abs(l2))
+    # create an appropriately sized sparse matrix to hold the data
+    spmat = coo_matrix((l2, (nc, nu)))
+
+    # generate the figure
+    fig = plt.figure(figsize=(3.33, 3.33))
+    ax = fig.add_subplot(111)
+    # plot the fold-changes
+    im = ax.pcolor(spmat.toarray(), cmap='bwr', vmin=-max_abs_l2, vmax=max_abs_l2, edgecolors='k', linewidth=0.5)
+    fig.colorbar(im, label='log2({} / {})'.format(group_names[1], group_names[0]))
+    # mask out the missing values
+    mask_cm = mcolors.ListedColormap([np.array([0., 0., 0., 0.4]), np.array([0., 0., 0., 0.])], N=2)
+    bnorm = mcolors.BoundaryNorm([0., 0.0001, 100000.], mask_cm.N, clip=True)
+    ax.pcolor(np.abs(spmat.toarray()), cmap=mask_cm, norm=bnorm)
+    # adjustments
+    ax.set_ylim([min_nc, max_nc + 1])
+    ax.set_xticks([_ for _ in range(0, max_nu + 1, 2)])
+    ax.set_title(lipid_class)
+    ax.set_xlabel('FA unsaturations')
+    ax.set_ylabel('FA carbons')
+    plt.tight_layout()
+    # save the figure
+    # generate the path to save the figure under
+    fig_name = '{}_{}_log2fc_{}.png'.format(lipid_class, '-'.join(group_names), 'normed' if normed else 'raw')
+    fig_path = os.path.join(img_dir, fig_name)
+    plt.savefig(fig_path, dpi=IMG_RES, bbox_inches='tight')
+    plt.close()
+
+    # everything worked
+    return True

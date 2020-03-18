@@ -19,6 +19,7 @@ import numpy as np
 from scipy.stats import f_oneway, pearsonr
 from sklearn.decomposition import PCA
 from sklearn.cross_decomposition import PLSRegression
+import warnings
 
 
 def add_anova_p(dataset, group_names, normed=False):
@@ -215,7 +216,7 @@ add_plsra
         will be overridden.
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
-        group_names (list(str)) -- groups to use to compute the PLS-DA, only 2 groups allowed
+        group_names (list(str)) -- groups to use to compute the PLS-RA
         y (numpy.array(float)) -- external continuous variable, shape = (n_samples,)
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
         [scaled (bool)] -- whether to let the PLSRegression scale the X data [optional, default=False]
@@ -246,4 +247,37 @@ add_plsra
 
     # add the external variable into the Dataset
     dataset.ext_var = y
+
+
+def add_log2fc(dataset, group_names, normed=False):
+    """
+add_log2fc
+    description:
+        Adds log2(fold-change) between two specified groups to the dataset.
+
+        The log2 transformed fold changes are added to Dataset.stats with the label 'log2fc_A-B_{raw/normed}'.
+        If the Dataset.stats entry is already present, then it will be overridden.
+
+        * the fold-change is group B relative to A *
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- groups to use to compute fold-change, only 2 groups allowed
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+"""
+    # this is a two-group comparison
+    if len(group_names) != 2:
+        m = 'add_log2fc: you must provide exactly 2 group names ({} group names provided)'
+        raise ValueError(m.format(len(group_names)))
+
+    # get the group data A and B
+    A, B = dataset.get_data_bygroup(group_names, normed=normed)
+
+    # compute the log2(fold-change) of  mean intensities for each lipid from both groups
+    # this will raise a warning if A has a mean of 0, we will ignore that warning
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        log2fc = np.log2(np.mean(B, axis=1) / np.mean(A, axis=1))
+
+    # add the statistics into the Dataset
+    dataset.stats['LOG2FC_{}_{}'.format('-'.join(group_names), 'normed' if normed else 'raw')] = log2fc
 

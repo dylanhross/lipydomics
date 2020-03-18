@@ -280,5 +280,3 @@ Dataset.select_feature_data
             return True
         else:
             return False
-
-

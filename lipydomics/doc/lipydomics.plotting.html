@@ -21,10 +21,11 @@ description:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="matplotlib.colors.html">matplotlib.colors</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
 </td><td width="25%" valign=top><a href="os.html">os</a><br>
 </td><td width="25%" valign=top><a href="matplotlib.pyplot.html">matplotlib.pyplot</a><br>
-</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+</td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -62,6 +63,20 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[tolerance&nbsp;(tuple(float))]&nbsp;--&nbsp;tolerance&nbsp;to&nbsp;use&nbsp;for&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;ccs&nbsp;search,&nbsp;CCS&nbsp;tolerance&nbsp;is&nbsp;a&nbsp;percentage&nbsp;not<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;absolute&nbsp;tolerance&nbsp;[optional,&nbsp;default=(0.01,&nbsp;0.1,&nbsp;3.)]</tt></dd></dl>
+ <dl><dt><a name="-heatmap_lipid_class_log2fc"><strong>heatmap_lipid_class_log2fc</strong></a>(lipid_class, dataset, group_names, img_dir, normed=False)</dt><dd><tt>heatmap_lipid_class_log2fc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;heatmap&nbsp;of&nbsp;log2(fold-chage)&nbsp;for&nbsp;all&nbsp;identified&nbsp;lipids&nbsp;in&nbsp;a&nbsp;lipid&nbsp;class&nbsp;and&nbsp;saves&nbsp;the&nbsp;image&nbsp;to&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'{lipid_class}_{group_name1}-{group_name2}_{etc.}_log2fc_{raw&nbsp;or&nbsp;normed}.png'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;The&nbsp;same&nbsp;group&nbsp;names&nbsp;(in&nbsp;the&nbsp;same&nbsp;order)&nbsp;as&nbsp;were&nbsp;used&nbsp;in&nbsp;the&nbsp;call&nbsp;to&nbsp;add_log2fc(...)&nbsp;must&nbsp;be&nbsp;used.&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lipid_class&nbsp;(str)&nbsp;--&nbsp;lipid&nbsp;class&nbsp;to&nbsp;analyze<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;groups&nbsp;used&nbsp;to&nbsp;compute&nbsp;fold-change,&nbsp;only&nbsp;2&nbsp;groups&nbsp;allowed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img_dir&nbsp;(str)&nbsp;--&nbsp;directory&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;found&nbsp;data&nbsp;for&nbsp;the&nbsp;specified&nbsp;lipid&nbsp;class</tt></dd></dl>
  <dl><dt><a name="-reader"><strong>reader</strong></a>(...)</dt><dd><tt>csv_reader&nbsp;=&nbsp;<a href="#-reader">reader</a>(iterable&nbsp;[,&nbsp;dialect='excel']<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[optional&nbsp;keyword&nbsp;args])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;row&nbsp;in&nbsp;csv_reader:<br>
