@@ -400,7 +400,7 @@ make_plots
     print("\t2. Batch bar plot features by group")
     print("\t3. Scatter PCA3 Projections by group")
     print("\t4. Scatter PLS-DA Projections by group")
-    print("\t5. S-Plot PLSA-DA and Pearson correlation by group")
+    print("\t5. S-Plot PLS-DA and Pearson correlation by group")
     print("\t6. Scatter PLS-RA Projections by group")
     print("\t7. Heatmap of Log2(fold-change) by lipid class")
     print('\t"back" to go back')

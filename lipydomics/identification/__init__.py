@@ -319,6 +319,7 @@ add_feature_ids
         The method for making identifications is specified by the `level` param:
             (low)
             'theo_mz' -- simple matching based on theoretical m/z
+            'theo_mz_rt' -- match on theoretical m/z and rt
             'theo_mz_ccs' -- match on theoretical m/z and CCS
             'theo_mz_rt_ccs' -- match on theoretical m/z, rt, and CCS
             'meas_mz_ccs' -- match on measured m/z and CCS

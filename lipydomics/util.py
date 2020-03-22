@@ -233,7 +233,7 @@ fetch_lipid_class_log2fc
                                                     corresponding data was found
 """
     # fetch the lipid annotations and log2fcs for lipids matching the lipid class
-    log2fa_label = 'LOG2FC_{}_{}'.format('-'.join(group_names), 'norm' if normed else 'raw')
+    log2fa_label = 'LOG2FC_{}_{}'.format('-'.join(group_names), 'normed' if normed else 'raw')
     lipids = {}
     for put_id, log2fa in zip(dataset.feat_ids, dataset.stats[log2fa_label]):
         if type(put_id) == list:  # actual identifications are lists not str

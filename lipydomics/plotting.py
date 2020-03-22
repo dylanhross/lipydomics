@@ -375,7 +375,7 @@ heatmap_lipid_class_log2fc
         raise ValueError(m)
 
     # check that log2fa has been computed
-    log2fa_label = 'LOG2FC_{}_{}'.format('-'.join(group_names), 'norm' if normed else 'raw')
+    log2fa_label = 'LOG2FC_{}_{}'.format('-'.join(group_names), 'normed' if normed else 'raw')
     if log2fa_label not in dataset.stats:
         m = 'heatmap_lipid_class_log2fc: required statistic "{}" not in dataset.stats'
         raise ValueError(m.format(log2fa_label))
