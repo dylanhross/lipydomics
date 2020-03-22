@@ -13,10 +13,11 @@ import numpy as np
 import os
 
 from lipydomics.data import Dataset
-from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra
+from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc
 from lipydomics.plotting import (
     barplot_feature_bygroup, batch_barplot_feature_bygroup, scatter_pca3_projections_bygroup,
-    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup
+    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup,
+    heatmap_lipid_class_log2fc
 )
 from lipydomics.identification import add_feature_ids
 from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
@@ -316,10 +317,13 @@ manage_statistics
         print("\t3. PLS-DA")
         print("\t4. Two Group Correlation")
         print("\t5. PLS-RA (using external continuous variable)")
+        print("\t6. Two Group Log2(fold-change)")
         print('\t"back" to go back')
         opt2 = input('> ')
         # map options to stats functions
-        stats_f_map = {'1': add_anova_p, '2': add_pca3, '3': add_plsda, '4': add_2group_corr, '5': add_plsra}
+        stats_f_map = {
+            '1': add_anova_p, '2': add_pca3, '3': add_plsda, '4': add_2group_corr, '5': add_plsra, '6': add_log2fc
+        }
         if opt2 in stats_f_map:
             print('Would you like to use normalized data? (y/N)')
             norm = input('> ') == 'y'
@@ -398,13 +402,16 @@ make_plots
     print("\t4. Scatter PLS-DA Projections by group")
     print("\t5. S-Plot PLSA-DA and Pearson correlation by group")
     print("\t6. Scatter PLS-RA Projections by group")
+    print("\t7. Heatmap of Log2(fold-change) by lipid class")
     print('\t"back" to go back')
     option = input('> ')
 
     # map the options to plotting functions
-    plots_f_map = {'1': barplot_feature_bygroup, '2': batch_barplot_feature_bygroup,
-                   '3': scatter_pca3_projections_bygroup, '4': scatter_plsda_projections_bygroup,
-                   '5': splot_plsda_pcorr_bygroup, '6': scatter_plsra_projections_bygroup}
+    plots_f_map = {
+        '1': barplot_feature_bygroup, '2': batch_barplot_feature_bygroup, '3': scatter_pca3_projections_bygroup,
+        '4': scatter_plsda_projections_bygroup, '5': splot_plsda_pcorr_bygroup, '6': scatter_plsra_projections_bygroup,
+        '7': heatmap_lipid_class_log2fc
+    }
     if option in plots_f_map:
         print("Where would you like to save the plot(s)? (default = current directory)")
         plot_dir = input('> ')
@@ -447,6 +454,20 @@ make_plots
             except ValueError as ve:
                 print('! ERROR:', ve)
                 print('! ERROR: Unable to generate plot using groups: {}'.format(groups))
+        elif option == '7':
+            try:
+                # prompt for the lipid class
+                print("Please enter the lipid class you would like to generate a heatmap with")
+                lipid_class = input('> ')
+                found_lipid = plots_f_map[option](lipid_class, dset, groups, plot_dir, normed=norm)
+                if not found_lipid:
+                    m = '! ERROR: unable to find lipids with matching identifications (lipid class: {})'
+                    print(m.format(lipid_class))
+                else:
+                    print('! INFO: Generated heatmap for lipid class: {}'.format(lipid_class))
+            except ValueError as ve:
+                print('! ERROR:', ve)
+                print('! ERROR: Unable to generate plot')
         else:
             try:
                 plots_f_map[option](dset, groups, plot_dir, normed=norm)
