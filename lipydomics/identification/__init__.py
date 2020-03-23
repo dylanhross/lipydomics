@@ -269,7 +269,7 @@ id_feat_theo_meas_mz_rt_ccs
         return '', '', []
 
 
-def id_feat_any(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
+def id_feat_any(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2', use_rt=True):
     """
 id_feat_any
     description:
@@ -285,27 +285,35 @@ id_feat_any
         tol_ccs (float) -- tolerance for CCS
         esi_mode (str) -- filter results by ionization mode: 'neg', 'pos', or None for unspecified
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
+        [use_rt (bool)] -- whether to use identification levels that involve retention time [optional, default=True]
     returns:
         (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
 """
-    id_funcs = [
-        id_feat_meas_mz_rt_ccs,
-        id_feat_meas_mz_ccs,
-        id_feat_theo_mz_rt_ccs,
-        id_feat_theo_mz_ccs,
-        id_feat_theo_mz_rt,
-        id_feat_theo_mz
-    ]
+    if use_rt:
+        id_funcs = [
+            id_feat_meas_mz_rt_ccs,
+            id_feat_meas_mz_ccs,
+            id_feat_theo_mz_rt_ccs,
+            id_feat_theo_mz_ccs,
+            id_feat_theo_mz_rt,
+            id_feat_theo_mz
+        ]
+    else:
+        id_funcs = [
+            id_feat_meas_mz_ccs,
+            id_feat_theo_mz_ccs,
+            id_feat_theo_mz
+        ]
 
     for f in id_funcs:
-        fid, lvl, scr = f(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')
+        fid, lvl, scr = f(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm=norm)
         if fid:
             return fid, lvl, scr
 
     return '', '', []
 
 
-def add_feature_ids(dataset, tol, level='any', norm='l2', db_version_tstamp=None):
+def add_feature_ids(dataset, tol, level='any', norm='l2', db_version_tstamp=None, use_rt=True):
     """
 add_feature_ids
     description:
@@ -353,6 +361,8 @@ add_feature_ids
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
         [db_version_tstamp (str or None)] -- use a specific time-stamped version of the lipids database instead of the
                                              default (most recent build) [optional, default=None]
+        [use_rt (bool)] -- whether to use identification levels that involve retention time, ignored unless used with
+                            the 'any' identification level [optional, default=True]
 """
     if level not in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
         m = 'add_feature_ids: identification level "{}" not recognized'
@@ -396,7 +406,12 @@ add_feature_ids
         tol2[2] = tol2[2] / 100. * ccs
 
         # try to get identification(s)
-        feat_id, feat_id_level, feat_id_score = id_funcs[level](cur, mz, rt, ccs, *tol2, esi, norm=norm)
+        if level == 'any' and not use_rt:
+            # use any identification level that does not include retention time
+            feat_id, feat_id_level, feat_id_score = id_funcs['any'](cur, mz, rt, ccs, *tol2, esi,
+                                                                    norm=norm, use_rt=False)
+        else:
+            feat_id, feat_id_level, feat_id_score = id_funcs[level](cur, mz, rt, ccs, *tol2, esi, norm=norm)
 
         if feat_id:
             if len (feat_id) > 1:
