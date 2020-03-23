@@ -356,7 +356,7 @@ add_feature_ids
         * if identifications have already been made, subsequent calls to this function will override previous results *
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
-        tol (tuple(float, float, float)) -- tolerance for m/z, rt, and CCS, respectively 
+        tol (list(float, float, float)) -- tolerance for m/z, rt, and CCS, respectively
         [level (str)] -- specify the level of identification [optional, default='all']
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
         [db_version_tstamp (str or None)] -- use a specific time-stamped version of the lipids database instead of the

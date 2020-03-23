@@ -95,14 +95,6 @@ weights = weights_tissue * weights_intstd
 dset.normalize(weights)
 ```
 
-### Saving to File
-A `Dataset` instance can be saved in a serialized binary format, retaining group assignments, normalization, computed
-statistics, retention time calibration, and lipid identifications. Internally, this is done using Python's `pickle` 
-library. 
-
-```python
-dset.save_bin('saved_dataset.pickle')
-```
 
 ### Batch Selecting Features
 Feature data can be selected and exported to a .csv file using the `Dataset.select_feature_data` method. This method
@@ -130,6 +122,25 @@ dset.select_feature_data('input.csv', 'output.csv', tolerance=(0.025, 0.25, 2.5)
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 234.5678 | 3.45 | 123.4 | 45678 | 56789 | ... | 23456 |
 | ... | ... | ... | ... | ... | ... | ... |
+
+
+### Exporting to Excel Spreadsheet
+A `Dataset` instance can be exported to an Excel spreadsheet (`.xlsx`) format for easy viewing of the data, lipid 
+identifications, and computed statistics.
+
+```python
+dset.export_xlsx('exported_dataset.xlsx')
+```
+
+
+### Saving to File
+A `Dataset` instance can be saved in a serialized binary format, retaining group assignments, normalization, computed
+statistics, retention time calibration, and lipid identifications. Internally, this is done using Python's `pickle` 
+library. 
+
+```python
+dset.save_bin('saved_dataset.pickle')
+```
 
 
 ## Stats
@@ -349,7 +360,7 @@ _Example:_
 ```python
 from lipydomics.identification import add_feature_ids
 
-tol = (0.02, 0.2, 2.0)
+tol = [0.02, 0.2, 2.0]  # tol must be a list
 # identify features at the highest level possible
 add_feature_ids(dset, tol, level='any')
 ```

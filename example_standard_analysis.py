@@ -74,11 +74,11 @@ scatter_pca3_projections_bygroup(dset, groups, 'figures/', normed=True)
 # we will use a mass tolerance of 0.02 Da
 # the retention time is ignored anyways so we will set the tolerance to 1 min
 # we will use the standard 3 % CCS tolerance
-tol = (0.02, 1.0, 3.0)
+tol = [0.02, 1.0, 3.0]
 add_feature_ids(dset, tol, level='any', use_rt=False)
 
 # Step 7. export the dataset into an Excel spreadsheet (to review lipid identifications)
-# ...
+dset.export_xlsx('example_pos.xlsx')
 
 # Step 8. save the Dataset in a binary format that can be loaded again later for further manual analysis
 dset.save_bin('example_pos.pickle')

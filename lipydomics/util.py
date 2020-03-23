@@ -109,13 +109,12 @@ get_score
         m = 'get_score: unable to compute residuals'
         raise RuntimeError(m)
     elif len(rn) == 1:
-        # prevent zero-division just in case ...
-        return 1. / max(abs(rn[0]), 0.000001)
+        return 1. / max(abs(rn[0]), 0.000001)  # prevent zero-division just in case ...
     else:
         if norm == 'l1':
-            return 1. / sum([abs(_) for _ in rn])
+            return 1. / max(sum([abs(_) for _ in rn]), 0.000001)  # prevent zero-division just in case ...
         elif norm == 'l2':
-            return 1. / sqrt(sum([_**2. for _ in rn]))
+            return 1. / max(sqrt(sum([_**2. for _ in rn])), 0.000001)  # prevent zero-division just in case ...
         else:
             m = 'get_score: norm method "{}" not recognized'
             raise ValueError(m.format(norm))

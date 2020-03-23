@@ -11,6 +11,9 @@
 import numpy as np
 import pickle
 from csv import reader
+from pandas import DataFrame, concat, ExcelWriter
+
+from lipydomics.util import abbreviate_sheet
 
 
 class Dataset:
@@ -280,3 +283,77 @@ Dataset.select_feature_data
             return True
         else:
             return False
+
+    def export_xlsx(self, xlsx_path):
+        """
+Dataset.export_xlsx
+    description:
+        Exports this Dataset instance into an Excel Spreadsheet
+    parameters:
+        xlsx_path (str) -- path to save the spreadsheet under
+"""
+        # create a pandas DataFrame
+        label_df = DataFrame(self.labels)
+        int_df = DataFrame(self.intensities)
+        df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+        writer = ExcelWriter(xlsx_path, engine='xlsxwriter')
+        new_df = df
+        columns = ['' for x in df.columns.values]
+        if self.group_indices is not None:
+            for group in self.group_indices:
+                for i in self.group_indices[group]:
+                    columns[i + 3] = group if columns[i + 3] == "" else columns[i + 3] + "/" + group
+        columns = ['mz', 'rt', 'ccs'] + columns[3:]
+        new_df.columns = columns
+        new_df.to_excel(writer, sheet_name='Data')
+        for key in self.stats:
+            stats_df = DataFrame(self.stats[key])
+            if ("PCA3" in key or "PLS-DA" in key) and "loadings" in key:
+                stats_df = stats_df.transpose()
+            key = abbreviate_sheet(key) if len(key) > 31 else key
+            stats_df.to_excel(writer, sheet_name=key)
+        m = 0
+        feat_dict = {}
+        if self.feat_ids:
+            for feat in self.feat_ids:
+                if type(feat) is list:
+                    m = max(m, len(feat))
+        for i in range(0, m):
+            s = []
+            for feat in self.feat_ids:
+                if type(feat) is list:
+                    try:
+                        s.append(feat[i])
+                    except:
+                        s.append("")
+                else:
+                    if i == 0:
+                        s.append(feat)
+                    else:
+                        s.append("")
+            feat_dict[i] = s
+        cal_df = None
+        if self.rt_calibration is not None:
+            cal_rts = [self.rt_calibration.get_calibrated_rt(rt) for mz, rt, ccs in self.labels]
+            cal_df = DataFrame(cal_rts)
+            cal_df.columns = ['calibrated_ rt']
+            cal_df.to_excel(writer, sheet_name="rt_calibration")
+        if self.normed_intensities is not None:
+            norm_df = DataFrame(self.normed_intensities)
+            norm_df = concat([label_df, norm_df], axis=1, ignore_index=True, sort=False)
+            norm_df.to_excel(writer, sheet_name="Normalized Intensities")
+        if feat_dict:
+            iden_df = DataFrame(feat_dict)
+            level_df = DataFrame(self.feat_id_levels)
+            if self.rt_calibration is not None:
+                identification_df = concat([label_df, cal_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
+                id_columns = ["putative_id" for x in identification_df.columns.values]
+                id_columns = ['mz', 'rt', 'ccs', 'calibrated_rt', 'id_level', 'putative_id'] + id_columns[6:]
+            else:
+                identification_df = concat([label_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
+                id_columns = ["putative_id" for x in identification_df.columns.values]
+                id_columns = ['mz', 'rt', 'ccs', 'id_level', 'putative_id'] + id_columns[5:]
+            identification_df.columns = id_columns
+            identification_df.to_excel(writer, sheet_name='Identifications')
+        writer.save()
+
