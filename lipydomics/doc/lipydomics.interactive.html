@@ -31,19 +31,7 @@ description:</tt></p>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-abbreviate_sheet"><strong>abbreviate_sheet</strong></a>(sheet_name)</dt><dd><tt>abbreviate_sheet<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;a&nbsp;pandas&nbsp;Dataframe&nbsp;to&nbsp;be&nbsp;exported&nbsp;into&nbsp;an&nbsp;Excel&nbsp;spreadsheet,&nbsp;the&nbsp;sheet&nbsp;names&nbsp;must&nbsp;be&nbsp;no&nbsp;longer&nbsp;than&nbsp;31<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;characters.&nbsp;In&nbsp;order&nbsp;to&nbsp;export&nbsp;the&nbsp;sheets&nbsp;containing&nbsp;computed&nbsp;statistics,&nbsp;the&nbsp;statistic&nbsp;labels&nbsp;often&nbsp;need&nbsp;to&nbsp;be<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shortened&nbsp;because&nbsp;they&nbsp;contain&nbsp;information&nbsp;on&nbsp;the&nbsp;statistic&nbsp;and&nbsp;the&nbsp;groups&nbsp;used&nbsp;to&nbsp;calculate&nbsp;it.&nbsp;This&nbsp;function<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attempts&nbsp;to&nbsp;abbreviate&nbsp;such&nbsp;labels&nbsp;to&nbsp;31&nbsp;characters.&nbsp;If&nbsp;a&nbsp;suitable&nbsp;abbreviation&nbsp;cannot&nbsp;be&nbsp;made,&nbsp;then&nbsp;the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;original&nbsp;name&nbsp;is&nbsp;simply&nbsp;truncated&nbsp;down&nbsp;to&nbsp;31&nbsp;characters.&nbsp;All&nbsp;group&nbsp;names&nbsp;are&nbsp;truncated&nbsp;to&nbsp;their&nbsp;first&nbsp;3<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;characters&nbsp;as&nbsp;well.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sheet_name&nbsp;(str)&nbsp;--&nbsp;sheet&nbsp;name<br>
-&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str)&nbsp;--&nbsp;abbreviated&nbsp;sheet&nbsp;name</tt></dd></dl>
- <dl><dt><a name="-batch_feature_selection"><strong>batch_feature_selection</strong></a>(dset)</dt><dd><tt>batch_feature_selection<br>
+<td width="100%"><dl><dt><a name="-batch_feature_selection"><strong>batch_feature_selection</strong></a>(dset)</dt><dd><tt>batch_feature_selection<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;to<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
@@ -65,20 +53,8 @@ description:</tt></p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;has.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset&nbsp;instance<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;df&nbsp;(Pandas&nbsp;DataFrame)&nbsp;--&nbsp;DataFrame&nbsp;version&nbsp;of&nbsp;lipidomics&nbsp;dataset<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;finished&nbsp;exporting&nbsp;data&nbsp;to&nbsp;excel&nbsp;file</tt></dd></dl>
- <dl><dt><a name="-filter_d"><strong>filter_d</strong></a>(mzs, rts, ccss, data)</dt><dd><tt>filter_d<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;helper&nbsp;function&nbsp;for&nbsp;filtering&nbsp;data<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;given&nbsp;M/Z,&nbsp;RT,&nbsp;CCS&nbsp;ranges&nbsp;and&nbsp;a&nbsp;DataFrame&nbsp;containing&nbsp;data,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;find&nbsp;and&nbsp;returns&nbsp;all&nbsp;data&nbsp;within&nbsp;that&nbsp;range.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;CCS&nbsp;tolerance&nbsp;is&nbsp;absolute&nbsp;in&nbsp;this&nbsp;case,&nbsp;NOT&nbsp;a&nbsp;percentage&nbsp;*<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mzs&nbsp;(list(flaot))&nbsp;--&nbsp;mz&nbsp;[0]&nbsp;and&nbsp;tolerance&nbsp;[1]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rts&nbsp;(list(float))&nbsp;--&nbsp;rt&nbsp;[0]&nbsp;and&nbsp;tolerance&nbsp;[1]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccss&nbsp;(list(float))&nbsp;--&nbsp;ccs&nbsp;[0]&nbsp;and&nbsp;tolerance&nbsp;[1]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(pandas.DataFrame)&nbsp;--&nbsp;DataFrame&nbsp;representation&nbsp;of&nbsp;the&nbsp;data</tt></dd></dl>
  <dl><dt><a name="-filter_data"><strong>filter_data</strong></a>(dset)</dt><dd><tt>filter_data<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompts&nbsp;the&nbsp;user&nbsp;with&nbsp;options&nbsp;for&nbsp;filtering&nbsp;the&nbsp;data:<br>

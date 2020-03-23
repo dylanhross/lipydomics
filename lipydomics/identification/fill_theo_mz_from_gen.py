@@ -12,7 +12,7 @@ import os
 from sqlite3 import connect
 
 from .generation import enumerate_all_lipids
-from .lipid_parser import parse_lipid
+from ..util import parse_lipid
 
 
 def add_enumerated_mz(cursor):

@@ -13,7 +13,7 @@ from csv import reader
 from numpy import array, mean, sqrt
 
 from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
-from lipydomics.identification.lipid_parser import parse_lipid
+from lipydomics.util import parse_lipid
 
 
 def get_ref_rt_lipids1():

@@ -7,20 +7,21 @@
 """
 
 
-import pandas as pd
+from pandas import DataFrame
 import csv
 import numpy as np
 import os
 
 from lipydomics.data import Dataset
-from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra
+from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc
 from lipydomics.plotting import (
     barplot_feature_bygroup, batch_barplot_feature_bygroup, scatter_pca3_projections_bygroup,
-    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup
+    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup,
+    heatmap_lipid_class_log2fc
 )
 from lipydomics.identification import add_feature_ids
 from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
-from lipydomics.identification.lipid_parser import parse_lipid
+from lipydomics.util import filter_d, parse_lipid
 
 
 def load_dset():
@@ -149,28 +150,6 @@ manage_groups
         return False
 
 
-def filter_d(mzs, rts, ccss, data):
-    """
-filter_d
-    description:
-        a helper function for filtering data
-        given M/Z, RT, CCS ranges and a DataFrame containing data,
-        find and returns all data within that range.
-        * CCS tolerance is absolute in this case, NOT a percentage *
-    parameters:
-        mzs (list(flaot)) -- mz [0] and tolerance [1]
-        rts (list(float)) -- rt [0] and tolerance [1]
-        ccss (list(float)) -- ccs [0] and tolerance [1]
-        data (pandas.DataFrame) -- DataFrame representation of the data
-"""
-    # removed all of the casts to float, that should happen at input time not here
-    filtered = data[(data[0] < mzs[0] + mzs[1]) & (data[0] > mzs[0] - mzs[1]) &
-                    (data[1] < rts[0] + rts[1]) & (data[1] > rts[0] - rts[1]) &
-                    (data[2] < ccss[0] + ccss[1]) & (data[2] > ccss[0] - ccss[1])]
-    return filtered
-
-
-""" To Do: S plot filter, """
 def filter_data(dset):
     """
 filter_data
@@ -338,10 +317,13 @@ manage_statistics
         print("\t3. PLS-DA")
         print("\t4. Two Group Correlation")
         print("\t5. PLS-RA (using external continuous variable)")
+        print("\t6. Two Group Log2(fold-change)")
         print('\t"back" to go back')
         opt2 = input('> ')
         # map options to stats functions
-        stats_f_map = {'1': add_anova_p, '2': add_pca3, '3': add_plsda, '4': add_2group_corr, '5': add_plsra}
+        stats_f_map = {
+            '1': add_anova_p, '2': add_pca3, '3': add_plsda, '4': add_2group_corr, '5': add_plsra, '6': add_log2fc
+        }
         if opt2 in stats_f_map:
             print('Would you like to use normalized data? (y/N)')
             norm = input('> ') == 'y'
@@ -418,15 +400,18 @@ make_plots
     print("\t2. Batch bar plot features by group")
     print("\t3. Scatter PCA3 Projections by group")
     print("\t4. Scatter PLS-DA Projections by group")
-    print("\t5. S-Plot PLSA-DA and Pearson correlation by group")
+    print("\t5. S-Plot PLS-DA and Pearson correlation by group")
     print("\t6. Scatter PLS-RA Projections by group")
+    print("\t7. Heatmap of Log2(fold-change) by lipid class")
     print('\t"back" to go back')
     option = input('> ')
 
     # map the options to plotting functions
-    plots_f_map = {'1': barplot_feature_bygroup, '2': batch_barplot_feature_bygroup,
-                   '3': scatter_pca3_projections_bygroup, '4': scatter_plsda_projections_bygroup,
-                   '5': splot_plsda_pcorr_bygroup, '6': scatter_plsra_projections_bygroup}
+    plots_f_map = {
+        '1': barplot_feature_bygroup, '2': batch_barplot_feature_bygroup, '3': scatter_pca3_projections_bygroup,
+        '4': scatter_plsda_projections_bygroup, '5': splot_plsda_pcorr_bygroup, '6': scatter_plsra_projections_bygroup,
+        '7': heatmap_lipid_class_log2fc
+    }
     if option in plots_f_map:
         print("Where would you like to save the plot(s)? (default = current directory)")
         plot_dir = input('> ')
@@ -469,6 +454,20 @@ make_plots
             except ValueError as ve:
                 print('! ERROR:', ve)
                 print('! ERROR: Unable to generate plot using groups: {}'.format(groups))
+        elif option == '7':
+            try:
+                # prompt for the lipid class
+                print("Please enter the lipid class you would like to generate a heatmap with")
+                lipid_class = input('> ')
+                found_lipid = plots_f_map[option](lipid_class, dset, groups, plot_dir, normed=norm)
+                if not found_lipid:
+                    m = '! ERROR: unable to find lipids with matching identifications (lipid class: {})'
+                    print(m.format(lipid_class))
+                else:
+                    print('! INFO: Generated heatmap for lipid class: {}'.format(lipid_class))
+            except ValueError as ve:
+                print('! ERROR:', ve)
+                print('! ERROR: Unable to generate plot')
         else:
             try:
                 plots_f_map[option](dset, groups, plot_dir, normed=norm)
@@ -721,45 +720,6 @@ calibrate_rt
         return False
 
 
-def abbreviate_sheet(sheet_name):
-    """
-abbreviate_sheet
-    description:
-        For a pandas Dataframe to be exported into an Excel spreadsheet, the sheet names must be no longer than 31
-        characters. In order to export the sheets containing computed statistics, the statistic labels often need to be
-        shortened because they contain information on the statistic and the groups used to calculate it. This function
-        attempts to abbreviate such labels to 31 characters. If a suitable abbreviation cannot be made, then the
-        original name is simply truncated down to 31 characters. All group names are truncated to their first 3
-        characters as well.
-    parameters:
-        sheet_name (str) -- sheet name
-    returns:
-        (str) -- abbreviated sheet name
-"""
-    # just in case this is called in error, always return the sheet name if it is already <32 characters
-    if len(sheet_name) < 32:
-        return sheet_name
-    # abbreviations
-    stat_abbrev = {'PCA3': 'PC3', 'PLS-DA': 'PLS', 'ANOVA': 'ANV', '2-group-corr': '2GC'}
-    load_or_proj_abbrev = {'': '', 'loadings': 'L', 'projections': 'P'}
-    nrm_abbrev = {'raw': 'R', 'normed': 'N'}
-    # parse the stat label for relevant info
-    sheet_name_split = sheet_name.split('_')
-    stat = sheet_name_split[0]
-    if stat not in stat_abbrev:
-        # fall back to simple truncation
-        return sheet_name[:31]
-    nrm = sheet_name_split[-1]
-    load_or_proj = '' if sheet_name_split[-2] not in ['loadings', 'projections'] else sheet_name_split[-2]
-    groups = '-'.join([name[:3] if len(name) > 3 else name for name in sheet_name_split[1].split('-')])
-    # construct the abbreviated name
-    abbrev = stat_abbrev[stat] + load_or_proj_abbrev[load_or_proj] + nrm_abbrev[nrm] + '_' + groups
-    if len(abbrev) > 31:
-        # fall back to simple truncation
-        return sheet_name[:31]
-    return abbrev
-
-
 def batch_feature_selection(dset):
     """
 batch_feature_selection
@@ -799,7 +759,7 @@ batch_feature_selection
     return True
 
 
-def export(dset, df):
+def export(dset):
     """
 export
     description:
@@ -809,7 +769,6 @@ export
               has.
     parameters:
         dset (lipydomics.data.Dataset) -- lipidomics dataset instance
-        df (Pandas DataFrame) -- DataFrame version of lipidomics dataset
     returns:
         (bool) -- finished exporting data to excel file
 """
@@ -818,70 +777,8 @@ export
     path = input('> ')
     if path == "back":
         return True
-    writer = pd.ExcelWriter(path, engine='xlsxwriter')
-    new_df = df
-    columns = ['' for x in df.columns.values]
-    for group in dset.group_indices:
-        for i in dset.group_indices[group]:
-            columns[i + 3] = group if columns[i + 3] == "" else columns[i + 3] + "/" + group
-    columns = ['mz', 'rt', 'ccs'] + columns[3:]
-    new_df.columns = columns
-    new_df.to_excel(writer, sheet_name='Data')
-    for key in dset.stats:
-        stats_df = pd.DataFrame(dset.stats[key])
-        if "PCA3" in key and "loadings" in key:
-            stats_df = stats_df.transpose()
-        key = abbreviate_sheet(key) if len(key) > 31 else key
-        stats_df.to_excel(writer, sheet_name=key)
-    m = 0
-    feat_dict = {}
-    label_df = pd.DataFrame(dset.labels)
-    if dset.feat_ids:
-        for feat in dset.feat_ids:
-            if type(feat) is list:
-                m = max(m, len(feat))
-
-    for i in range(0, m):
-        s = []
-        for feat in dset.feat_ids:
-            if type(feat) is list:
-                try:
-                    s.append(feat[i])
-                except:
-                    s.append("")
-            else:
-                if i == 0:
-                    s.append(feat)
-                else:
-                    s.append("")
-        feat_dict[i] = s
-    cal_df = None
-    if dset.rt_calibration is not None:
-        cal_rts = [dset.rt_calibration.get_calibrated_rt(rt) for mz, rt, ccs in dset.labels]
-        cal_df = pd.DataFrame(cal_rts)
-        cal_df.columns = ['calibrated_ rt']
-        cal_df.to_excel(writer, sheet_name="rt_calibration")
-
-    if dset.normed_intensities is not None:
-        norm_df = pd.DataFrame(dset.normed_intensities)
-        norm_df = pd.concat([label_df, norm_df], axis=1, ignore_index=True, sort=False)
-
-        norm_df.to_excel(writer, sheet_name="Normalized Intensities")
-    if feat_dict:
-        iden_df = pd.DataFrame(feat_dict)
-        level_df = pd.DataFrame(dset.feat_id_levels)
-        if dset.rt_calibration is not None:
-            identification_df = pd.concat([label_df, cal_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
-            id_columns = ["putative_id" for x in identification_df.columns.values]
-            id_columns = ['mz', 'rt', 'ccs', 'calibrated_rt', 'id_level', 'putative_id'] + id_columns[6:]
-        else:
-            identification_df = pd.concat([label_df, level_df, iden_df], axis=1, ignore_index=True, sort=False)
-            id_columns = ["putative_id" for x in identification_df.columns.values]
-            id_columns = ['mz', 'rt', 'ccs', 'id_level', 'putative_id'] + id_columns[5:]
-        identification_df.columns = id_columns
-        identification_df.to_excel(writer, sheet_name='Identifications')
     try:
-        writer.save()
+        dset.export_xlsx(path)
         print('! INFO: Successfully exported dataset to Excel spreadsheet: {}.'.format(path))
     except Exception as e:
         print('! ERROR:', e)
@@ -906,10 +803,10 @@ main
     if dset == 'exit':
         return
 
-    # create a pandas DataFrame
-    label_df = pd.DataFrame(dset.labels)
-    int_df = pd.DataFrame(dset.intensities)
-    df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+        # create a pandas DataFrame
+        label_df = DataFrame(self.labels)
+        int_df = DataFrame(self.intensities)
+        df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
 
     # main execution loop
     while True:
@@ -968,7 +865,7 @@ main
             batch_feature_selection(dset)
         # Export Current Dataset to Spreadsheet
         elif option == '10':
-            export(dset, df)
+            export(dset)
         # Save Current Dataset to File
         elif option == '11':
             print("Saving Current Dataset to File... Please enter the full path and file name to save the Dataset "

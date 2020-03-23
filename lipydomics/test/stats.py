@@ -12,7 +12,7 @@ import os
 import numpy as np
 
 from lipydomics.data import Dataset
-from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra
+from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc
 
 
 def addanovap_mock1():
@@ -305,3 +305,40 @@ addplsra_real1
         raise RuntimeError(m.format(dset.stats['PLS-RA_{}_projections_raw'.format('-'.join(groups))].shape))
 
     return True
+
+
+def addlog2fc_real1():
+    """
+addlog2fc_real1
+    description:
+        Uses the raw data from real_data_1.csv to compute log2(fold-change) on a bunch of pairs of groups
+
+        Test fails if there are any errors or if the shape of any of the following stats entries are incorrect:
+            dset.stats['log2fc_..._raw'].shape = (773,)
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    dset.assign_groups({
+        'Par': [0, 1, 2, 3],
+        'Dap2': [4, 5, 6, 7],
+        'Dal2': [8, 9, 10, 11],
+        'Van4': [12, 13, 14, 15],
+        'Van8': [16, 17, 18, 19]
+    })
+
+    # pairs of groups to compute log2fc on
+    pairs = [
+        ['Par', 'Dap2'],
+        ['Par', 'Dal2'],
+        ['Par', 'Van4'],
+        ['Par', 'Van8']
+    ]
+
+    for pair in pairs:
+        add_log2fc(dset, pair)
+        if dset.stats['LOG2FC_{}_raw'.format('-'.join(pair))].shape != (773,):
+            m = 'addlog2fc_real1: "log2fc_..._raw" should have shape (773,), has shape: {}'
+            raise RuntimeError(m.format(dset.stats['LOG2FC_{}_raw'.format('-'.join(pair))].shape))
+
+    return dset

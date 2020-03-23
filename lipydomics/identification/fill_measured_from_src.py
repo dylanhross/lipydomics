@@ -13,7 +13,7 @@ import os
 from sqlite3 import connect
 from json import load as jload
 
-from .lipid_parser import parse_lipid
+from ..util import parse_lipid
 from .build_params import include_ref_dsets
 
 

@@ -1,4 +1,4 @@
-# API 
+# API (version 1.4.2)
 The following is a brief overview of the package API with usage examples, organized by module.
 
 **Complete documentation for all modules is available in HTML format under `lipydomics/doc/lipydomics.html`.**
@@ -95,14 +95,6 @@ weights = weights_tissue * weights_intstd
 dset.normalize(weights)
 ```
 
-### Saving to File
-A `Dataset` instance can be saved in a serialized binary format, retaining group assignments, normalization, computed
-statistics, retention time calibration, and lipid identifications. Internally, this is done using Python's `pickle` 
-library. 
-
-```python
-dset.save_bin('saved_dataset.pickle')
-```
 
 ### Batch Selecting Features
 Feature data can be selected and exported to a .csv file using the `Dataset.select_feature_data` method. This method
@@ -130,6 +122,25 @@ dset.select_feature_data('input.csv', 'output.csv', tolerance=(0.025, 0.25, 2.5)
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 234.5678 | 3.45 | 123.4 | 45678 | 56789 | ... | 23456 |
 | ... | ... | ... | ... | ... | ... | ... |
+
+
+### Exporting to Excel Spreadsheet
+A `Dataset` instance can be exported to an Excel spreadsheet (`.xlsx`) format for easy viewing of the data, lipid 
+identifications, and computed statistics.
+
+```python
+dset.export_xlsx('exported_dataset.xlsx')
+```
+
+
+### Saving to File
+A `Dataset` instance can be saved in a serialized binary format, retaining group assignments, normalization, computed
+statistics, retention time calibration, and lipid identifications. Internally, this is done using Python's `pickle` 
+library. 
+
+```python
+dset.save_bin('saved_dataset.pickle')
+```
 
 
 ## Stats
@@ -204,6 +215,17 @@ with open('external.txt', 'r') as f:
 add_plsra(dset, ['elf', 'halforc', 'drow', 'aasimar'], external, normed=True)
 ```
 
+### Two Group Log2(fold-change)
+Computes the Log2(fold-change) between the mean intensities of two specified groups for all lipid species. If lipid
+identifications have also been made, this data can be used to produce heatmaps of these fold-changes organized by lipid
+class.
+
+```python
+from lipydomics.stats import add_log2fc
+
+# compute Log2(fold-change) with raw data
+add_log2fc(dset, ['Grog', 'Scanlan'])
+```
 
 ## Plotting
 The `lipydomics.plotting` module contains several functions for generating plots from the data stored in a `Dataset` 
@@ -216,7 +238,9 @@ and retrieve the relevant data for plotting.
 ### Barplot Feature by Group
 The `barplot_feature_bygroup` function generates barplots of average intensities (and standard deviations) for features 
 from a defined set of groups. Feature identifiers (m/z, retention time, and CCS) are provided as input, along with 
-search tolerances for each, and plots are generated for all matching features in the `Dataset`.
+search tolerances for each, and plots are generated for all matching features in the `Dataset`. This function returns 
+a boolean indicating whether at least one matching feature was found (and plotted). If no features are found, no plots
+are generated. 
 
 ```python
 from lipydomics.plotting import barplot_feature_bygroup
@@ -225,8 +249,13 @@ from lipydomics.plotting import barplot_feature_bygroup
 feature = (234.5678, 2.34, 123.4)
 # tight search tolerance
 tol = (0.01, 0.1, 1.0)
-barplot_feature_bygroup(dset, ['A', 'B', 'C'], 'analysis/features/', feature, tolerance=tol)
+found_feat = barplot_feature_bygroup(dset, ['A', 'B', 'C'], 'analysis/features/', feature, tolerance=tol)
+if found_feat:
+    print('found matching feature(s), generated plot(s)')
+else:
+    print('failed to find matching features, no plots generated')
 ```
+
 
 ### Batch Barplot Features by Group
 The `batch_barplot_feature_bygroup` function can generate bar plots for multiple features at once using the same groups
@@ -290,11 +319,25 @@ splot_plsda_pcorr_bygroup(dset, ['wt', 'ko'], 'analysis/wt_ko/')
 Generate a scatter plot of the PLS-RA projections for a specified set of groups. Requires the corresponding statistic to
 already be present in `Dataset.stats`.
 
-```python
-from lipydomics.plotting import scatter_plsra_projections_bygroup
 
-# groups elf, halforc, drow, and aasimar; normalized data
-scatter_plsra_projections_bygroup(dset, ['elf', 'halforc', 'drow', 'aasimar'], 'analysis/group1/')
+### Heatmap of Log2(fold-change) by Lipid Class
+Generate a heatmap of Log2(fold-change) of two groups for a specified lipid class. Requires the corresponding statistic 
+(`LOG2FC`) to be present in `Dataset.stats` and lipid identifications to be made prior. This function returns a boolean
+indicating whether the specified lipid class was found in the lipid identifications. No plot is generated if the lipid
+class was not found. 
+
+```python
+from lipydomics.plotting import heatmap_lipid_class_log2fc
+
+# Lipid Class: PG
+# Groups: Grog, Scanlan
+# Save in Dir: ./analysis/plots/
+# Data: raw
+found_lipids = heatmap_lipid_class_log2fc('PG', dset, ['Grog', 'Scanlan'], 'analysis/plots/')
+if found_lipids:
+    print('Found PGs in lipid identifications, generated a plot')
+else:
+    print('Did not find any PGs in lipid identifications, no plot generated')
 ```
 
 
@@ -317,7 +360,7 @@ _Example:_
 ```python
 from lipydomics.identification import add_feature_ids
 
-tol = (0.02, 0.2, 2.0)
+tol = [0.02, 0.2, 2.0]  # tol must be a list
 # identify features at the highest level possible
 add_feature_ids(dset, tol, level='any')
 ```
@@ -325,6 +368,8 @@ The resulting lipid identifications are stored in the `Dataset.feat_ids` instanc
 each feature. The `Dataset.feat_id_levels` instance variable holds the identification level for each feature, and the 
 `Dataset.feat_id_scores` instance variable holds the scores for each putative lipid ID. Multiple calls to 
 `add_feature_ids` with different parameters will override results from previous calls. 
+
+**IMPORTANT:** *CCS tolerance is in percent NOT absolute units*
 
 
 ### Retention Time Calibration

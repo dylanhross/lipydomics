@@ -13,15 +13,18 @@ import traceback
 
 from lipydomics.test.data import (
     dataset_init_mock1, dataset_normalize_mock1, dataset_getgroup_mock1, dataset_assign_groups_using_replicates_real1,
-    dataset_save_load_bin_mock1, dataset_export_feature_data_real1
+    dataset_save_load_bin_mock1, dataset_export_feature_data_real1, dataset_export_xlsx_real1,
+    dataset_export_analyzed_xlsx_real1
 )
 from lipydomics.test.stats import (
     addanovap_mock1, addanovap_real1, addpca3_mock1, addpca3_real1, addplsda_mock1, addplsda_3groups_mock1, 
-    addplsda_real1, add2groupcorr_mock1, add2groupcorr_3groups_mock1, add2groupcorr_real1, addplsra_real1
+    addplsda_real1, add2groupcorr_mock1, add2groupcorr_3groups_mock1, add2groupcorr_real1, addplsra_real1,
+    addlog2fc_real1
 )
 from lipydomics.test.plotting import (
     barplot_feature_bygroup_mock1, batch_barplot_feature_bygroup_real1, scatter_pca3_projections_bygroup_mock1,
-    scatter_plsda_projections_bygroup_mock1, splot_plsda_pcorr_bygroup_mock1, scatter_plsra_projections_bygroup_real1
+    scatter_plsda_projections_bygroup_mock1, splot_plsda_pcorr_bygroup_mock1, scatter_plsra_projections_bygroup_real1,
+    heatmap_lipid_class_log2fc_real1
 )
 from lipydomics.test.identification import (
     add_feature_ids_any_real1, add_feature_ids_any_real1_tstamp, add_feature_ids_real1_bad_tstamp
@@ -30,7 +33,7 @@ from lipydomics.test.rt_calibration import (
     get_ref_rt_lipids1, rtcal_init_mismatch_len, rtcal_calibrate_rtc1_c12, rtcal_calibrate_rtc1_c13,
     rtcal_calibrate_rtc2_c12, rtcal_calibrate_rtc2_c13
 )
-from lipydomics.test.interactive import abbrev_xl_sheet_names
+from lipydomics.test.util import abbrev_xl_sheet_names, fetch_lipid_class_log2fa_real1
 
 
 def run_all_tests():
@@ -49,6 +52,8 @@ run_all_tests
         dataset_assign_groups_using_replicates_real1,
         dataset_save_load_bin_mock1,
         dataset_export_feature_data_real1,
+        dataset_export_xlsx_real1,
+        dataset_export_analyzed_xlsx_real1,
         # test/stats
         addanovap_mock1,
         addanovap_real1,
@@ -61,6 +66,7 @@ run_all_tests
         add2groupcorr_3groups_mock1,
         add2groupcorr_real1,
         addplsra_real1,
+        addlog2fc_real1,
         # test/plotting
         barplot_feature_bygroup_mock1,
         batch_barplot_feature_bygroup_real1,
@@ -68,6 +74,7 @@ run_all_tests
         scatter_plsda_projections_bygroup_mock1,
         splot_plsda_pcorr_bygroup_mock1,
         scatter_plsra_projections_bygroup_real1,
+        heatmap_lipid_class_log2fc_real1,
         # test/identification
         add_feature_ids_any_real1,
         add_feature_ids_any_real1_tstamp,
@@ -79,8 +86,9 @@ run_all_tests
         rtcal_calibrate_rtc1_c13,
         rtcal_calibrate_rtc2_c12,
         rtcal_calibrate_rtc2_c13,
-        # test/interactive
-        abbrev_xl_sheet_names
+        # test/util
+        abbrev_xl_sheet_names,
+        fetch_lipid_class_log2fa_real1
     ]
 
     # run the tests

@@ -13,11 +13,13 @@ import numpy as np
 from csv import reader
 
 from lipydomics.data import Dataset
-from lipydomics.stats import add_pca3, add_plsda, add_2group_corr, add_plsra
+from lipydomics.stats import add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc
 from lipydomics.plotting import (
     barplot_feature_bygroup, batch_barplot_feature_bygroup, scatter_pca3_projections_bygroup,
-    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup
+    scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup,
+    heatmap_lipid_class_log2fc
 )
+from lipydomics.identification import add_feature_ids
 
 
 def barplot_feature_bygroup_mock1():
@@ -231,3 +233,39 @@ scatter_plsra_projections_bygroup_real1
 
     return True
 
+
+def heatmap_lipid_class_log2fc_real1():
+    """
+fetch_lipid_class_log2fa_real1
+    description:
+        Tests the function that makes a heatmap of lipid class fold-change data using identifications made on the
+        real_data_1.csv test dataset
+
+        Test fails if there are any errors, if the data is not  found, or the image file is not created
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    # setup
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+    dset.assign_groups({
+        'Par': [0, 1, 2, 3],
+        'Dap2': [4, 5, 6, 7]
+    })
+    add_log2fc(dset, ['Par', 'Dap2'])
+    add_feature_ids(dset, [0.05, 0.5, 3.0])
+
+    # plot the PGs
+    img_dir = os.path.dirname(__file__)
+    fig_path = os.path.join(img_dir, 'PG_Par-Dap2_log2fc_raw.png')
+    if not heatmap_lipid_class_log2fc('PG', dset, ['Par', 'Dap2'], img_dir):
+        m = 'heatmap_lipid_class_log2fc_real1: no PG data found in identifications'
+        raise RuntimeError(m)
+
+    if not os.path.isfile(fig_path):
+        m = 'heatmap_lipid_class_log2fc_real1: image file {} not found'
+        raise RuntimeError(m.format(fig_path))
+    else:
+        # delete the image file
+        os.remove(fig_path)
+
+    return True

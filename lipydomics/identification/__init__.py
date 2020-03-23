@@ -10,57 +10,8 @@
 
 from sqlite3 import connect
 import os
-from numpy import sqrt
 
-
-def get_score(tol_mz, tol_rt, tol_ccs, mz_q=None, rt_q=None, ccs_q=None, mz_x=None, rt_x=None, ccs_x=None, norm='l2'):
-    """
-get_score
-    description:
-        computes a score reflecting the quality of an identification, using mz rt and ccs or any combination
-
-        The score is determined by the residuals between the query values (q) and a potential match (x), normalized by
-        their respective tolerances. If only a single pair of values (q and x) is provided, the score is simply the
-        inverse of the normalized residual, otherwise, it is the inverse of the l1 or l2 norm of the normalized 
-        residuals vector. The norm kwarg controls whether the l1 or l2 norm is used in computing the score 
-    parameters:
-        cursor (sqlite3.Cursor) -- cursor for querying lipids.db
-        tol_mz (float) -- tolerance for m/z 
-        tol_rt (float) -- tolerance for retention time
-        tol_ccs (float) -- tolerance for CCS
-        [mz_q (None or float)] -- if specified, the query m/z [optional, default=None]
-        [rt_q (None or float)] -- if specified, the query retention time [optional, default=None]
-        [ccs_q (None or float)] -- if specified, the query CCS [optional, default=None]
-        [mz_q (None or float)] -- if specified, the m/z of a potential match [optional, default=None]
-        [rt_q (None or float)] -- if specified, the retention time of a potential match [optional, default=None]
-        [ccs_q (None or float)] -- if specified, the CCS of a potential match [optional, default=None]
-        [norm (str)] -- specify l1 or l2 norm [optional, default='l2']
-    returns:
-        (float) -- score (higher = more confidence in ID)
-"""
-    q = [mz_q, rt_q, ccs_q]
-    x = [mz_x, rt_x, ccs_x]
-    tol = [tol_mz, tol_rt, tol_ccs]
-    # compute the normalized residuals
-    rn = []
-    for q_, x_, tol_ in zip(q, x, tol):
-        if q_ and x_:
-            rn.append((x_ - q_) / tol_)
-    # if there was only a single value, just return the inverse of the absolute value
-    if not rn:
-        m = 'get_score: unable to compute residuals'
-        raise RuntimeError(m)
-    elif len(rn) == 1:
-        # prevent zero-division just in case ...
-        return 1. / max(abs(rn[0]), 0.000001)
-    else:
-        if norm == 'l1':
-            return 1. / sum([abs(_) for _ in rn])
-        elif norm == 'l2':
-            return 1. / sqrt(sum([_**2. for _ in rn]))
-        else:
-            m = 'get_score: norm method "{}" not recognized'
-            raise ValueError(m.format(norm))
+from lipydomics.util import get_score
 
 
 def id_feat_theo_mz(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm=None):
@@ -318,7 +269,7 @@ id_feat_theo_meas_mz_rt_ccs
         return '', '', []
 
 
-def id_feat_any(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
+def id_feat_any(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2', use_rt=True):
     """
 id_feat_any
     description:
@@ -334,27 +285,35 @@ id_feat_any
         tol_ccs (float) -- tolerance for CCS
         esi_mode (str) -- filter results by ionization mode: 'neg', 'pos', or None for unspecified
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
+        [use_rt (bool)] -- whether to use identification levels that involve retention time [optional, default=True]
     returns:
         (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
 """
-    id_funcs = [
-        id_feat_meas_mz_rt_ccs,
-        id_feat_meas_mz_ccs,
-        id_feat_theo_mz_rt_ccs,
-        id_feat_theo_mz_ccs,
-        id_feat_theo_mz_rt,
-        id_feat_theo_mz
-    ]
+    if use_rt:
+        id_funcs = [
+            id_feat_meas_mz_rt_ccs,
+            id_feat_meas_mz_ccs,
+            id_feat_theo_mz_rt_ccs,
+            id_feat_theo_mz_ccs,
+            id_feat_theo_mz_rt,
+            id_feat_theo_mz
+        ]
+    else:
+        id_funcs = [
+            id_feat_meas_mz_ccs,
+            id_feat_theo_mz_ccs,
+            id_feat_theo_mz
+        ]
 
     for f in id_funcs:
-        fid, lvl, scr = f(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')
+        fid, lvl, scr = f(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm=norm)
         if fid:
             return fid, lvl, scr
 
     return '', '', []
 
 
-def add_feature_ids(dataset, tol, level='any', norm='l2', db_version_tstamp=None):
+def add_feature_ids(dataset, tol, level='any', norm='l2', db_version_tstamp=None, use_rt=True):
     """
 add_feature_ids
     description:
@@ -368,6 +327,7 @@ add_feature_ids
         The method for making identifications is specified by the `level` param:
             (low)
             'theo_mz' -- simple matching based on theoretical m/z
+            'theo_mz_rt' -- match on theoretical m/z and rt
             'theo_mz_ccs' -- match on theoretical m/z and CCS
             'theo_mz_rt_ccs' -- match on theoretical m/z, rt, and CCS
             'meas_mz_ccs' -- match on measured m/z and CCS
@@ -396,11 +356,13 @@ add_feature_ids
         * if identifications have already been made, subsequent calls to this function will override previous results *
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
-        tol (tuple(float, float, float)) -- tolerance for m/z, rt, and CCS, respectively 
+        tol (list(float, float, float)) -- tolerance for m/z, rt, and CCS, respectively
         [level (str)] -- specify the level of identification [optional, default='all']
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
         [db_version_tstamp (str or None)] -- use a specific time-stamped version of the lipids database instead of the
                                              default (most recent build) [optional, default=None]
+        [use_rt (bool)] -- whether to use identification levels that involve retention time, ignored unless used with
+                            the 'any' identification level [optional, default=True]
 """
     if level not in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
         m = 'add_feature_ids: identification level "{}" not recognized'
@@ -444,7 +406,12 @@ add_feature_ids
         tol2[2] = tol2[2] / 100. * ccs
 
         # try to get identification(s)
-        feat_id, feat_id_level, feat_id_score = id_funcs[level](cur, mz, rt, ccs, *tol2, esi, norm=norm)
+        if level == 'any' and not use_rt:
+            # use any identification level that does not include retention time
+            feat_id, feat_id_level, feat_id_score = id_funcs['any'](cur, mz, rt, ccs, *tol2, esi,
+                                                                    norm=norm, use_rt=False)
+        else:
+            feat_id, feat_id_level, feat_id_score = id_funcs[level](cur, mz, rt, ccs, *tol2, esi, norm=norm)
 
         if feat_id:
             if len (feat_id) > 1:

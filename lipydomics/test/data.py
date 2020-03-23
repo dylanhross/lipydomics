@@ -12,6 +12,8 @@ import os
 import numpy as np
 
 from lipydomics.data import Dataset
+from lipydomics.stats import add_pca3
+from lipydomics.identification import add_feature_ids
 
 
 def dataset_init_mock1():
@@ -131,6 +133,7 @@ dataset_export_feature_data_real1
         raw data, then with a Dataset that has raw and normalized data.
 
         Test fails if there are any errors, or if either of the output .csv files do not get produced
+    returns:
         (bool) -- test pass (True) or fail (False)
 """
     incsv = os.path.join(os.path.dirname(__file__), 'real1_features1.csv')
@@ -154,3 +157,56 @@ dataset_export_feature_data_real1
     os.remove(outcsv2)
     return True
 
+
+def dataset_export_xlsx_real1():
+    """
+dataset_export_xlsx_real1
+    description:
+        Loads a dataset (real_data_1.csv) then exports the dataset as an Excel spreadsheet
+
+        Test fails if there are any errors, or if the spreadsheet is not produced
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    out = os.path.join(os.path.dirname(__file__), 'real1_exported.xlsx')
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    # normalize the data
+    dset.normalize(np.array([0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75,
+                             0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75]))
+    dset.export_xlsx(out)
+    # make sure the output file gets created
+    if not os.path.isfile(out):
+        m = 'dataset_export_xlsx_real1: output {} not found'
+        raise RuntimeError(m.format(out))
+    # remove the exported file
+    os.remove(out)
+    return True
+
+
+def dataset_export_analyzed_xlsx_real1():
+    """
+dataset_export_analyzed_xlsx_real1
+    description:
+        Loads a dataset (real_data_1.csv) then performs some analyses and exports the dataset as an Excel spreadsheet
+
+        Test fails if there are any errors, or if the spreadsheet is not produced
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    out = os.path.join(os.path.dirname(__file__), 'real1_exported.xlsx')
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    # normalize the data
+    dset.normalize(np.array([0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75,
+                             0.75, 0.8, 0.825, 0.85, 0.95, 0.95, 0.85, 0.825, 0.8, 0.75]))
+    # compute a PCA then identify lipids without using RT
+    dset.assign_groups_with_replicates(['Par', 'Dap2', 'Dal2', 'Van4', 'Van8'], 4)
+    add_pca3(dset, ['Par', 'Dap2', 'Dal2', 'Van4', 'Van8'], normed=True)
+    add_feature_ids(dset, [0.025, 1.0, 3.0], level='any', use_rt=False)
+    dset.export_xlsx(out)
+    # make sure the output file gets created
+    if not os.path.isfile(out):
+        m = 'dataset_export_xlsx_real1: output {} not found'
+        raise RuntimeError(m.format(out))
+    # remove the exported file
+    os.remove(out)
+    return True

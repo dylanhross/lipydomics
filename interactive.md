@@ -111,11 +111,13 @@ Functionalities
 		- Two Group Correlation
 		
 		- PLS-RA (using an external continuous variable)
+		
+		- Two Group Log2(fold-change)
 
 
 - **Plotting**:
 
-	- After computing the necessary statitics, the user can make plots out of the data. 
+	- After computing the necessary statisics, the user can make plots out of the data. 
 	
 	- The plot will be automatically generated to the user specified path.
 
@@ -127,9 +129,11 @@ Functionalities
 		
 		- Scatter PLS-DA Projections by group
 		
-		- S-Plot PLSA-DA and Pearson correlation by group
+		- S-Plot PLS-DA and Pearson correlation by group
 		
 		- Scatter PLS-RA projections by group
+		
+		- Heatmap of Log2(fold-change) by lipid class
 
 
 - **Lipid Identification**:
@@ -140,7 +144,7 @@ Functionalities
 	
 		- `theo_mz` - match on theoretical m/z
 		
-		- `theo_mz` - match on theoretical m/z and retention time
+		- `theo_mz_rt` - match on theoretical m/z and retention time
 		
 		- `theo_mz_ccs` - match on theoretical m/z and CCS
 		
