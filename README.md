@@ -14,7 +14,7 @@ for those who are not as familiar/comfortable with the more flexible Python API.
 
 
 ## API
-Documentation for the `lipydomics` API, organized by module, is available separately in [api.md](api.md). 
+Documentation for the `lipydomics` API, organized by module, is available separately in [api.md](api.md). An example of a complete scripted analysis also included in [example_standard_analysis.py](example_standard_analysis.py).
 
 
 ## Interactive
