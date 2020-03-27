@@ -567,7 +567,7 @@ normalize_data
             return False
         norm = []
         for i in range(3, len(filtered.iloc[0])):
-            norm.append(filtered.iloc[0][i] / max_inten)
+            norm.append(max_inten / filtered.iloc[0][i])
         try:
             dset.normalize(np.asarray(norm))
             print('! INFO: Successfully normalized')
