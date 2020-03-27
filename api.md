@@ -1,4 +1,4 @@
-# API (version 1.4.2)
+# API (version 1.4.x)
 The following is a brief overview of the package API with usage examples, organized by module.
 
 **Complete documentation for all modules is available in HTML format under `lipydomics/doc/lipydomics.html`.**
