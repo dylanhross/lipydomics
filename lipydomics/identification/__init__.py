@@ -10,6 +10,7 @@
 
 from sqlite3 import connect
 import os
+import warnings
 
 
 from lipydomics.identification.id_levels import (
@@ -110,7 +111,9 @@ add_feature_ids
 
         # convert the CCS tolerance into an absolute from the percentage
         tol2 = tol
-        tol2[2] = tol2[2] / 100. * ccs
+        with warnings.catch_warnings():  # ignore a warning that happens with this division
+            warnings.simplefilter("ignore")
+            tol2[2] = tol2[2] / 100. * ccs
 
         # try to get identification(s)
         if level == 'any' and not use_rt:
