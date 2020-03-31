@@ -803,10 +803,10 @@ main
     if dset == 'exit':
         return
 
-        # create a pandas DataFrame
-        label_df = DataFrame(self.labels)
-        int_df = DataFrame(self.intensities)
-        df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+    # create a pandas DataFrame
+    label_df = DataFrame(self.labels)
+    int_df = DataFrame(self.intensities)
+    df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
 
     # main execution loop
     while True:

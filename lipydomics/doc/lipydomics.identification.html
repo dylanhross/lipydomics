@@ -32,9 +32,10 @@ description:<br>
 <a href="lipydomics.identification.fill_measured_from_src.html">fill_measured_from_src</a><br>
 </td><td width="25%" valign=top><a href="lipydomics.identification.fill_theo_mz_from_gen.html">fill_theo_mz_from_gen</a><br>
 <a href="lipydomics.identification.generation.html">generation</a><br>
+<a href="lipydomics.identification.id_levels.html">id_levels</a><br>
 <a href="lipydomics.identification.rt_calibration.html">rt_calibration</a><br>
-<a href="lipydomics.identification.train_lipid_ccs_pred.html">train_lipid_ccs_pred</a><br>
-</td><td width="25%" valign=top><a href="lipydomics.identification.train_lipid_rt_pred.html">train_lipid_rt_pred</a><br>
+</td><td width="25%" valign=top><a href="lipydomics.identification.train_lipid_ccs_pred.html">train_lipid_ccs_pred</a><br>
+<a href="lipydomics.identification.train_lipid_rt_pred.html">train_lipid_rt_pred</a><br>
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
@@ -96,112 +97,5 @@ description:<br>
 Opens&nbsp;a&nbsp;connection&nbsp;to&nbsp;the&nbsp;SQLite&nbsp;database&nbsp;file&nbsp;*database*.&nbsp;You&nbsp;can&nbsp;use<br>
 ":memory:"&nbsp;to&nbsp;open&nbsp;a&nbsp;database&nbsp;connection&nbsp;to&nbsp;a&nbsp;database&nbsp;that&nbsp;resides&nbsp;in<br>
 RAM&nbsp;instead&nbsp;of&nbsp;on&nbsp;disk.</tt></dd></dl>
- <dl><dt><a name="-id_feat_any"><strong>id_feat_any</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2', use_rt=True)</dt><dd><tt>id_feat_any<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Goes&nbsp;through&nbsp;all&nbsp;defined&nbsp;levels&nbsp;of&nbsp;identification,&nbsp;starting&nbsp;with&nbsp;the&nbsp;highest&nbsp;level,&nbsp;then&nbsp;tries&nbsp;lower&nbsp;levels&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;until&nbsp;an&nbsp;identification&nbsp;or&nbsp;identifications&nbsp;are&nbsp;made<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[use_rt&nbsp;(bool)]&nbsp;--&nbsp;whether&nbsp;to&nbsp;use&nbsp;identification&nbsp;levels&nbsp;that&nbsp;involve&nbsp;retention&nbsp;time&nbsp;[optional,&nbsp;default=True]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
- <dl><dt><a name="-id_feat_meas_mz_ccs"><strong>id_feat_meas_mz_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')</dt><dd><tt>id_feat_theo_meas_mz_ccs<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;by&nbsp;matching&nbsp;a&nbsp;reference&nbsp;value&nbsp;on&nbsp;m/z,&nbsp;and&nbsp;CCS&nbsp;within&nbsp;tolerances<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
-&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
- <dl><dt><a name="-id_feat_meas_mz_rt_ccs"><strong>id_feat_meas_mz_rt_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')</dt><dd><tt>id_feat_theo_meas_mz_rt_ccs<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;by&nbsp;matching&nbsp;a&nbsp;reference&nbsp;value&nbsp;on&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;CCS&nbsp;within&nbsp;tolerances<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
-&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
- <dl><dt><a name="-id_feat_theo_mz"><strong>id_feat_theo_mz</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm=None)</dt><dd><tt>id_feat_theo_mz<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;theoretical&nbsp;m/z<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(None)]&nbsp;--&nbsp;NOT&nbsp;USED&nbsp;just&nbsp;included&nbsp;to&nbsp;maintain&nbsp;the&nbsp;same&nbsp;interface&nbsp;as&nbsp;the&nbsp;other&nbsp;id&nbsp;functions<br>
-&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
- <dl><dt><a name="-id_feat_theo_mz_ccs"><strong>id_feat_theo_mz_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')</dt><dd><tt>id_feat_theo_mz_ccs<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;theoretical&nbsp;m/z&nbsp;and&nbsp;CCS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
-&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
- <dl><dt><a name="-id_feat_theo_mz_rt"><strong>id_feat_theo_mz_rt</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')</dt><dd><tt>id_feat_theo_mz_rt<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;theoretical&nbsp;m/z&nbsp;and&nbsp;retention&nbsp;time<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
-&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
- <dl><dt><a name="-id_feat_theo_mz_rt_ccs"><strong>id_feat_theo_mz_rt_ccs</strong></a>(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2')</dt><dd><tt>id_feat_theo_mz_rt_ccs<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identifies&nbsp;a&nbsp;feature&nbsp;on&nbsp;the&nbsp;basis&nbsp;of&nbsp;theoretical&nbsp;m/z,&nbsp;retention&nbsp;time,&nbsp;and&nbsp;CCS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursor&nbsp;(sqlite3.Cursor)&nbsp;--&nbsp;cursor&nbsp;for&nbsp;querying&nbsp;lipids.db<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mz&nbsp;(float)&nbsp;--&nbsp;m/z&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rt&nbsp;(float)&nbsp;--&nbsp;retention&nbsp;time&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccs&nbsp;(float)&nbsp;--&nbsp;CCS&nbsp;to&nbsp;match<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_mz&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;m/z<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_rt&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;retention&nbsp;time<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol_ccs&nbsp;(float)&nbsp;--&nbsp;tolerance&nbsp;for&nbsp;CCS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;esi_mode&nbsp;(str)&nbsp;--&nbsp;filter&nbsp;results&nbsp;by&nbsp;ionization&nbsp;mode:&nbsp;'neg',&nbsp;'pos',&nbsp;or&nbsp;None&nbsp;for&nbsp;unspecified<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[norm&nbsp;(str)]&nbsp;--&nbsp;specify&nbsp;l1&nbsp;or&nbsp;l2&nbsp;norm&nbsp;for&nbsp;computing&nbsp;scores&nbsp;[optional,&nbsp;default='l2']<br>
-&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str&nbsp;or&nbsp;list(str)),&nbsp;(str)&nbsp;--&nbsp;putative&nbsp;identification(s)&nbsp;(or&nbsp;''&nbsp;for&nbsp;no&nbsp;matches),&nbsp;identification&nbsp;level</tt></dd></dl>
 </td></tr></table>
 </body></html>
