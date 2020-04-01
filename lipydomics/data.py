@@ -195,6 +195,9 @@ Dataset.normalize
     parameters:
         norm_weights (np.ndarray) -- array of weights to use to normalize each sample, must be of shape (n_samples, )
 """
+        if type(norm_weights) is not np.ndarray:
+            e = 'Dataset: normalize: norm_weights should be a numpy ndarray (type: {})'
+            raise TypeError(e.format(type(norm_weights)))
         if norm_weights.shape != (self.n_samples,):
             e = "Dataset: normalize: norm_weights has shape: "
             e += "{} but should have shape: ({},)".format(norm_weights.shape, self.n_samples)
