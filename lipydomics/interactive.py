@@ -7,7 +7,7 @@
 """
 
 
-from pandas import DataFrame
+from pandas import DataFrame, concat
 import csv
 import numpy as np
 import os
@@ -804,8 +804,8 @@ main
         return
 
     # create a pandas DataFrame
-    label_df = DataFrame(self.labels)
-    int_df = DataFrame(self.intensities)
+    label_df = DataFrame(dset.labels)
+    int_df = DataFrame(dset.intensities)
     df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
 
     # main execution loop
