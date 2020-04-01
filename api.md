@@ -267,7 +267,7 @@ features to look for and try to plot.
 from lipydomics.plotting import batch_barplot_feature_bygroup
 
 # tight search tolerance
-tol = (0.01, 0.1, 1.0)
+tol = [0.01, 0.1, 1.0]  # tolerance must be a list
 batch_barplot_feature_bygroup(dset, ['A', 'B', 'C'], 'analysis/features/', 'plot_these_features.csv', tolerance=tol)
 ```
 

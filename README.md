@@ -14,13 +14,15 @@ for those who are not as familiar/comfortable with the more flexible Python API.
 
 
 ## API
-Documentation for the `lipydomics` API, organized by module, is available separately in [api.md](api.md). 
+Documentation for the `lipydomics` API, organized by module, is available separately in [api.md](api.md). An example of 
+a complete scripted analysis is included in [example_standard_analysis.py](example_standard_analysis.py). An additional 
+example analysis (executed in a Jupyter notebook) is available [here](notebook_examples/API_Example.ipynb). 
 
 
 ## Interactive
 Documentation for the `lipydomics.interactive` module is available separately in [interactive.md](interactive.md). A
 complete example demonstrating use of the interactive module (executed in a Jupyter notebook) is also available 
-[here](interactive_notebook_example/Example.ipynb).
+[here](notebook_examples/Interactive_Example.ipynb).
 
 
 ## Support
