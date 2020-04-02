@@ -70,7 +70,8 @@ add_feature_ids
         [use_rt (bool)] -- whether to use identification levels that involve retention time, ignored unless used with
                             the 'any' identification level [optional, default=True]
 """
-    if level not in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
+    if level not in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any',
+                     'meas_mz', 'meas_mz_rt', 'theo_mz_rt']:
         m = 'add_feature_ids: identification level "{}" not recognized'
         raise ValueError(m.format(level))
 
