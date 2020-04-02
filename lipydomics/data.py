@@ -311,7 +311,7 @@ Dataset.export_xlsx
         new_df.to_excel(writer, sheet_name='Data')
         for key in self.stats:
             stats_df = DataFrame(self.stats[key])
-            if ("PCA3" in key or "PLS-DA" in key) and "loadings" in key:
+            if "PCA3" in key and "loadings" in key:
                 stats_df = stats_df.transpose()
             key = abbreviate_sheet(key) if len(key) > 31 else key
             stats_df.to_excel(writer, sheet_name=key)
