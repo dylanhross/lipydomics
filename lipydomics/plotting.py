@@ -158,7 +158,7 @@ scatter_pca3_projections_bygroup
     fig_path = os.path.join(img_dir, fig_name)
 
     # make the plot
-    fig = plt.figure(figsize=(3, 3))
+    fig = plt.figure(figsize=(2.5, 2.5))
     ax = fig.add_subplot(111)
 
     ax.axvline(lw=0.5, c='k', zorder=0)
@@ -217,7 +217,7 @@ scatter_plsda_projections_bygroup
     fig_path = os.path.join(img_dir, fig_name)
 
     # make the plot
-    fig = plt.figure(figsize=(3, 3))
+    fig = plt.figure(figsize=(2.5, 2.5))
     ax = fig.add_subplot(111)
 
     ax.axvline(lw=0.5, c='k', zorder=0)
@@ -283,7 +283,7 @@ splot_plsda_pcorr_bygroup
             c.append('r')
 
     # make the plot
-    fig = plt.figure(figsize=(3, 3))
+    fig = plt.figure(figsize=(2.5, 2.5))
     ax = fig.add_subplot(111)
 
     ax.axvline(lw=0.5, c='k', ls='--', zorder=0)
