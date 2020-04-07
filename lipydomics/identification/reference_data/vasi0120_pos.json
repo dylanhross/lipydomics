@@ -1708,77 +1708,77 @@
         "ext_rt": 1.79
     },
     {
-        "name": "LysoPC(22:5)",
+        "name": "LPC(22:5)",
         "adduct": "[M+H]+",
         "mz": 570.3552,
         "ccs": 233.2,
         "ext_rt": 5.54
     },
     {
-        "name": "LysoPC(24:1)",
+        "name": "LPC(24:1)",
         "adduct": "[M+H]+",
         "mz": 606.4489,
         "ccs": 253.3,
         "ext_rt": 14.79
     },
     {
-        "name": "LysoPE(18:2)",
+        "name": "LPE(18:2)",
         "adduct": "[M+H]+",
         "mz": 478.2927,
         "ccs": 210.6,
         "ext_rt": 3.86
     },
     {
-        "name": "LysoPE(18:2)",
+        "name": "LPE(18:2)",
         "adduct": "[M+H]+",
         "mz": 478.2924,
         "ccs": 211.8,
         "ext_rt": 2.99
     },
     {
-        "name": "LysoPE(20:4)",
+        "name": "LPE(20:4)",
         "adduct": "[M+H]+",
         "mz": 502.2928,
         "ccs": 213.8,
         "ext_rt": 3.92
     },
     {
-        "name": "LysoPE(20:4)",
+        "name": "LPE(20:4)",
         "adduct": "[M+H]+",
         "mz": 502.2927,
         "ccs": 215.1,
         "ext_rt": 3.12
     },
     {
-        "name": "LysoPE(22:5)",
+        "name": "LPE(22:5)",
         "adduct": "[M+H]+",
         "mz": 528.3082,
         "ccs": 218.3,
         "ext_rt": 5.32
     },
     {
-        "name": "LysoPE(22:5)",
+        "name": "LPE(22:5)",
         "adduct": "[M+H]+",
         "mz": 528.3109,
         "ccs": 220.6,
         "ext_rt": 7.04
     },
     {
-        "name": "LysoPE(22:5)",
+        "name": "LPE(22:5)",
         "adduct": "[M+H]+",
         "mz": 528.3087,
         "ccs": 220.7,
         "ext_rt": 4.41
     },
     {
-        "name": "LysoPE(22:5)",
+        "name": "LPE(22:5)",
         "adduct": "[M+H]+",
         "mz": 528.3084,
         "ccs": 221.6,
         "ext_rt": 5.98
     },
     {
-        "name": "LysoPE(22:6)",
+        "name": "LPE(22:6)",
         "adduct": "[M+H]+",
         "mz": 526.2924,
         "ccs": 217.7,

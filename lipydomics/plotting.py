@@ -23,7 +23,7 @@ CS = ['#2FA2AB', '#9BD0B9', 'Purple', 'Blue', 'Green', 'Orange', 'Red', 'Yellow'
 IMG_RES = 350  # image resolution
 
 
-def barplot_feature_bygroup(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 3.)):
+def barplot_feature_bygroup(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 1.)):
     """
 barplot_feature_bygroup
     description:
@@ -39,7 +39,7 @@ barplot_feature_bygroup
         feature (tuple(float)) -- m/z, rt, and ccs of feature
         [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
         [tolerance (tuple(float))] -- tolerance to use for m/z, rt, and ccs search, CCS tolerance is a percentage not
-                                        an absolute tolerance [optional, default=(0.01, 0.1, 3.)]
+                                        an absolute tolerance [optional, default=(0.01, 0.1, 1.)]
     returns:
         (bool) -- at least one feature was found
 """
