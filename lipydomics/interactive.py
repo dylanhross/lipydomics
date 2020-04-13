@@ -7,7 +7,7 @@
 """
 
 
-from pandas import DataFrame, concat
+from pandas import DataFrame, concat, read_csv
 import csv
 import numpy as np
 import os
@@ -174,7 +174,7 @@ filter_data
     if option == "back":
         return True
     label_dat = dset.labels
-    label_df = pd.DataFrame(label_dat)
+    label_df = DataFrame(label_dat)
     if option == "1":
         print("Please Provide m/z and tolerance (Ex. '150 1'  <--- This would be 150 plus or minus 1)")
         mz = input('> ')
@@ -186,11 +186,11 @@ filter_data
         group = input('> ')
         try:
             if group == "All":
-                cur_data = pd.DataFrame(dset.intensities)
+                cur_data = DataFrame(dset.intensities)
             else:
                 cur_data = dset.get_data_bygroup(group)
-            int_df = pd.DataFrame(cur_data)
-            cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+            int_df = DataFrame(cur_data)
+            cur_df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
             mzs = [float(_) for _ in mz.split()]
             rts = [float(_) for _ in rt.split()]
             ccss = [float(_) for _ in ccs.split()]
@@ -206,7 +206,7 @@ filter_data
         print("Please provide the path of the file with batch-query information")
         path = input('> ')
         try:
-            query = pd.read_csv(path)
+            query = read_csv(path)
         except Exception as e:
             print('! ERROR:', e)
             print("! ERROR: Failed to load the file. Please make sure the file exists at the right path.")
@@ -216,12 +216,12 @@ filter_data
         group = input('> ')
         try:
             if group == "All":
-                cur_data = pd.DataFrame(dset.intensities)
-                cur_df = pd.concat([label_df, cur_data], axis=1, ignore_index=True, sort=False)
+                cur_data = DataFrame(dset.intensities)
+                cur_df = concat([label_df, cur_data], axis=1, ignore_index=True, sort=False)
             else:
                 cur_data = dset.get_data_bygroup(group)
-                int_df = pd.DataFrame(cur_data)
-                cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+                int_df = DataFrame(cur_data)
+                cur_df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
         except ValueError as ve:
             print('! ERROR:', ve)
             print("! ERROR: Failed to filter data, please check your groups and try again")
@@ -276,7 +276,7 @@ filter_data
             for ind in indices:
                 t = list(dset.labels[ind]) + list(first[ind]) + list(second[ind])
                 filtered.append(t)
-            filtered = pd.DataFrame(filtered)
+            filtered = DataFrame(filtered)
 
     else:
         print('! ERROR: unrecognized option: "{}"'.format(option))

@@ -15,10 +15,8 @@ import os
 import pickle
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.model_selection import ShuffleSplit
 from sklearn.linear_model import LinearRegression
-from sklearn.svm import SVR
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import ShuffleSplit
 from sklearn.metrics import mean_squared_error
 
 from .encoder_params import rt_lipid_classes, rt_fa_mods
@@ -101,11 +99,11 @@ train_new_model
     print('y_train: ', y_train.shape)
     print('X_test: ', X_test.shape)
     print('y_test: ', y_test.shape)
-    print('scaling input data')
     print('X_train: ', X_train.shape, file=bl)
     print('y_train: ', y_train.shape, file=bl)
     print('X_test: ', X_test.shape, file=bl)
     print('y_test: ', y_test.shape, file=bl)
+    print('scaling input data')
     print('scaling input data', file=bl)
     scaler = StandardScaler(with_mean=False)
     X_train_s = scaler.fit_transform(X_train)
@@ -115,7 +113,7 @@ train_new_model
     # train model
     print('training model')
     print('training model', file=bl)
-    model = LinearRegression(n_jobs=-1)
+    model = LinearRegression()
     model.fit(X_train_s, y_train)
 
     # performance on training set
@@ -175,14 +173,14 @@ def main(tstamp):
         print('... ok')
         print('... ok', file=bl)
 
-        # add theoretical CCS to the database
+        # add theoretical RT to the database
         print('\nadding predicted RT to database ...', end=' ')
         print('\nadding predicted RT to database ...', end=' ', file=bl)
         qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod FROM theoretical_mz'
         tid_to_rt = {}
         for tid, lc, lnc, lnu, fam in cur.execute(qry).fetchall():
             if int(sum(c_encoder.transform([[lc]])[0])) != 0: # make sure lipid class is encodable
-                x = [featurize(lc, lnc, lnu, fam, c_encoder, f_encoder)]
+                x = np.array([featurize(lc, lnc, lnu, fam, c_encoder, f_encoder)]).reshape(1, -1)
                 tid_to_rt[int(tid)] = model.predict(scaler.transform(x))[0]
         qry = 'INSERT INTO theoretical_rt VALUES (?, ?)'
         for tid in tid_to_rt:

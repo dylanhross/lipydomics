@@ -108,11 +108,12 @@ enumerate_all_lipids
             for l in enumerate_lipid_class(lc, (12, 24), lgpl_nu, lgpl_adducts, fa_mod=fa_mod):
                 yield l
 
-    # sphingolipids (Cer, HexCer, SM)
+    # sphingolipids (Cer, HexCer, GlcCer, SM)
     sls = [Cer, HexCer, GlcCer, SM]
     sls_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-', '[M+K]+', '[M+H-H2O]+']
     for lc in sls:
-        for l in enumerate_lipid_class(lc, (30, 44), (1, 7), sls_adducts):
+        # our sphingolipids will all have the 'd' FA mod
+        for l in enumerate_lipid_class(lc, (30, 44), (1, 7), sls_adducts, fa_mod='d'):
             yield l
 
     # fatty acids

@@ -36,7 +36,7 @@ single_class_plot
     rt_t, rt_m = [], []
 
     # fetch the theoretical data
-    if fa_mod in ['o', 'p']:
+    if fa_mod in rt_fa_mods:
         qry = 'SELECT rt FROM theoretical_mz JOIN theoretical_rt ON theoretical_mz.t_id=theoretical_rt.t_id '
         qry += 'WHERE lipid_class="{}" AND fa_mod=="{}"'
         qry = qry.format(lipid_class, fa_mod)
@@ -48,7 +48,7 @@ single_class_plot
         rt_t.append(float(rt[0]))
 
     # fetch the measured data
-    if fa_mod in ['o', 'p']:
+    if fa_mod in rt_fa_mods:
         qry = 'SELECT rt FROM measured WHERE lipid_class="{}" AND fa_mod=="{}" AND rt IS NOT NULL'
         qry = qry.format(lipid_class, fa_mod)
     else:
@@ -111,7 +111,7 @@ def main(tstamp):
         print('characterizing RT prediction performance ...', end=' ')
         print('characterizing RT prediction performance ...', end=' ', file=bl)
 
-        # automatically generate plots for all combinations having at least 10 measured values
+        # automatically generate plots for all combinations
         qry = 'SELECT lipid_class, fa_mod FROM measured '
         qry += 'WHERE rt IS NOT NULL GROUP BY lipid_class, fa_mod'
         for lipid_class, fa_mod in cur.execute(qry).fetchall():
