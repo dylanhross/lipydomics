@@ -149,11 +149,14 @@ train_new_model
     print('TRAINING SET PERFORMANCE', file=bl)
     y_train_pred = model.predict(X_train_s)
     y_train_abs_err = np.abs(y_train_pred - y_train)
+    y_train_rel_err = 100. * (y_train_abs_err / y_train)
     print('mean absolute error: {:.2f} Å^2'.format(np.mean(y_train_abs_err)))
     print('median absolute error: {:.2f} Å^2'.format(np.median(y_train_abs_err)))
+    print('median relative error: {:.2f} %'.format(np.median(y_train_rel_err)))
     print('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_train, y_train_pred))))
     print('mean absolute error: {:.2f} Å^2'.format(np.mean(y_train_abs_err)), file=bl)
     print('median absolute error: {:.2f} Å^2'.format(np.median(y_train_abs_err)), file=bl)
+    print('median relative error: {:.2f} %'.format(np.median(y_train_rel_err)), file=bl)
     print('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_train, y_train_pred))), file=bl)
 
     # performance on test set 
@@ -161,11 +164,14 @@ train_new_model
     print('TEST SET PERFORMANCE', file=bl)
     y_test_pred = model.predict(scaler.transform(X_test))
     y_test_abs_err = np.abs(y_test_pred - y_test)
+    y_test_rel_err = 100. * (y_test_abs_err / y_test)
     print('mean absolute error: {:.2f} Å^2'.format(np.mean(y_test_abs_err)))
     print('median absolute error: {:.2f} Å^2'.format(np.median(y_test_abs_err)))
+    print('median relative error: {:.2f} %'.format(np.median(y_test_rel_err)))
     print('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_test, y_test_pred))))
     print('mean absolute error: {:.2f} Å^2'.format(np.mean(y_test_abs_err)), file=bl)
     print('median absolute error: {:.2f} Å^2'.format(np.median(y_test_abs_err)), file=bl)
+    print('median relative error: {:.2f} %'.format(np.median(y_test_rel_err)), file=bl)
     print('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_test, y_test_pred))), file=bl)
 
     # save the model and the scaler

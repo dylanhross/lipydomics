@@ -26,10 +26,12 @@ training model
 TRAINING SET PERFORMANCE
 mean absolute error: 1.46 Å^2
 median absolute error: 0.88 Å^2
+median relative error: 0.30 %
 RMSE: 2.49 Å^2
 TEST SET PERFORMANCE
 mean absolute error: 1.57 Å^2
 median absolute error: 0.96 Å^2
+median relative error: 0.34 %
 RMSE: 2.35 Å^2
 ... ok
 
