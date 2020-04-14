@@ -1,4 +1,4 @@
-# Lipydomics 
+# LiPydomics 
 _Dylan H. Ross and Jang Ho Cho_
   
   
