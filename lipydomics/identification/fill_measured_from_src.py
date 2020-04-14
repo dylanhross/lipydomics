@@ -13,7 +13,7 @@ import os
 from sqlite3 import connect
 from json import load as jload
 
-from ..util import parse_lipid
+from ..util import parse_lipid, print_and_log
 from .build_params import include_ref_dsets
 
 
@@ -111,18 +111,15 @@ def main(tstamp):
     # add each src dataset
     build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
     with open(build_log, 'w') as bl:  # this is the first build script so OK to clear out the log file
-        print("\nadding cleaned datasets into lipids.db")
-        print("\nadding cleaned datasets into lipids.db", file=bl)
+        print_and_log("\nadding cleaned datasets into lipids.db", bl)
 
         gid_next = 0
         for dset in dsets:
-            print("\tadding dataset: {} ...".format(dset), end=" ")
-            print("\tadding dataset: {} ...".format(dset), end=" ", file=bl)
+            print_and_log("\tadding dataset: {} ...".format(dset), bl, end=" ")
             gid_next = add_src_dataset(cur, dset, metadata[dset], gid_start=gid_next)
-            print("ok")
-            print("ok", file=bl)
-        print()
+            print_and_log("ok", bl)
+        print_and_log("", bl)  # add a blank line
 
-        # save changes to the database
-        con.commit()
-        con.close()
+    # save changes to the database
+    con.commit()
+    con.close()

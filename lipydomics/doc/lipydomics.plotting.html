@@ -32,7 +32,7 @@ description:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-barplot_feature_bygroup"><strong>barplot_feature_bygroup</strong></a>(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 3.0))</dt><dd><tt>barplot_feature_bygroup<br>
+<td width="100%"><dl><dt><a name="-barplot_feature_bygroup"><strong>barplot_feature_bygroup</strong></a>(dataset, group_names, img_dir, feature, normed=False, tolerance=(0.01, 0.1, 1.0))</dt><dd><tt>barplot_feature_bygroup<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;bar&nbsp;plot&nbsp;of&nbsp;the&nbsp;specified&nbsp;feature,&nbsp;comparing&nbsp;the&nbsp;mean&nbsp;intensities&nbsp;of&nbsp;the&nbsp;specified&nbsp;groups&nbsp;and&nbsp;saves<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;image&nbsp;to&nbsp;a&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
@@ -46,7 +46,7 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;feature&nbsp;(tuple(float))&nbsp;--&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;ccs&nbsp;of&nbsp;feature<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[tolerance&nbsp;(tuple(float))]&nbsp;--&nbsp;tolerance&nbsp;to&nbsp;use&nbsp;for&nbsp;m/z,&nbsp;rt,&nbsp;and&nbsp;ccs&nbsp;search,&nbsp;CCS&nbsp;tolerance&nbsp;is&nbsp;a&nbsp;percentage&nbsp;not<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;absolute&nbsp;tolerance&nbsp;[optional,&nbsp;default=(0.01,&nbsp;0.1,&nbsp;3.)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;absolute&nbsp;tolerance&nbsp;[optional,&nbsp;default=(0.01,&nbsp;0.1,&nbsp;1.)]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;at&nbsp;least&nbsp;one&nbsp;feature&nbsp;was&nbsp;found</tt></dd></dl>
  <dl><dt><a name="-batch_barplot_feature_bygroup"><strong>batch_barplot_feature_bygroup</strong></a>(dataset, group_names, img_dir, in_csv, normed=False, tolerance=(0.01, 0.1, 3.0))</dt><dd><tt>barplot_feature_bygroup<br>

@@ -21,6 +21,7 @@ from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
+from ..util import print_and_log
 from .build_params import ccs_pred_ref_dsets
 from .encoder_params import ccs_lipid_classes, ccs_fa_mods, ccs_ms_adducts
 
@@ -85,10 +86,8 @@ train_new_model
     c_encoder, f_encoder, a_encoder = prep_encoders()
 
     # report the datasets used to train the predictive model
-    print('using these datasets for CCS prediction:')
-    print('\t', ' '.join(ccs_pred_ref_dsets))
-    print('using these datasets for CCS prediction:', file=bl)
-    print('\t', ' '.join(ccs_pred_ref_dsets), file=bl)
+    print_and_log('using these datasets for CCS prediction:\n\t', bl, end='')
+    print_and_log(' '.join(ccs_pred_ref_dsets), bl)
 
     # get the raw data and featurize (encode lipid_class, fa_mod, and adduct)
     qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz, ccs, src_tag FROM measured'
@@ -104,35 +103,26 @@ train_new_model
             X.append(featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder))
             y.append(float(c))
     X, y = np.array(X), np.array(y)
-    print('X: ', X.shape)
-    print('y: ', y.shape)
-    print('X: ', X.shape, file=bl)
-    print('y: ', y.shape, file=bl)
+    print_and_log('X: {}'.format(X.shape), bl)
+    print_and_log('y: {}'.format(y.shape), bl)
 
     # split into test/train sets, scale data (do not center)
-    print('splitting data into training and test sets')
+    print_and_log('splitting data into training and test sets', bl)
     SSplit = ShuffleSplit(n_splits=1, test_size=0.2, random_state=1234)
     for train_index, test_index in SSplit.split(X):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
-    print('X_train: ', X_train.shape)
-    print('y_train: ', y_train.shape)
-    print('X_test: ', X_test.shape)
-    print('y_test: ', y_test.shape)
-    print('X_train: ', X_train.shape, file=bl)
-    print('y_train: ', y_train.shape, file=bl)
-    print('X_test: ', X_test.shape, file=bl)
-    print('y_test: ', y_test.shape, file=bl)
-    print('scaling input data')
-    print('scaling input data', file=bl)
+    print_and_log('X_train: {}'.format(X_train.shape), bl)
+    print_and_log('y_train: {}'.format(y_train.shape), bl)
+    print_and_log('X_test: {}'.format(X_test.shape), bl)
+    print_and_log('y_test: {}'.format(y_test.shape), bl)
+    print_and_log('scaling input data', bl)
     scaler = StandardScaler(with_mean=False)
     X_train_s = scaler.fit_transform(X_train)
-    print('X_train_s: ', X_train_s.shape)
-    print('X_train_s: ', X_train_s.shape, file=bl)
+    print_and_log('X_train_s: {}'.format(X_train_s.shape), bl)
 
     # train model (hyperparameters have already been tuned using gridsearch)
-    print('training model')
-    print('training model', file=bl)
+    print_and_log('training model', bl)
     if use_model == 'linear':
         model = LinearRegression(n_jobs=-1)
     elif use_model == 'svr':
@@ -145,34 +135,24 @@ train_new_model
     model.fit(X_train_s, y_train)
 
     # performance on training set
-    print('TRAINING SET PERFORMANCE')
-    print('TRAINING SET PERFORMANCE', file=bl)
+    print_and_log('TRAINING SET PERFORMANCE', bl)
     y_train_pred = model.predict(X_train_s)
     y_train_abs_err = np.abs(y_train_pred - y_train)
     y_train_rel_err = 100. * (y_train_abs_err / y_train)
-    print('mean absolute error: {:.2f} Å^2'.format(np.mean(y_train_abs_err)))
-    print('median absolute error: {:.2f} Å^2'.format(np.median(y_train_abs_err)))
-    print('median relative error: {:.2f} %'.format(np.median(y_train_rel_err)))
-    print('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_train, y_train_pred))))
-    print('mean absolute error: {:.2f} Å^2'.format(np.mean(y_train_abs_err)), file=bl)
-    print('median absolute error: {:.2f} Å^2'.format(np.median(y_train_abs_err)), file=bl)
-    print('median relative error: {:.2f} %'.format(np.median(y_train_rel_err)), file=bl)
-    print('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_train, y_train_pred))), file=bl)
+    print_and_log('mean absolute error: {:.2f} Å^2'.format(np.mean(y_train_abs_err)), bl)
+    print_and_log('median absolute error: {:.2f} Å^2'.format(np.median(y_train_abs_err)), bl)
+    print_and_log('median relative error: {:.2f} %'.format(np.median(y_train_rel_err)), bl)
+    print_and_log('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_train, y_train_pred))), bl)
 
-    # performance on test set 
-    print('TEST SET PERFORMANCE')
-    print('TEST SET PERFORMANCE', file=bl)
+    # performance on test set
+    print_and_log('TEST SET PERFORMANCE', bl)
     y_test_pred = model.predict(scaler.transform(X_test))
     y_test_abs_err = np.abs(y_test_pred - y_test)
     y_test_rel_err = 100. * (y_test_abs_err / y_test)
-    print('mean absolute error: {:.2f} Å^2'.format(np.mean(y_test_abs_err)))
-    print('median absolute error: {:.2f} Å^2'.format(np.median(y_test_abs_err)))
-    print('median relative error: {:.2f} %'.format(np.median(y_test_rel_err)))
-    print('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_test, y_test_pred))))
-    print('mean absolute error: {:.2f} Å^2'.format(np.mean(y_test_abs_err)), file=bl)
-    print('median absolute error: {:.2f} Å^2'.format(np.median(y_test_abs_err)), file=bl)
-    print('median relative error: {:.2f} %'.format(np.median(y_test_rel_err)), file=bl)
-    print('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_test, y_test_pred))), file=bl)
+    print_and_log('mean absolute error: {:.2f} Å^2'.format(np.mean(y_test_abs_err)), bl)
+    print_and_log('median absolute error: {:.2f} Å^2'.format(np.median(y_test_abs_err)), bl)
+    print_and_log('median relative error: {:.2f} %'.format(np.median(y_test_rel_err)), bl)
+    print_and_log('RMSE: {:.2f} Å^2'.format(np.sqrt(mean_squared_error(y_test, y_test_pred))), bl)
 
     # save the model and the scaler
     this_dir = os.path.dirname(__file__)
@@ -201,15 +181,13 @@ def main(tstamp):
     with open(build_log, 'a') as bl:
 
         # train the new model
-        print('training new predictive CCS model (and input scaler) ...')
-        print('training new predictive CCS model (and input scaler) ...', file=bl)
+        print_and_log('training new predictive CCS model (and input scaler) ...', bl)
         model, scaler = train_new_model(cur, 'svr', bl)
         print('... ok')
         print('... ok', file=bl)
 
         # add theoretical CCS to the database
-        print('\nadding predicted CCS to database ...', end=' ')
-        print('\nadding predicted CCS to database ...', end=' ', file=bl)
+        print_and_log('\nadding predicted CCS to database ...', bl, end=' ')
         qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz FROM theoretical_mz'
         tid_to_ccs = {}
         for tid, lc, lnc, lnu, fam, add, m in cur.execute(qry).fetchall():
@@ -219,9 +197,8 @@ def main(tstamp):
         qry = 'INSERT INTO theoretical_ccs VALUES (?, ?)'
         for tid in tid_to_ccs:
             cur.execute(qry, (tid, tid_to_ccs[tid]))
-        print('ok\n')
-        print('ok\n', file=bl)
+        print_and_log('ok\n', bl)
 
-        # commit changes to the database and close connection
-        con.commit()
-        con.close()
+    # commit changes to the database and close connection
+    con.commit()
+    con.close()

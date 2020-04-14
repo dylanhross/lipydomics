@@ -14,6 +14,7 @@ from sqlite3 import connect
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
+from ..util import print_and_log
 from .build_params import ccs_pred_ref_dsets
 from .encoder_params import ccs_lipid_classes, ccs_fa_mods, ccs_ms_adducts
 
@@ -112,8 +113,7 @@ def main(tstamp):
     build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
     with open(build_log, 'a') as bl:
 
-        print('characterizing CCS prediction performance ...', end=' ')
-        print('characterizing CCS prediction performance ...', end=' ', file=bl)
+        print_and_log('characterizing CCS prediction performance ...', bl, end=' ')
 
         # automatically generate plots for all data included in the model training
         qry = 'SELECT lipid_class, fa_mod, adduct, COUNT(*) as c FROM measured '
@@ -126,9 +126,8 @@ def main(tstamp):
             if lc_ok and fam_ok and add_ok:
                 single_class_plot(cur, lipid_class, adduct, fa_mod=fa_mod)
 
-        print('ok\n')
-        print('ok\n', file=bl)
+        print_and_log('ok\n', bl)
 
-        # close database connection
-        con.close()
+    # close database connection
+    con.close()
 

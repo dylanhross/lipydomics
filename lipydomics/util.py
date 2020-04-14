@@ -9,6 +9,7 @@
 
 import re
 from numpy import sqrt, nan, inf, mean, abs, array
+from datetime import datetime
 
 
 def abbreviate_sheet(sheet_name):
@@ -254,3 +255,31 @@ fetch_lipid_class_log2fc
         l2.append(mean(lipids[comp]) if len(lipids[comp]) > 1 else lipids[comp][0])
 
     return (None, None, None) if nc == [] else (nc, nu, l2)
+
+
+def gen_tstamp():
+    """
+gen_tstamp
+    description:
+        generate a timestamp used for the build log and lipid database
+    returns:
+        (str) -- timestamp in YYMMDDhhmm format
+"""
+    now = datetime.now()
+    s = '{:02d}{:02d}{:02d}{:02d}{:02d}'
+    return s.format(now.year % 100, now.month, now.day, now.hour, now.minute)
+
+
+def print_and_log(message, log_file, **kwargs):
+    """
+print_and_log
+    description:
+        prints a message to console and a specified log file
+    parameters:
+        message (str) -- message to print/write to log file
+        log_file (file obj.) -- a file handle corresponding to the log file, should be opened in append mode
+        **kwargs -- pass all other kwargs along to print(...)
+"""
+    print(message, **kwargs)
+    print(message, file=log_file, **kwargs)
+
