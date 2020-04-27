@@ -1,0 +1,68 @@
+
+adding cleaned datasets into lipids.db
+	adding dataset: zhou0817 ... ok
+	adding dataset: hine1217 ... ok
+	adding dataset: hine0217 ... ok
+	adding dataset: hine0119 ... ok
+	adding dataset: leap0219 ... ok
+	adding dataset: blaz0818 ... ok
+	adding dataset: vasi0120_pos ... ok
+	adding dataset: vasi0120_neg ... ok
+	adding dataset: tsug0220 ... ok
+
+adding theoretical m/z into lipids.db ... ok
+
+training new predictive CCS model (and input scaler) ...
+using these datasets for CCS prediction:
+	zhou0817 hine1217 hine0217 hine0119 leap0219 blaz0818 vasi0120_pos tsug0220
+X: (6394, 39)
+y: (6394,)
+splitting data into training and test sets
+X_train: (5115, 39)
+y_train: (5115,)
+X_test: (1279, 39)
+y_test: (1279,)
+scaling input data
+X_train_s: (5115, 39)
+training model
+TRAINING SET PERFORMANCE
+mean absolute error: 1.46 Å^2
+median absolute error: 0.88 Å^2
+median relative error: 0.30 %
+RMSE: 2.49 Å^2
+TEST SET PERFORMANCE
+mean absolute error: 1.57 Å^2
+median absolute error: 0.96 Å^2
+median relative error: 0.34 %
+RMSE: 2.35 Å^2
+... ok
+
+adding predicted CCS to database ... ok
+
+characterizing CCS prediction performance ... ok
+
+training new predictive RT model (and input scaler) ...
+X: (596, 26)
+y: (596,)
+splitting data into training and test sets
+X_train: (476, 26)
+y_train: (476,)
+X_test: (120, 26)
+y_test: (120,)
+scaling input data
+X_train_s: (476, 26)
+training model
+TRAINING SET PERFORMANCE
+mean absolute error: 0.10 min
+median absolute error: 0.07 min
+RMSE: 0.14 min
+TEST SET PERFORMANCE
+mean absolute error: 0.11 min
+median absolute error: 0.08 min
+RMSE: 0.15 min
+... ok
+
+adding predicted RT to database ... ok
+
+characterizing RT prediction performance ... ok
+

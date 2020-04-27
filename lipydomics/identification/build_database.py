@@ -11,8 +11,8 @@
 import os
 import shutil
 from sqlite3 import connect
-from datetime import datetime
 
+from ..util import gen_tstamp
 from .db_table_defs import measured, theo_mz, theo_ccs, theo_rt
 from .fill_measured_from_src import main as fill_from_src
 from .fill_theo_mz_from_gen import main as gen_theo_mz
@@ -75,13 +75,6 @@ def main(tstamp):
 
     # make a copy of the database and store it in the builds directory
     make_database_copy(tstamp)
-
-
-def gen_tstamp():
-    """ generate a timestamp for the build log and lipid database """
-    now = datetime.now()
-    s = '{:02d}{:02d}{:02d}{:02d}{:02d}'
-    return s.format(now.year % 100, now.month, now.day, now.hour, now.minute)
 
 
 # run the main function if this module is called directly

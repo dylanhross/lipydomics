@@ -1,4 +1,4 @@
-# API (version 1.4.2)
+# API (version 1.4.x)
 The following is a brief overview of the package API with usage examples, organized by module.
 
 **Complete documentation for all modules is available in HTML format under `lipydomics/doc/lipydomics.html`.**
@@ -267,7 +267,7 @@ features to look for and try to plot.
 from lipydomics.plotting import batch_barplot_feature_bygroup
 
 # tight search tolerance
-tol = (0.01, 0.1, 1.0)
+tol = [0.01, 0.1, 1.0]  # tolerance must be a list
 batch_barplot_feature_bygroup(dset, ['A', 'B', 'C'], 'analysis/features/', 'plot_these_features.csv', tolerance=tol)
 ```
 
@@ -349,11 +349,13 @@ as a database of theoretical values. Different levels of identification can be s
 | identification level | description |
 | :---: | :--- |
 | `theo_mz` | match only on theoretical m/z |
-| `theo_mz_rt` | match on theoretical m/z and retention time |
+| `meas_mz` | match only on measured m/z |
 | `theo_mz_ccs` | match on theoretical m/z and CCS |
-| `theo_mz_rt_ccs` | match on theoretical m/z, retention time, and CCS |
 | `meas_mz_ccs` | match on measured m/z and CCS |
-| `meas_mz_rt_ccs` | match on measured m/z, retention time, and CCS |
+| `theo_mz_rt` | match on theoretical m/z and HILIC retention time |
+| `measured_mz_rt` | match on measured m/z and HILIC retention time |
+| `theo_mz_rt_ccs` | match on theoretical m/z, HILIC retention time, and CCS |
+| `meas_mz_rt_ccs` | match on measured m/z, HILIC retention time, and CCS |
 | `any` | start at the highest level (`meas_mz_rt_ccs`) then work down until an identification can be made |
 
 _Example:_

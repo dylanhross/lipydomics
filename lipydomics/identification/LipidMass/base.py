@@ -264,7 +264,7 @@ Sphingolipid
               HO
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 Sphingolipid.__init__
     description:
@@ -272,6 +272,7 @@ Sphingolipid.__init__
     parameters:
         sum_carbon (int) -- sum acyl carbons
         sum_unsaturation (int) -- sum acyl unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier or None [optional, default=None]
 """
         # formula is initially set to the core formula (only partial head group, no fatty acid tails)
         self.formula = {'C': 19, 'H': 35, 'O': 3, 'N': 1}
@@ -286,5 +287,6 @@ Sphingolipid.__init__
 
         acyl_formula = self.gen_acyl_formula(1, sum_carbon_new, sum_unsaturation_new)
         self.add_to_formula(acyl_formula)
+        self.fa_mod = fa_mod
         # store the sum composition
         self.sum_composition = (sum_carbon, sum_unsaturation)

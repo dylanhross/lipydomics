@@ -195,6 +195,9 @@ Dataset.normalize
     parameters:
         norm_weights (np.ndarray) -- array of weights to use to normalize each sample, must be of shape (n_samples, )
 """
+        if type(norm_weights) is not np.ndarray:
+            e = 'Dataset: normalize: norm_weights should be a numpy ndarray (type: {})'
+            raise TypeError(e.format(type(norm_weights)))
         if norm_weights.shape != (self.n_samples,):
             e = "Dataset: normalize: norm_weights has shape: "
             e += "{} but should have shape: ({},)".format(norm_weights.shape, self.n_samples)
@@ -308,7 +311,7 @@ Dataset.export_xlsx
         new_df.to_excel(writer, sheet_name='Data')
         for key in self.stats:
             stats_df = DataFrame(self.stats[key])
-            if ("PCA3" in key or "PLS-DA" in key) and "loadings" in key:
+            if "PCA3" in key and "loadings" in key:
                 stats_df = stats_df.transpose()
             key = abbreviate_sheet(key) if len(key) > 31 else key
             stats_df.to_excel(writer, sheet_name=key)

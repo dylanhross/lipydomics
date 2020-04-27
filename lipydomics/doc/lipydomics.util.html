@@ -54,8 +54,7 @@ object&nbsp;:&nbsp;array_like<br>
 dtype&nbsp;:&nbsp;data-type,&nbsp;optional<br>
 &nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;desired&nbsp;data-type&nbsp;for&nbsp;the&nbsp;array.&nbsp;&nbsp;If&nbsp;not&nbsp;given,&nbsp;then&nbsp;the&nbsp;type&nbsp;will<br>
 &nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;determined&nbsp;as&nbsp;the&nbsp;minimum&nbsp;type&nbsp;required&nbsp;to&nbsp;hold&nbsp;the&nbsp;objects&nbsp;in&nbsp;the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;sequence.&nbsp;&nbsp;This&nbsp;argument&nbsp;can&nbsp;only&nbsp;be&nbsp;used&nbsp;to&nbsp;'upcast'&nbsp;the&nbsp;array.&nbsp;&nbsp;For<br>
-&nbsp;&nbsp;&nbsp;&nbsp;downcasting,&nbsp;use&nbsp;the&nbsp;.astype(t)&nbsp;method.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sequence.<br>
 copy&nbsp;:&nbsp;bool,&nbsp;optional<br>
 &nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;true&nbsp;(default),&nbsp;then&nbsp;the&nbsp;object&nbsp;is&nbsp;copied.&nbsp;&nbsp;Otherwise,&nbsp;a&nbsp;copy&nbsp;will<br>
 &nbsp;&nbsp;&nbsp;&nbsp;only&nbsp;be&nbsp;made&nbsp;if&nbsp;__array__&nbsp;returns&nbsp;a&nbsp;copy,&nbsp;if&nbsp;obj&nbsp;is&nbsp;a&nbsp;nested&nbsp;sequence,<br>
@@ -177,6 +176,11 @@ matrix([[1,&nbsp;2],<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rts&nbsp;(list(float))&nbsp;--&nbsp;rt&nbsp;[0]&nbsp;and&nbsp;tolerance&nbsp;[1]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ccss&nbsp;(list(float))&nbsp;--&nbsp;ccs&nbsp;[0]&nbsp;and&nbsp;tolerance&nbsp;[1]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(pandas.DataFrame)&nbsp;--&nbsp;DataFrame&nbsp;representation&nbsp;of&nbsp;the&nbsp;data</tt></dd></dl>
+ <dl><dt><a name="-gen_tstamp"><strong>gen_tstamp</strong></a>()</dt><dd><tt>gen_tstamp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generate&nbsp;a&nbsp;timestamp&nbsp;used&nbsp;for&nbsp;the&nbsp;build&nbsp;log&nbsp;and&nbsp;lipid&nbsp;database<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(str)&nbsp;--&nbsp;timestamp&nbsp;in&nbsp;YYMMDDhhmm&nbsp;format</tt></dd></dl>
  <dl><dt><a name="-get_score"><strong>get_score</strong></a>(tol_mz, tol_rt, tol_ccs, mz_q=None, rt_q=None, ccs_q=None, mz_x=None, rt_x=None, ccs_x=None, norm='l2')</dt><dd><tt>get_score<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;computes&nbsp;a&nbsp;score&nbsp;reflecting&nbsp;the&nbsp;quality&nbsp;of&nbsp;an&nbsp;identification,&nbsp;using&nbsp;mz&nbsp;rt&nbsp;and&nbsp;ccs&nbsp;or&nbsp;any&nbsp;combination<br>
@@ -222,6 +226,13 @@ matrix([[1,&nbsp;2],<br>
 &nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dict&nbsp;or&nbsp;None)&nbsp;--&nbsp;parsed&nbsp;lipid&nbsp;information&nbsp;(always&nbsp;contains&nbsp;'class',&nbsp;'n_carbon',&nbsp;and&nbsp;'n_unsat'<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attributes)&nbsp;or&nbsp;None&nbsp;if&nbsp;it&nbsp;cannot&nbsp;be&nbsp;parsed&nbsp;as&nbsp;a&nbsp;lipid</tt></dd></dl>
+ <dl><dt><a name="-print_and_log"><strong>print_and_log</strong></a>(message, log_file, **kwargs)</dt><dd><tt>print_and_log<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prints&nbsp;a&nbsp;message&nbsp;to&nbsp;console&nbsp;and&nbsp;a&nbsp;specified&nbsp;log&nbsp;file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;(str)&nbsp;--&nbsp;message&nbsp;to&nbsp;print/write&nbsp;to&nbsp;log&nbsp;file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_file&nbsp;(file&nbsp;obj.)&nbsp;--&nbsp;a&nbsp;file&nbsp;handle&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;log&nbsp;file,&nbsp;should&nbsp;be&nbsp;opened&nbsp;in&nbsp;append&nbsp;mode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**kwargs&nbsp;--&nbsp;pass&nbsp;all&nbsp;other&nbsp;kwargs&nbsp;along&nbsp;to&nbsp;print(...)</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

@@ -21,7 +21,7 @@ Cer
           R  =  --H
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 Cer.__init__
     description:
@@ -29,8 +29,9 @@ Cer.__init__
     parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a Cer is an --H
         self.add_to_formula({'H': 1})
         # the lipid class is Cer
@@ -53,7 +54,7 @@ SM
                         |
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 SM.__init__
     description:
@@ -61,8 +62,9 @@ SM.__init__
     parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a SM is a phosphocholine group
         self.add_to_formula({'C': 5, 'H': 13, 'O': 3, 'N': 1, 'P': 1})
         # the lipid class is SM
@@ -85,7 +87,7 @@ HexCer
                       \__OH
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 HexCer.__init__
     description:
@@ -93,8 +95,9 @@ HexCer.__init__
     parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a HexCer is a hexose (C6H11O5)
         self.add_to_formula({'C': 6, 'H': 11, 'O': 5})
         # the lipid class is HexCer
@@ -117,7 +120,7 @@ GlcCer
                       \__OH
 """
 
-    def __init__(self, sum_carbon, sum_unsaturation):
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
         """
 GlcCer.__init__
     description:
@@ -125,8 +128,9 @@ GlcCer.__init__
     parameters:
         sum_carbon (int) -- sum FA composition carbons
         sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier or None [optional, default=None]
 """
-        super().__init__(sum_carbon, sum_unsaturation)
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a HexCer is a hexose (C6H11O5)
         self.add_to_formula({'C': 6, 'H': 11, 'O': 5})
         # the lipid class is HexCer

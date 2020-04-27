@@ -387,7 +387,7 @@ Data descriptors inherited from <a href="LipidMass.base.html#Lipid">Lipid</a>:<b
 <font color="#000000" face="helvetica, arial"><a name="Sphingolipid">class <strong>Sphingolipid</strong></a>(<a href="LipidMass.base.html#Lipid">Lipid</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Sphingolipid">Sphingolipid</a>(sum_carbon,&nbsp;sum_unsaturation)<br>
+<td colspan=2><tt><a href="#Sphingolipid">Sphingolipid</a>(sum_carbon,&nbsp;sum_unsaturation,&nbsp;fa_mod=None)<br>
 &nbsp;<br>
 <a href="#Sphingolipid">Sphingolipid</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
@@ -409,12 +409,13 @@ Data descriptors inherited from <a href="LipidMass.base.html#Lipid">Lipid</a>:<b
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="Sphingolipid-__init__"><strong>__init__</strong></a>(self, sum_carbon, sum_unsaturation)</dt><dd><tt><a href="#Sphingolipid">Sphingolipid</a>.__init__<br>
+<dl><dt><a name="Sphingolipid-__init__"><strong>__init__</strong></a>(self, sum_carbon, sum_unsaturation, fa_mod=None)</dt><dd><tt><a href="#Sphingolipid">Sphingolipid</a>.__init__<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets&nbsp;the&nbsp;core&nbsp;formula&nbsp;for&nbsp;Sphingolipids&nbsp;and&nbsp;determines&nbsp;the&nbsp;formula&nbsp;contribution&nbsp;from&nbsp;the&nbsp;acyl&nbsp;chains<br>
 &nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_carbon&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;acyl&nbsp;carbons<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;acyl&nbsp;unsaturations</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sum_unsaturation&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;acyl&nbsp;unsaturations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[fa_mod&nbsp;(None&nbsp;or&nbsp;str)]&nbsp;--&nbsp;fatty&nbsp;acid&nbsp;modifier&nbsp;or&nbsp;None&nbsp;[optional,&nbsp;default=None]</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="LipidMass.base.html#Lipid">Lipid</a>:<br>

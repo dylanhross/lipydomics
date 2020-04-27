@@ -7,7 +7,7 @@
 """
 
 
-from pandas import DataFrame
+from pandas import DataFrame, concat, read_csv
 import csv
 import numpy as np
 import os
@@ -75,7 +75,8 @@ load_dset
                         group_map[header[i]] = group_map[header[i]] + [i]
                 dset.assign_groups(group_map)
                 print('! INFO: Automatically assigned groups from headers')
-            except:
+            except Exception as e:
+                print('! ERROR:', e)
                 print('! ERROR: Unable to automatically assign groups from headers')
                 # reload the Dataset just in case
                 dset = Dataset(csv_fname)
@@ -128,7 +129,8 @@ manage_groups
         try:
             dset.assign_groups({name: indices})
             print('! INFO: Assigned indices: {} to group: "{}"'.format(dset.group_indices[name], name))
-        except ValueError:
+        except ValueError as ve:
+            print('! ERROR:', ve)
             print("! ERROR: Failed to assign group, please check your formatting and try again")
 
     elif option == "2":
@@ -172,7 +174,7 @@ filter_data
     if option == "back":
         return True
     label_dat = dset.labels
-    label_df = pd.DataFrame(label_dat)
+    label_df = DataFrame(label_dat)
     if option == "1":
         print("Please Provide m/z and tolerance (Ex. '150 1'  <--- This would be 150 plus or minus 1)")
         mz = input('> ')
@@ -184,27 +186,29 @@ filter_data
         group = input('> ')
         try:
             if group == "All":
-                cur_data = pd.DataFrame(dset.intensities)
+                cur_data = DataFrame(dset.intensities)
             else:
                 cur_data = dset.get_data_bygroup(group)
-            int_df = pd.DataFrame(cur_data)
-            cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+            int_df = DataFrame(cur_data)
+            cur_df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
             mzs = [float(_) for _ in mz.split()]
             rts = [float(_) for _ in rt.split()]
             ccss = [float(_) for _ in ccs.split()]
             # convert CCS tolerance from percentage to an absolute value
             ccss[1] = ccss[1] / 100. * ccss[0]
             filtered = filter_d(mzs, rts, ccss, cur_df)
-        except ValueError:
-            return False
+        except ValueError as ve:
+            print('! ERROR:', ve)
             print("! ERROR: Failed to filter data, please check your groups and try again")
+            return False
 
     elif option == "2":
         print("Please provide the path of the file with batch-query information")
         path = input('> ')
         try:
-            query = pd.read_csv(path)
-        except:
+            query = read_csv(path)
+        except Exception as e:
+            print('! ERROR:', e)
             print("! ERROR: Failed to load the file. Please make sure the file exists at the right path.")
             return False
 
@@ -212,13 +216,14 @@ filter_data
         group = input('> ')
         try:
             if group == "All":
-                cur_data = pd.DataFrame(dset.intensities)
-                cur_df = pd.concat([label_df, cur_data], axis=1, ignore_index=True, sort=False)
+                cur_data = DataFrame(dset.intensities)
+                cur_df = concat([label_df, cur_data], axis=1, ignore_index=True, sort=False)
             else:
                 cur_data = dset.get_data_bygroup(group)
-                int_df = pd.DataFrame(cur_data)
-                cur_df = pd.concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
-        except ValueError:
+                int_df = DataFrame(cur_data)
+                cur_df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+        except ValueError as ve:
+            print('! ERROR:', ve)
             print("! ERROR: Failed to filter data, please check your groups and try again")
             return False
         for index, row in query.iterrows():
@@ -245,7 +250,8 @@ filter_data
             y = dset.stats['2-group-corr_{}_{}'.format('-'.join(group_names), nrm)]
             x = abs(x)
             y = abs(y)
-        except KeyError:
+        except KeyError as ke:
+            print('! ERROR:', ke)
             print("! ERROR: Required Statistics not yet computed")
             return False
         print("Please provide desired range on PLS-DA loadings separated by space. "
@@ -270,7 +276,7 @@ filter_data
             for ind in indices:
                 t = list(dset.labels[ind]) + list(first[ind]) + list(second[ind])
                 filtered.append(t)
-            filtered = pd.DataFrame(filtered)
+            filtered = DataFrame(filtered)
 
     else:
         print('! ERROR: unrecognized option: "{}"'.format(option))
@@ -283,7 +289,8 @@ filter_data
         try:
             filtered.to_csv(path, index=None, header=False)
             print("! INFO: Successfully downloaded the filtered data")
-        except:
+        except Exception as e:
+            print('! ERROR:', e)
             print("! ERROR: Failed to download, please check your path and try again")
             return False
 
@@ -349,7 +356,8 @@ manage_statistics
             except ValueError as ve:
                 print('! ERROR:', ve)
                 print('! ERROR: Unable to perform statistical analysis, check group names and try again')
-            except FileNotFoundError:
+            except FileNotFoundError as fnfe:
+                print('! ERROR:', fnfe)
                 print('! ERROR: Unable to find file with target variable values: {}'.format(target_path))
         elif opt2 == 'back':
             pass
@@ -373,7 +381,7 @@ manage_statistics
             pd.DataFrame.from_dict(dset.stats).to_csv(export_path)
             print('! INFO: Exported statistic to file: "{}"'.format(export_path))
         except Exception as e:
-            #print(e)
+            print('! ERROR:', e)
             print('! ERROR: Failed to export statistics to file: "{}"'.format(export_path))
         return False
 
@@ -517,7 +525,8 @@ identify_lipids
             add_feature_ids(dset, tol, level=option)
             n_identified = len([_ for _ in dset.feat_ids if type(_) == list])
             print("! INFO: Lipid identifications added successfully ({} lipids identified)".format(n_identified))
-        except ValueError:
+        except ValueError as ve:
+            print('! ERROR:', ve)
             print("! ERROR: Unable to make lipid identifications")
 
     elif option == 'back':
@@ -562,18 +571,20 @@ normalize_data
         filtered = filter_d(mzs, rts, ccses, df)
         try:
             max_inten = max(filtered.iloc[0][3:])
-        except:
+        except Exception as e:
+            print('! ERROR:', e)
             print("! ERROR: Unable find matching feature.")
             return False
         norm = []
         for i in range(3, len(filtered.iloc[0])):
-            norm.append(filtered.iloc[0][i] / max_inten)
+            norm.append(max_inten / filtered.iloc[0][i])
         try:
             dset.normalize(np.asarray(norm))
             print('! INFO: Successfully normalized')
             return True
-        except ValueError:
-            print("! ERROR: Unable to normalize. Please check the constraints and try again.")
+        except ValueError as ve:
+            print('! ERROR:', ve)
+            print("! ERROR: Unable to normalize. Please check the input and try again.")
             return False
 
     elif option == "2":
@@ -590,14 +601,16 @@ normalize_data
                         norm.append(line)
                     except ValueError:
                         break
-        except IOError:
+        except IOError as ioe:
+            print('! ERROR:', ioe)
             print("! ERROR: Unable to normalize. Please check the path and try again.")
             return False
         try:
             dset.normalize(np.asarray(norm))
             print('! INFO: Successfully normalized')
             return True
-        except ValueError:
+        except ValueError as ve:
+            print('! ERROR:', ve)
             print("! ERROR: Unable to normalize. Check the file and try again.")
             return False
 
@@ -803,10 +816,10 @@ main
     if dset == 'exit':
         return
 
-        # create a pandas DataFrame
-        label_df = DataFrame(self.labels)
-        int_df = DataFrame(self.intensities)
-        df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
+    # create a pandas DataFrame
+    label_df = DataFrame(dset.labels)
+    int_df = DataFrame(dset.intensities)
+    df = concat([label_df, int_df], axis=1, ignore_index=True, sort=False)
 
     # main execution loop
     while True:
@@ -874,7 +887,8 @@ main
             try:
                 dset.save_bin(pickle_path)
                 print('! INFO: Dataset saved to file: "{}"'.format(pickle_path))
-            except:
+            except Exception as e:
+                print('! ERROR:', e)
                 print('! ERROR: Unable to save Dataset to file: "{}"'.format(pickle_path))
         elif option == 'exit':
             # instead of exiting return None

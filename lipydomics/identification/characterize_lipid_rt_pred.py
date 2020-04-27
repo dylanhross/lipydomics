@@ -15,6 +15,7 @@ from matplotlib import pyplot as plt
 from matplotlib import rcParams
 from numpy import median
 
+from ..util import print_and_log
 from .encoder_params import rt_lipid_classes, rt_fa_mods
 
 
@@ -36,7 +37,7 @@ single_class_plot
     rt_t, rt_m = [], []
 
     # fetch the theoretical data
-    if fa_mod in ['o', 'p']:
+    if fa_mod in rt_fa_mods:
         qry = 'SELECT rt FROM theoretical_mz JOIN theoretical_rt ON theoretical_mz.t_id=theoretical_rt.t_id '
         qry += 'WHERE lipid_class="{}" AND fa_mod=="{}"'
         qry = qry.format(lipid_class, fa_mod)
@@ -48,7 +49,7 @@ single_class_plot
         rt_t.append(float(rt[0]))
 
     # fetch the measured data
-    if fa_mod in ['o', 'p']:
+    if fa_mod in rt_fa_mods:
         qry = 'SELECT rt FROM measured WHERE lipid_class="{}" AND fa_mod=="{}" AND rt IS NOT NULL'
         qry = qry.format(lipid_class, fa_mod)
     else:
@@ -108,10 +109,9 @@ def main(tstamp):
     build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
     with open(build_log, 'a') as bl:
 
-        print('characterizing RT prediction performance ...', end=' ')
-        print('characterizing RT prediction performance ...', end=' ', file=bl)
+        print_and_log('characterizing RT prediction performance ...', bl, end=' ')
 
-        # automatically generate plots for all combinations having at least 10 measured values
+        # automatically generate plots for all combinations
         qry = 'SELECT lipid_class, fa_mod FROM measured '
         qry += 'WHERE rt IS NOT NULL GROUP BY lipid_class, fa_mod'
         for lipid_class, fa_mod in cur.execute(qry).fetchall():
@@ -121,9 +121,8 @@ def main(tstamp):
             if lc_ok and fam_ok:
                 single_class_plot(cur, lipid_class, fa_mod=fa_mod)
 
-        print('ok\n')
-        print('ok\n', file=bl)
+        print_and_log('ok\n', bl)
 
-        # close database connection
-        con.close()
+    # close database connection
+    con.close()
 

@@ -60,8 +60,8 @@ enumerate_all_lipids
     yields:
         (str, str, float) -- name, adduct, monoisotopic mass
 """
-    # general carbon count bounds for diacyl lipids 12,12 to 22,22
-    diacyl_nc = (24, 48)
+    # general carbon count bounds for diacyl lipids 8,8 to 24,24
+    diacyl_nc = (16, 48)
     # general unsaturation bounds for diacyl lipids :0 to :12
     diacyl_nu = (0, 12)
 
@@ -73,7 +73,7 @@ enumerate_all_lipids
             yield l
 
     # MGDG and TG
-    for l in enumerate_lipid_class(TG, (24, 64), (0, 18), ['[M+NH4]+', '[M+Na]+', '[M+K]+']):
+    for l in enumerate_lipid_class(TG, (24, 72), (0, 24), ['[M+NH4]+', '[M+Na]+', '[M+K]+']):
         yield l
     mgdg_adducts = ['[M+NH4]+', '[M+Na]+', '[M+K]+', '[M-H]-', '[M+CH3COO]-', '[M+Cl]-']
     for l in enumerate_lipid_class(MGDG, (12, 24), (0, 6), mgdg_adducts):
@@ -108,15 +108,16 @@ enumerate_all_lipids
             for l in enumerate_lipid_class(lc, (12, 24), lgpl_nu, lgpl_adducts, fa_mod=fa_mod):
                 yield l
 
-    # sphingolipids (Cer, HexCer, SM)
+    # sphingolipids (Cer, HexCer, GlcCer, SM)
     sls = [Cer, HexCer, GlcCer, SM]
     sls_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-', '[M+K]+', '[M+H-H2O]+']
     for lc in sls:
-        for l in enumerate_lipid_class(lc, (30, 44), (1, 7), sls_adducts):
+        # our sphingolipids will all have the 'd' FA mod
+        for l in enumerate_lipid_class(lc, (30, 44), (1, 7), sls_adducts, fa_mod='d'):
             yield l
 
     # fatty acids
-    for l in enumerate_lipid_class(FA, (10, 24), (0, 6), ['[M-H]-']):
+    for l in enumerate_lipid_class(FA, (10, 30), (0, 6), ['[M-H]-']):
         yield l
 
 

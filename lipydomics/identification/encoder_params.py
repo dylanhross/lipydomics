@@ -11,8 +11,9 @@
 
 # CCS prediction
 ccs_lipid_classes = [
-    'CAR', 'CE', 'Cer', 'DG', 'DGDG', 'FA', 'FAHFA', 'GlcCer', 'LPC', 'LPE', 'LPG', 'LPS', 'MGDG', 'PA', 'PC', 'PE',
-    'PEtOH', 'PG', 'PI', 'PS', 'SM', 'TG'
+    'CE', 'Cer', 'DG', 'DGDG', 'FA', 'GlcCer', 'LPC', 'LPE', 'LPG', 'LPS', 'MGDG', 'PA', 'PC', 'PE',
+    'PG', 'PI', 'PS', 'SM', 'TG',  # these all have ~100 or more samples in the measured database
+    'LysylPG', 'AcylPG', 'AcylPE'  # manually add in some bacterial specific classes
 ]
 ccs_fa_mods = ['d', 'o', 'p']
 ccs_ms_adducts = [

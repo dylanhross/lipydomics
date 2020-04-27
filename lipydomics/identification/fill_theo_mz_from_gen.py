@@ -12,7 +12,7 @@ import os
 from sqlite3 import connect
 
 from .generation import enumerate_all_lipids
-from ..util import parse_lipid
+from ..util import parse_lipid, print_and_log
 
 
 def add_enumerated_mz(cursor):
@@ -49,14 +49,10 @@ def main(tstamp):
 
     build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
     with open(build_log, 'a') as bl:
-
-        print('adding theoretical m/z into lipids.db ...', end=' ')
-        print('adding theoretical m/z into lipids.db ...', end=' ', file=bl)
+        print_and_log('adding theoretical m/z into lipids.db ...', bl, end=' ')
         add_enumerated_mz(cur)
-        print('ok')
-        print('ok\n', file=bl)
-        print()
+        print_and_log('ok\n', bl)
 
-        # save changes to the database
-        con.commit()
-        con.close()
+    # save changes to the database
+    con.commit()
+    con.close()
