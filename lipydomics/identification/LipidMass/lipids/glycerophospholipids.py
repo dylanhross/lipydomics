@@ -160,9 +160,42 @@ PG.__init__
 """
         super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group for a PG is an glycerol (C3H7O2)
-        self.add_to_formula({'C': 9, 'H': 19, 'O': 3, 'N':2})
-        # the lipid class is PG
+        self.add_to_formula({'C': 9, 'H': 19, 'O': 3, 'N': 2})
+        # the lipid class is LysylPG
         self.lipid_class = 'LysylPG'
+
+
+class AlanylPG(Glycerophospholipid):
+    r"""
+AlanylPG
+    description:
+        lysyl-phosphatidylglycerol lipid class
+        Glycerophospholipid with R-group =
+
+                        O
+                       //
+        R  =  __    O--\
+                \__/    \___
+                /       /
+              HO     H2N
+"""
+
+    def __init__(self, sum_carbon, sum_unsaturation, fa_mod=None):
+        """
+PG.__init__
+    description:
+        Initializes an instance of a PG lipid
+    Parameters:
+        sum_carbon (int) -- sum FA composition carbons
+        sum_unsaturation (int) -- sum FA composition unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier to indicate plasmalogen or ether lipids ('p' and 'o',
+                                    respectively) or None [optional, default=None]
+"""
+        super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
+        # the R-group for a PG is an glycerol (C3H7O2)
+        self.add_to_formula({'C': 6, 'H': 12, 'O': 3, 'N': 1})
+        # the lipid class is AlanylPG
+        self.lipid_class = 'AlanylPG'
 
 
 class PI(Glycerophospholipid):
@@ -413,7 +446,7 @@ acylPG
 
     def __init__(self, sum_carbon, sum_unsaturation):
         """
-acylPG.__init__
+AcylPG.__init__
     description:
         Sets the core formula for Cardiolipins and determines the formula contribution from the acyl chains
     parameters:
@@ -428,4 +461,44 @@ acylPG.__init__
         # store the sum composition
         self.sum_composition = (sum_carbon, sum_unsaturation)
         self.lipid_class = 'AcylPG'
+
+
+class AcylPE(Glycerophospholipid):
+    r"""
+AcylPE
+    description:
+        N-acylphosphatidylethanolamine
+        Glycerophospholipid with core structure:
+
+
+
+                   O         O
+                   ||        ||___Ac3
+         O__    O--P--O__    /
+        /   \__/   |     \__NH
+    O==|    /      OH
+        \   O
+        Ac1  \
+              |==O
+             /
+           Ac2
+"""
+
+    def __init__(self, sum_carbon, sum_unsaturation):
+        """
+acylPG.__init__
+    description:
+        Sets the core formula for Cardiolipins and determines the formula contribution from the acyl chains
+    parameters:
+        sum_carbon (int) -- sum acyl carbons
+        sum_unsaturation (int) -- sum acyl unsaturations
+"""
+        # formula is initially set to the core formula (only partial head group, no fatty acid tails)
+        self.formula = {'C': 8, 'H': 11, 'O': 9, 'P': 1}
+        # three acyl chains are added to the chemical formula
+        acyl_formula = self.gen_acyl_formula(3, sum_carbon, sum_unsaturation)
+        self.add_to_formula(acyl_formula)
+        # store the sum composition
+        self.sum_composition = (sum_carbon, sum_unsaturation)
+        self.lipid_class = 'AcylPE'
 

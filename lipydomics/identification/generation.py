@@ -8,8 +8,11 @@
 """
 
 
-from .LipidMass.lipids.glycerolipids import DG, DGDG, GlcADG, MGDG, TG
-from .LipidMass.lipids.glycerophospholipids import AcylPG, CL, PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG
+from .LipidMass.lipids.glycerolipids import DG, TG
+from .LipidMass.lipids.glycolipids import DGDG, GlcADG, MGDG
+from .LipidMass.lipids.glycerophospholipids import (
+    AcylPG, AcylPE, CL, PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG, AlanylPG
+)
 from .LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS, LCL
 from .LipidMass.lipids.sphingolipids import Cer, HexCer, GlcCer, SM
 from .LipidMass.lipids.misc import FA
@@ -65,8 +68,8 @@ enumerate_all_lipids
     # general unsaturation bounds for diacyl lipids :0 to :12
     diacyl_nu = (0, 12)
 
-    # diacyl-glyerolipids (DG, DGDG, and GlcADG)
-    diagls = [DG, DGDG, GlcADG]
+    # diacyl-glyerolipids and glycolipids (DG, MGDG, DGDG, and GlcADG)
+    diagls = [DG, MGDG, DGDG, GlcADG]
     diagl_adducts = ['[M+NH4]+', '[M+Na]+', '[M+K]+', '[M-H]-', '[M+CH3COO]-', '[M+Cl]-', '[M+H-H2O]+']
     for lc in diagls:
         for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu, diagl_adducts):
@@ -75,12 +78,10 @@ enumerate_all_lipids
     # MGDG and TG
     for l in enumerate_lipid_class(TG, (24, 72), (0, 24), ['[M+NH4]+', '[M+Na]+', '[M+K]+']):
         yield l
-    mgdg_adducts = ['[M+NH4]+', '[M+Na]+', '[M+K]+', '[M-H]-', '[M+CH3COO]-', '[M+Cl]-']
-    for l in enumerate_lipid_class(MGDG, (12, 24), (0, 6), mgdg_adducts):
-        yield l
+
 
     # diacyl-glycerophospholipids (with plasmalogen and ether derivatives)
-    diagpls = [PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG]
+    diagpls = [PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG, AlanylPG]
     diagpl_adducts = ['[M+H]+', '[M+Na]+', '[M+NH4]+', '[M-H]-', '[M+HCOO]-', '[M+K]+', '[M+CH3COO]-', '[M+2Na-H]+',
                       '[M+Cl]-']
     for lc in diagpls:
@@ -90,9 +91,10 @@ enumerate_all_lipids
             for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu_, diagpl_adducts, fa_mod=fa_mod):
                 yield l
 
-    # AcylPG, CL, and LCL
-    for l in enumerate_lipid_class(AcylPG, (24, 64), (0, 18), ['[M-H]-', '[M+Na]+']):
-        yield l
+    # AcylPG, AcylPE, CL, and LCL
+    for lc in [AcylPG, AcylPE]:
+        for l in enumerate_lipid_class(lc, (24, 64), (0, 18), ['[M-H]-', '[M+Na]+']):
+            yield l
     for l in enumerate_lipid_class(CL, (36, 72), (0, 24), ['[M-2H]2-', '[M+2K]2+']):
         yield l
     for l in enumerate_lipid_class(LCL, (24, 64), (0, 18), ['[M-2H]2-', '[M+2K]2+']):
