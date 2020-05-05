@@ -11,7 +11,7 @@
 import os
 from sqlite3 import connect
 
-from .generation import enumerate_all_lipids
+from .mz_generation import enumerate_all_lipids
 from ..util import parse_lipid, print_and_log
 
 

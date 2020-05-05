@@ -1,10 +1,10 @@
 """
-    lipydomics/identification/generation.py
+    lipydomics/identification/mz_generation.py
     Dylan H. Ross
     2019/10/04
 
     description:
-        utilities to generate theoretical data for lipids
+        utilities to generate theoretical m/z data for lipids
 """
 
 
@@ -122,4 +122,46 @@ enumerate_all_lipids
     for l in enumerate_lipid_class(FA, (10, 40), (0, 6), ['[M-H]-']):
         yield l
 
+
+def get_lipid_mz(lipid_class, lipid_nc, lipid_nu, adduct, fa_mod=None):
+    """
+get_lipid_mz
+    description:
+        A helper function for generating a single m/z value from a lipid defined by lipid class, fatty acid sum
+        composition, FA modifier, and MS adduct
+    parameters:
+        lipid_class (str) -- lipid class
+        lipid_nc (int) -- sum composition, number of fatty acid carbons
+        lipid_nu (int) -- sum composition, number of fatty acid unsaturations
+        adduct (str) -- MS adduct
+        [fa_mod (None or str)] -- fatty acid modifier (e.g. 'p', 'o') [optional, default=None]
+    returns:
+        (float) -- predicted m/z
+"""
+    # map lipid class names to the corresponding generator object
+    lipid_classes = {
+        # glycerolipids
+        'DG': DG, 'TG': TG,
+        # glycolipids
+        'DGDG': DGDG, 'GlcADG': GlcADG, 'MGDG': MGDG,
+        # glycerophospholipids
+        'AcylPG': AcylPG, 'AcylPE': AcylPE, 'CL': CL, 'PA': PA, 'PC': PC, 'PE': PE, 'PG': PG, 'PI': PI, 'PIP': PIP,
+        'PIP2': PIP2, 'PIP3': PIP3, 'PS': PS, 'LysylPG': LysylPG, 'AlanylPG': AlanylPG,
+        # lysoglycerophospholipids
+        'LPA': LPA, 'LPC': LPC, 'LPE': LPE, 'LPG': LPG, 'LPI': LPI, 'LPS': LPS, 'LCL': LCL,
+        # sphingolipids
+        'Cer': Cer, 'HexCer': HexCer, 'GlcCer': GlcCer, 'SM': SM,
+        # misc
+        'FA': FA
+    }
+
+    # make sure the lipid class is defined
+    if lipid_class not in lipid_classes:
+        m = 'get_lipid_mz: lipid class "{}" not defined'.format(lipid_class)
+        raise ValueError(m)
+
+    # predict and return m/z
+    lco = lipid_classes[lipid_class]
+    lipid = lco(lipid_nc, lipid_nu, fa_mod=fa_mod) if fa_mod else lco(lipid_nc, lipid_nu)
+    return lipid.ms_adduct_monoiso(adduct)
 

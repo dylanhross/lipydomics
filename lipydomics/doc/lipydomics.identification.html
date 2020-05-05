@@ -31,8 +31,8 @@ description:<br>
 <a href="lipydomics.identification.encoder_params.html">encoder_params</a><br>
 <a href="lipydomics.identification.fill_measured_from_src.html">fill_measured_from_src</a><br>
 </td><td width="25%" valign=top><a href="lipydomics.identification.fill_theo_mz_from_gen.html">fill_theo_mz_from_gen</a><br>
-<a href="lipydomics.identification.generation.html">generation</a><br>
 <a href="lipydomics.identification.id_levels.html">id_levels</a><br>
+<a href="lipydomics.identification.mz_generation.html">mz_generation</a><br>
 <a href="lipydomics.identification.rt_calibration.html">rt_calibration</a><br>
 </td><td width="25%" valign=top><a href="lipydomics.identification.train_lipid_ccs_pred.html">train_lipid_ccs_pred</a><br>
 <a href="lipydomics.identification.train_lipid_rt_pred.html">train_lipid_rt_pred</a><br>
@@ -97,5 +97,49 @@ description:<br>
 Opens&nbsp;a&nbsp;connection&nbsp;to&nbsp;the&nbsp;SQLite&nbsp;database&nbsp;file&nbsp;*database*.&nbsp;You&nbsp;can&nbsp;use<br>
 ":memory:"&nbsp;to&nbsp;open&nbsp;a&nbsp;database&nbsp;connection&nbsp;to&nbsp;a&nbsp;database&nbsp;that&nbsp;resides&nbsp;in<br>
 RAM&nbsp;instead&nbsp;of&nbsp;on&nbsp;disk.</tt></dd></dl>
-</td></tr></table>
+ <dl><dt><a name="-predict_ccs"><strong>predict_ccs</strong></a>(lipid_class, lipid_nc, lipid_nu, adduct, mz='generate', fa_mod=None, ignore_encoding_errors=False)</dt><dd><tt>predict_ccs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Predicts&nbsp;a&nbsp;theoretical&nbsp;CCS&nbsp;of&nbsp;a&nbsp;lipid&nbsp;as&nbsp;defined&nbsp;by&nbsp;lipid&nbsp;class,&nbsp;fatty&nbsp;acid&nbsp;sum&nbsp;composition&nbsp;and&nbsp;MS&nbsp;adduct.&nbsp;If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;any&nbsp;of&nbsp;the&nbsp;parameters&nbsp;are&nbsp;not&nbsp;specifically&nbsp;encoded&nbsp;(i.e.&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;training&nbsp;data)&nbsp;a&nbsp;ValueError&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raised.&nbsp;This&nbsp;behavior&nbsp;can&nbsp;be&nbsp;overridden&nbsp;by&nbsp;the&nbsp;ignore_encoding_errors&nbsp;flag&nbsp;in&nbsp;order&nbsp;to&nbsp;get&nbsp;the&nbsp;prediction&nbsp;to&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;made&nbsp;regardless,&nbsp;although&nbsp;such&nbsp;predictions&nbsp;are&nbsp;subject&nbsp;to&nbsp;a&nbsp;high&nbsp;degree&nbsp;of&nbsp;error.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lipid_class&nbsp;(str)&nbsp;--&nbsp;lipid&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lipid_nc&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;composition,&nbsp;number&nbsp;of&nbsp;fatty&nbsp;acid&nbsp;carbons<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lipid_nu&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;composition,&nbsp;number&nbsp;of&nbsp;fatty&nbsp;acid&nbsp;unsaturations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adduct&nbsp;(str)&nbsp;--&nbsp;MS&nbsp;adduct<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mz&nbsp;(str&nbsp;or&nbsp;float)]&nbsp;--&nbsp;m/z&nbsp;of&nbsp;MS&nbsp;adduct&nbsp;or&nbsp;'generate'&nbsp;to&nbsp;generate&nbsp;an&nbsp;m/z&nbsp;value&nbsp;automatically&nbsp;using&nbsp;LipidMass<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[optional,&nbsp;default='generate']<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[fa_mod&nbsp;(None&nbsp;or&nbsp;str)]&nbsp;--&nbsp;fatty&nbsp;acid&nbsp;modifier&nbsp;(e.g.&nbsp;'p',&nbsp;'o')&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ignore_encoding_errors&nbsp;(bool)]&nbsp;--&nbsp;generate&nbsp;a&nbsp;prediction&nbsp;even&nbsp;if&nbsp;one&nbsp;or&nbsp;more&nbsp;of&nbsp;the&nbsp;input&nbsp;parameters&nbsp;are&nbsp;not<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;encodable&nbsp;[optional,&nbsp;default=False]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(float)&nbsp;--&nbsp;predicted&nbsp;CCS</tt></dd></dl>
+ <dl><dt><a name="-predict_rt"><strong>predict_rt</strong></a>(lipid_class, lipid_nc, lipid_nu, fa_mod=None, ignore_encoding_errors=False)</dt><dd><tt>predict_ccs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Predicts&nbsp;a&nbsp;theoretical&nbsp;HILIC&nbsp;retention&nbsp;time&nbsp;of&nbsp;a&nbsp;lipid&nbsp;as&nbsp;defined&nbsp;by&nbsp;lipid&nbsp;class&nbsp;and&nbsp;fatty&nbsp;acid&nbsp;sum&nbsp;composition.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;any&nbsp;of&nbsp;the&nbsp;parameters&nbsp;are&nbsp;not&nbsp;specifically&nbsp;encoded&nbsp;(i.e.&nbsp;not&nbsp;present&nbsp;in&nbsp;the&nbsp;training&nbsp;data)&nbsp;a&nbsp;ValueError&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raised.&nbsp;This&nbsp;behavior&nbsp;can&nbsp;be&nbsp;overridden&nbsp;by&nbsp;the&nbsp;ignore_encoding_errors&nbsp;flag&nbsp;in&nbsp;order&nbsp;to&nbsp;get&nbsp;the&nbsp;prediction&nbsp;to&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;made&nbsp;regardless,&nbsp;although&nbsp;such&nbsp;predictions&nbsp;are&nbsp;subject&nbsp;to&nbsp;a&nbsp;high&nbsp;degree&nbsp;of&nbsp;error.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lipid_class&nbsp;(str)&nbsp;--&nbsp;lipid&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lipid_nc&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;composition,&nbsp;number&nbsp;of&nbsp;fatty&nbsp;acid&nbsp;carbons<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lipid_nu&nbsp;(int)&nbsp;--&nbsp;sum&nbsp;composition,&nbsp;number&nbsp;of&nbsp;fatty&nbsp;acid&nbsp;unsaturations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[fa_mod&nbsp;(None&nbsp;or&nbsp;str)]&nbsp;--&nbsp;fatty&nbsp;acid&nbsp;modifier&nbsp;(e.g.&nbsp;'p',&nbsp;'o')&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ignore_encoding_errors&nbsp;(bool)]&nbsp;--&nbsp;generate&nbsp;a&nbsp;prediction&nbsp;even&nbsp;if&nbsp;one&nbsp;or&nbsp;more&nbsp;of&nbsp;the&nbsp;input&nbsp;parameters&nbsp;are&nbsp;not<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;encodable&nbsp;[optional,&nbsp;default=False]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(float)&nbsp;--&nbsp;predicted&nbsp;HILIC&nbsp;retention&nbsp;time</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ccs_fa_mods</strong> = ['d', 'o', 'p']<br>
+<strong>ccs_lipid_classes</strong> = ['CE', 'Cer', 'DG', 'DGDG', 'FA', 'GlcCer', 'LPC', 'LPE', 'LPG', 'LPS', 'MGDG', 'PA', 'PC', 'PE', 'PG', 'PI', 'PS', 'SM', 'TG', 'LysylPG', ...]<br>
+<strong>ccs_ms_adducts</strong> = ['[M-2H]2-', '[M-H]-', '[M+2K]2+', '[M+2Na-H]+', '[M+CH3COO]-', '[M+Cl]-', '[M+H-H2O]+', '[M+H]+', '[M+HCOO]-', '[M+Na]+', '[M+NH4]+']<br>
+<strong>rt_fa_mods</strong> = ['d', 'p']<br>
+<strong>rt_lipid_classes</strong> = ['PG', 'DGDG', 'PE', 'LPE', 'PE', 'PC', 'CL', 'PI', 'PA', 'Cer', 'AcylPG', 'LysylPG', 'GlcCer', 'MGDG', 'LPG', 'AcylPE', 'SM', 'LPC', 'PS', 'DG', ...]</td></tr></table>
 </body></html>
