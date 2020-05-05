@@ -374,6 +374,23 @@ each feature. The `Dataset.feat_id_levels` instance variable holds the identific
 **IMPORTANT:** *CCS tolerance is in percent NOT absolute units*
 
 
+### CCS and HILIC retention time prediction
+The theoretical lipid database consists of CCS and HILIC retention time values generated using predictive models trianed
+on experimental reference values. These predictive models are directly accessible via two convenience functions: 
+`predict_ccs` and `predict_rt`. Both functions take as input a lipid (as defined by lipid class, fatty acid sum 
+composition, fatty acid modifier, and MS adduct if relevant). Example:
+
+```python
+from lipydomics.identification import predict_ccs, predict_rt
+
+# predict CCS for the lipid: PC(p34:3) [M+H]+
+ccs = predict_ccs('PC', 34, 3, '[M+H]+', fa_mod='p')
+
+# predict HILIC retention time for the same lipid, this time we do not need the MS adduct
+rt = predict_rt('PC', 34, 3, fa_mod='p')
+```
+
+
 ### Retention Time Calibration
 All of the retention times (measured or theoretical) in the lipid database correspond to a reference HILIC method 
 (Hines, _et al. J. Lipid Res._ **58**, 2017). The `lipydomics.identification.rt_calibration` module allows comparison 
@@ -393,3 +410,4 @@ add_rt_calibration(dset, lipids, meas_rt, ref_rt)
 
 **Once a retention time calibration has been set up, `add_feature_ids` automatically uses calibrated retention times 
 when trying to identify lipids**
+
