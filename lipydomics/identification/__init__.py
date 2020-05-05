@@ -11,11 +11,22 @@
 from sqlite3 import connect
 import os
 import warnings
+import pickle
 
 
 from lipydomics.identification.id_levels import (
     id_feat_any, id_feat_meas_mz_rt_ccs, id_feat_theo_mz_rt_ccs, id_feat_meas_mz_rt, id_feat_theo_mz_rt,
     id_feat_meas_mz_ccs, id_feat_theo_mz_ccs, id_feat_meas_mz, id_feat_theo_mz
+)
+from lipydomics.identification.encoder_params import (
+    ccs_lipid_classes, ccs_ms_adducts, ccs_fa_mods, rt_lipid_classes, rt_fa_mods
+)
+from lipydomics.identification.train_lipid_ccs_pred import (
+    prep_encoders as ccs_prep_encoders, featurize as ccs_featurize
+)
+from lipydomics.identification.mz_generation import get_lipid_mz
+from lipydomics.identification.train_lipid_rt_pred import (
+    prep_encoders as rt_prep_encoders, featurize as rt_featurize
 )
 
 
@@ -147,3 +158,109 @@ add_feature_ids
     # close the database connection
     con.close()
 
+
+def predict_ccs(lipid_class, lipid_nc, lipid_nu, adduct, mz='generate', fa_mod=None, ignore_encoding_errors=False):
+    """
+predict_ccs
+    description:
+        Predicts a theoretical CCS of a lipid as defined by lipid class, fatty acid sum composition and MS adduct. If
+        any of the parameters are not specifically encoded (i.e. not present in the training data) a ValueError is
+        raised. This behavior can be overridden by the ignore_encoding_errors flag in order to get the prediction to be
+        made regardless, although such predictions are subject to a high degree of error.
+    parameters:
+        lipid_class (str) -- lipid class
+        lipid_nc (int) -- sum composition, number of fatty acid carbons
+        lipid_nu (int) -- sum composition, number of fatty acid unsaturations
+        adduct (str) -- MS adduct
+        [mz (str or float)] -- m/z of MS adduct or 'generate' to generate an m/z value automatically using LipidMass
+                                [optional, default='generate']
+        [fa_mod (None or str)] -- fatty acid modifier (e.g. 'p', 'o') [optional, default=None]
+        [ignore_encoding_errors (bool)] -- generate a prediction even if one or more of the input parameters are not
+                                            encodable [optional, default=False]
+    returns:
+        (float) -- predicted CCS
+"""
+    # first check whether the lipid class, MS adduct and FA mod are encodable
+    lc_ok = lipid_class in ccs_lipid_classes
+    ad_ok = adduct in ccs_ms_adducts
+    fm_ok = fa_mod is None or fa_mod in ccs_fa_mods
+    all_ok = lc_ok and ad_ok and fm_ok
+    if not (all_ok or ignore_encoding_errors):  # either all of the checks were good or we are ignoring errors
+        m = ''
+        if not lc_ok:
+            m += 'lipid class "{}" not encodable '.format(lipid_class)
+        if not ad_ok:
+            m += 'MS adduct "{}" not encodable '.format(adduct)
+        if not fm_ok:
+            m += 'FA modifier "{}" not encodable '.format(fa_mod)
+        raise ValueError('predict_ccs: {}'.format(m))
+
+    # try to generate an m/z value if one wasn't provided
+    if mz == 'generate':
+        try:
+            mz = get_lipid_mz(lipid_class, lipid_nc, lipid_nu, adduct, fa_mod=fa_mod)
+        except ValueError as ve:
+            m = 'predict_ccs: unable to generate m/z for lipid: "{}({}{}:{})_{}" ({})'
+            m = m.format(lipid_class, '' if fa_mod is None else fa_mod, lipid_nc, lipid_nu, adduct, ve)
+            raise ValueError(m)
+
+    # prepare encoders
+    c_encoder, f_encoder, a_encoder = ccs_prep_encoders()
+
+    # load the predictive model and the scaler
+    this_dir = os.path.dirname(__file__)
+    model_path = os.path.join(this_dir, 'lipid_ccs_pred.pickle')
+    scaler_path = os.path.join(this_dir, 'lipid_ccs_scale.pickle')
+    with open(model_path, 'rb') as pf1, open(scaler_path, 'rb') as pf2:
+        model = pickle.load(pf1)
+        scaler = pickle.load(pf2)
+
+    # featurize, scale, and predict CCS
+    x = [ccs_featurize(lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz, c_encoder, f_encoder, a_encoder)]
+    return model.predict(scaler.transform(x))[0]
+
+
+def predict_rt(lipid_class, lipid_nc, lipid_nu, fa_mod=None, ignore_encoding_errors=False):
+    """
+predict_ccs
+    description:
+        Predicts a theoretical HILIC retention time of a lipid as defined by lipid class and fatty acid sum composition.
+        If any of the parameters are not specifically encoded (i.e. not present in the training data) a ValueError is
+        raised. This behavior can be overridden by the ignore_encoding_errors flag in order to get the prediction to be
+        made regardless, although such predictions are subject to a high degree of error.
+    parameters:
+        lipid_class (str) -- lipid class
+        lipid_nc (int) -- sum composition, number of fatty acid carbons
+        lipid_nu (int) -- sum composition, number of fatty acid unsaturations
+        [fa_mod (None or str)] -- fatty acid modifier (e.g. 'p', 'o') [optional, default=None]
+        [ignore_encoding_errors (bool)] -- generate a prediction even if one or more of the input parameters are not
+                                            encodable [optional, default=False]
+    returns:
+        (float) -- predicted HILIC retention time
+"""
+    # first check whether the lipid class and FA mod are encodable
+    lc_ok = lipid_class in ccs_lipid_classes
+    fm_ok = fa_mod is None or fa_mod in ccs_fa_mods
+    all_ok = lc_ok and fm_ok
+    if not (all_ok or ignore_encoding_errors):  # either all of the checks were good or we are ignoring errors
+        m = ''
+        if not lc_ok:
+            m += 'lipid class "{}" not encodable '.format(lipid_class)
+        if not fm_ok:
+            m += 'FA modifier "{}" not encodable '.format(fa_mod)
+        raise ValueError('predict_rt: {}'.format(m))
+
+    # prepare encoders
+    c_encoder, f_encoder = rt_prep_encoders()
+
+    # load the predictive model and the scaler
+    this_dir = os.path.dirname(__file__)
+    model_path = os.path.join(this_dir, 'lipid_rt_pred.pickle')
+    scaler_path = os.path.join(this_dir, 'lipid_rt_scale.pickle')
+    with open(model_path, 'rb') as pf1, open(scaler_path, 'rb') as pf2:
+        model = pickle.load(pf1)
+        scaler = pickle.load(pf2)
+
+    # featurize, scale, and predict RT
+    x = [rt_featurize(lipid_class, lipid_nc, lipid_nu, fa_mod, c_encoder, f_encoder)]
+    return model.predict(scaler.transform(x))[0]
