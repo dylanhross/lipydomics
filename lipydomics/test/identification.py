@@ -114,6 +114,27 @@ predict_ccs_notencodable
     return True
 
 
+def predict_ccs_ignencerr():
+    """
+predict_ccs_ignencerr
+    description:
+        predicts CCS for a couple of lipids that are not encodable, but uses the ignore_encoding_errors flag to ignore
+        that and predict CCS anyways. The first call should produce a ValueError from LipidMass not being able to
+        predict m/z, then the second provides an arbitrary m/z which should not produce any errors
+
+        test passes if the first call raises only the expected error and the second call raises no errors
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    try:
+        ccs = predict_ccs('Rock', 34, 3, '[M+Paper]+', fa_mod='Scissors', ignore_encoding_errors=True)
+    except ValueError:
+        pass
+    ccs = predict_ccs('Rock', 34, 3, '[M+Paper]+', mz=234.5678, fa_mod='Scissors', ignore_encoding_errors=True)
+
+    return True
+
+
 def predict_rt_noerrs():
     """
 predict_rt_noerrs
@@ -145,6 +166,21 @@ predict_rt_notencodable
         rt = predict_rt('PE', 38, 1, fa_mod='x')
     except ValueError:
         pass
+
+    return True
+
+
+def predict_rt_ignencerr():
+    """
+predict_er_ignencerr
+    description:
+        predicts HILIC RT for a couple of lipids that are not encodable, but uses the ignore_encoding_errors flag to
+        ignore that and predict RT anyways. There should not be any errors
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    rt = predict_rt('Elephant', 34, 3, ignore_encoding_errors=True)
+    rt = predict_rt('PE', 22, 5, fa_mod='Scissors', ignore_encoding_errors=True)
 
     return True
 
