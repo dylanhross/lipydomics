@@ -26,7 +26,7 @@ include_ref_dsets = [
 
 # reference datasets to use for CCS prediction
 ccs_pred_ref_dsets = [
-"zhou0817",
+    "zhou0817",
     "hine1217",
     "hine0217",
     "hine0119",

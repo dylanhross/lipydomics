@@ -64,7 +64,7 @@ enumerate_all_lipids
         (str, str, float) -- name, adduct, monoisotopic mass
 """
     # general carbon count bounds for diacyl lipids 8,8 to 24,24
-    diacyl_nc = (16, 48)
+    diacyl_nc = (16, 56)
     # general unsaturation bounds for diacyl lipids :0 to :12
     diacyl_nu = (0, 12)
 
@@ -119,7 +119,7 @@ enumerate_all_lipids
             yield l
 
     # fatty acids
-    for l in enumerate_lipid_class(FA, (10, 30), (0, 6), ['[M-H]-']):
+    for l in enumerate_lipid_class(FA, (10, 40), (0, 6), ['[M-H]-']):
         yield l
 
 
