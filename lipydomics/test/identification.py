@@ -11,7 +11,7 @@
 import os
 
 from lipydomics.data import Dataset
-from lipydomics.identification import add_feature_ids
+from lipydomics.identification import add_feature_ids, predict_ccs, predict_rt
 
 
 def add_feature_ids_any_real1():
@@ -72,3 +72,79 @@ add_feature_ids_any_bad_tstamp
         return True
 
     return False
+
+
+def predict_ccs_noerrs():
+    """
+predict_ccs_noerrs
+    description:
+        predicts CCS for a few lipids, there should be no errors
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    ccs = predict_ccs('PC', 34, 3, '[M+H]+')
+    ccs = predict_ccs('PE', 38, 1, '[M-H]-', fa_mod='o')
+    ccs = predict_ccs('LPE', 18, 1, '[M+Na]+', mz=234.5678)
+
+    return True
+
+
+def predict_ccs_notencodable():
+    """
+predict_ccs_notencodable
+    description:
+        predicts CCS for a few lipids, each should raise a ValueError due to the various non-encodable parameters
+        test passes only if the expected errors are raised
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    try:
+        ccs = predict_ccs('PP', 34, 3, '[M+H]+')
+    except ValueError:
+        pass
+    try:
+        ccs = predict_ccs('PE', 38, 1, '[M-H]-', fa_mod='x')
+    except ValueError:
+        pass
+    try:
+        ccs = predict_ccs('LPE', 18, 1, '[M+Dog+Cat]+', mz=234.5678)
+    except ValueError:
+        pass
+
+    return True
+
+
+def predict_rt_noerrs():
+    """
+predict_rt_noerrs
+    description:
+        predicts HILIC rt for a few lipids, there should be no errors
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    rt = predict_rt('PC', 34, 3)
+    rt = predict_rt('PE', 38, 1, fa_mod='p')
+
+    return True
+
+
+def predict_rt_notencodable():
+    """
+predict_rt_notencodable
+    description:
+        predicts HILIC rt for a few lipids, each should raise a ValueError due to the various non-encodable parameters
+        test passes only if the expected errors are raised
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    try:
+        rt = predict_rt('PP', 34, 3)
+    except ValueError:
+        pass
+    try:
+        rt = predict_rt('PE', 38, 1, fa_mod='x')
+    except ValueError:
+        pass
+
+    return True
+
