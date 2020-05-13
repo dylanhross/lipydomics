@@ -33,6 +33,39 @@ add_feature_ids_any_real1
     return True
 
 
+def add_feature_ids_custom_real1():
+    """
+add_feature_ids_any_real1
+    description:
+        Uses the raw data from real_data_1.csv to make compound identifications using a custom list of confidence
+        levels (theo_mz, meas_rt_ccs, theo_mz_rt_ccs, in that order).
+
+        Test fails if there are any errors, or if all three identification levels are not present in the Dataset, or
+        if any other identification levels are present in the Dataset
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+    add_feature_ids(dset, [0.05, 0.5, 5.], level=['theo_mz_rt_ccs', 'theo_mz_rt', 'theo_mz'])
+    found_tm, found_tmr, found_tmrc = False, False, False
+    for lvl in dset.feat_id_levels:
+        if lvl == 'theo_mz':
+            found_tm = True
+        elif lvl == 'theo_mz_rt':
+            found_tmr = True
+        elif lvl == 'theo_mz_rt_ccs':
+            found_tmrc = True
+        elif lvl != '':
+            raise RuntimeError('add_feature_ids_custom_real1: unexpected ID level "{}"'.format(lvl))
+    if not found_tm:
+        raise RuntimeError('add_feature_ids_custom_real1: did not find ID level "theo_mz" in identifications')
+    if not found_tmr:
+        raise RuntimeError('add_feature_ids_custom_real1: did not find ID level "theo_mz_rt" in identifications')
+    if not found_tmrc:
+        raise RuntimeError('add_feature_ids_custom_real1: did not find ID level "theo_mz_rt_ccs" in identifications')
+    return True
+
+
 def add_feature_ids_any_real1_tstamp():
     """
 add_feature_ids_any_real1_tstamp

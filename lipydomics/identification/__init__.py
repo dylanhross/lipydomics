@@ -16,7 +16,7 @@ import pickle
 
 from lipydomics.identification.id_levels import (
     id_feat_any, id_feat_meas_mz_rt_ccs, id_feat_theo_mz_rt_ccs, id_feat_meas_mz_rt, id_feat_theo_mz_rt,
-    id_feat_meas_mz_ccs, id_feat_theo_mz_ccs, id_feat_meas_mz, id_feat_theo_mz
+    id_feat_meas_mz_ccs, id_feat_theo_mz_ccs, id_feat_meas_mz, id_feat_theo_mz, id_feat_custom
 )
 from lipydomics.identification.encoder_params import (
     ccs_lipid_classes, ccs_ms_adducts, ccs_fa_mods, rt_lipid_classes, rt_fa_mods
@@ -44,13 +44,17 @@ add_feature_ids
         The method for making identifications is specified by the `level` param:
             (low)
             'theo_mz' -- simple matching based on theoretical m/z
-            'theo_mz_rt' -- match on theoretical m/z and rt
-            'theo_mz_ccs' -- match on theoretical m/z and CCS
-            'theo_mz_rt_ccs' -- match on theoretical m/z, rt, and CCS
+            'meas_mz' -- simple matching based on measured m/z
+            'theo_mz_ccs' -- match on theoretical m/z and CCS\
             'meas_mz_ccs' -- match on measured m/z and CCS
+            'theo_mz_rt' -- match on theoretical m/z and rt
+            'meas_mz_rt' -- match on measured m/z and rt
+            'theo_mz_rt_ccs' -- match on theoretical m/z, rt, and CCS
             'meas_mz_rt_ccs' -- match on m/z, rt, and CCS
             (high)
             'any' -- start at the highest level, then work downward
+
+        The `level` param can also be a list of specific levels, which will be attempted in the order provided.
 
         The identifications are stored in `Dataset.feat_ids` and the associated identification levels are stored in 
         `Dataset.feat_id_levels`
@@ -74,7 +78,8 @@ add_feature_ids
     parameters:
         dataset (lipydomics.data.Dataset) -- lipidomics dataset
         tol (list(float, float, float)) -- tolerance for m/z, rt, and CCS, respectively
-        [level (str)] -- specify the level of identification [optional, default='all']
+        [level (str or list(str))] -- specify a single level of confidence for identifications, a list of confidence
+                                        levels, or 'any' to use a tiered approach [optional, default='any']
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
         [db_version_tstamp (str or None)] -- use a specific time-stamped version of the lipids database instead of the
                                              default (most recent build) [optional, default=None]
@@ -82,7 +87,7 @@ add_feature_ids
                             the 'any' identification level [optional, default=True]
 """
     if level not in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any',
-                     'meas_mz', 'meas_mz_rt', 'theo_mz_rt']:
+                     'meas_mz', 'meas_mz_rt', 'theo_mz_rt'] and type(level) is not list:
         m = 'add_feature_ids: identification level "{}" not recognized'
         raise ValueError(m.format(level))
 
@@ -128,7 +133,11 @@ add_feature_ids
             tol2[2] = tol2[2] / 100. * ccs
 
         # try to get identification(s)
-        if level == 'any' and not use_rt:
+        if type(level) is list:
+            # use custom list of identification levels
+            feat_id, feat_id_level, feat_id_score = id_feat_custom(level, cur, mz, rt, ccs, *tol2, esi, norm=norm)
+
+        elif level == 'any' and not use_rt:
             # use any identification level that does not include retention time
             feat_id, feat_id_level, feat_id_score = id_funcs['any'](cur, mz, rt, ccs, *tol2, esi,
                                                                     norm=norm, use_rt=False)
