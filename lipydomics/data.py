@@ -360,3 +360,68 @@ Dataset.export_xlsx
             identification_df.to_excel(writer, sheet_name='Identifications')
         writer.save()
 
+    def drop_features_helper(self, target):
+        """
+Dataset.drop_features_helper
+    description:
+        A helper function that updates all relevant data arrays (i.e. any feature-length arrays) in the Dataset,
+        dropping all of the features set to False in the target array
+    parameters:
+        target (np.array(bool)) -- a boolean array of shape (self.n_features) indicating which features (rows) should
+                                    be kept in the Dataset (indicated by True)
+"""
+        # ensure target has the proper shape, i.e. (self.n_features,)
+        if target.shape != (self.n_features,):
+            m = 'Dataset: drop_features_helper: target array has shape {} but expected shape ({},)'
+            raise ValueError(m.format(target.shape, self.n_features))
+
+    def drop_features(self, criteria, lower_bound=None, upper_bound=None, normed=None, idx=None):
+        """
+Dataset.drop_features
+    description:
+        Uses user-specified criteria to selectively remove features from the Dataset. Valid criteria are:
+            * "mintensity" - filtering such that at least one sample must have an intensity >= the specified lower_bound
+                (the normed kwarg must be set to a boolean to indicate whether to use normalized or raw intensities)
+            * "meantensity" - filtering such that mean intensity across all samples must be >= the specified lower_bound
+                (the normed kwarg must be set to a boolean to indicate whether to use normalized or raw intensities)
+            * any column-data (i.e. feature-length) statistic defined in Dataset.stats - The entry must be column data,
+                meaning that at least one dimension must be Dataset.n_features in length. If the statistic has more than
+                1 dimension, the idx kwarg must be set to the index to use. Either lower_bound, upper_bound, or both
+                must be set.
+    parameters:
+        criteria (str) -- specifies the criteria to filter on, which is used in conjunction with the upper_bound,
+                            lower_bound, or both kwargs. Valid options include 'mintensity' and 'meantensity' for
+                            intensity-based filtering, or any feature-length statistic already defined in Dataset.stats
+        [lower_bound (None or float)] -- [optional, default=None]
+        [upper_bound (None or float)] -- [optional, default=None]
+        [normed (None or bool)] -- when relevant, whether to use normalized intensity data [optional, default=None]
+        [idx (None or int)] -- when filtering on a statistic with more than one column (e.g. loadings from 3 component
+                                PCA), the idx kwarg indicates which column to use (e.g. idx=0 for PC1 in loadings from
+                                a 3 compounent PCA) [optional, default=None]
+"""
+        # first ensure valid parameters
+        if criteria not in ['mintensity', 'meantensity']:
+            stats_ok = True
+            if self.stats is None:
+                stats_ok = False
+                m2 = 'no statistics have been computed yet'
+            elif criteria not in self.stats.keys():
+                stats_ok = False
+                m2 = 'criteria not defined in Dataset.stats'
+            if not stats_ok:
+                m = 'Dataset: drop_features: invalid criteria "{}" ({})'.format(criteria, m2)
+                raise ValueError(m)
+        else:
+            # the criteria is "mintensity" or "meantensity" so normed must be set to a boolean
+            if normed is None:
+                m = 'Dataset: drop_features: criteria is "mintensity" or "meantensity" so normed kwarg must be set'
+                raise ValueError(m)
+        if lower_bound is None and upper_bound is None:
+            # at least one of lower_bound or upper_bound must be set, regardless of the criteria being used
+            m = 'Dataset: drop_features: at least one of lower_bound or upper_bound kwargs must be set'
+            raise ValueError(m)
+        elif lower_bound is not None and upper_bound is not None:
+            # if both bounds are set, upper must be > lower
+            if lower_bound >= upper_bound:
+                m = 'Dataset: drop_features: lower_bound must be < upper_bound'
+                raise ValueError(m)
