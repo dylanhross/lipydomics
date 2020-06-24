@@ -366,6 +366,11 @@ tol = [0.02, 0.2, 2.0]  # tol must be a list
 # identify features at the highest level possible
 add_feature_ids(dset, tol, level='any')
 ```
+While this example demonstrates the use of the `any` identification level, any other single identification level
+may be specified with the `level` kwarg to perform identifications only using a single confidence level. The `level` 
+kwarg can also be a list of identification levels, which are tried in the order specified until an identification made
+(essentially a custom version of the `any` identification level).
+
 The resulting lipid identifications are stored in the `Dataset.feat_ids` instance variable as lists of putative IDs for 
 each feature. The `Dataset.feat_id_levels` instance variable holds the identification level for each feature, and the 
 `Dataset.feat_id_scores` instance variable holds the scores for each putative lipid ID. Multiple calls to 

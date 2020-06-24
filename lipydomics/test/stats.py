@@ -11,6 +11,7 @@
 import os
 import numpy as np
 
+from lipydomics.test import run_tests
 from lipydomics.data import Dataset
 from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc
 
@@ -342,3 +343,22 @@ addlog2fc_real1
             raise RuntimeError(m.format(dset.stats['LOG2FC_{}_raw'.format('-'.join(pair))].shape))
 
     return dset
+
+
+# references to al of the test functions to be run, and order to run them in
+all_tests = [
+    addanovap_mock1,
+    addanovap_real1,
+    addpca3_mock1,
+    addpca3_real1,
+    addplsda_mock1,
+    addplsda_3groups_mock1,
+    addplsda_real1,
+    add2groupcorr_mock1,
+    add2groupcorr_3groups_mock1,
+    add2groupcorr_real1,
+    addplsra_real1,
+    addlog2fc_real1
+]
+if __name__ == '__main__':
+    run_tests(all_tests)

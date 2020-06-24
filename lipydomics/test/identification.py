@@ -10,6 +10,7 @@
 
 import os
 
+from lipydomics.test import run_tests
 from lipydomics.data import Dataset
 from lipydomics.identification import add_feature_ids, predict_ccs, predict_rt
 
@@ -35,10 +36,10 @@ add_feature_ids_any_real1
 
 def add_feature_ids_custom_real1():
     """
-add_feature_ids_any_real1
+add_feature_ids_custom_real1
     description:
         Uses the raw data from real_data_1.csv to make compound identifications using a custom list of confidence
-        levels (theo_mz, meas_rt_ccs, theo_mz_rt_ccs, in that order).
+        levels (theo_mz, meas_rt_ccs, theo_mz_rt_ccs, in reverse order).
 
         Test fails if there are any errors, or if all three identification levels are not present in the Dataset, or
         if any other identification levels are present in the Dataset
@@ -63,6 +64,32 @@ add_feature_ids_any_real1
         raise RuntimeError('add_feature_ids_custom_real1: did not find ID level "theo_mz_rt" in identifications')
     if not found_tmrc:
         raise RuntimeError('add_feature_ids_custom_real1: did not find ID level "theo_mz_rt_ccs" in identifications')
+    return True
+
+
+def add_feature_ids_badcustom_real1():
+    """
+add_feature_ids_badcustom_real1
+    description:
+        Uses the raw data from real_data_1.csv to make compound identifications using 2 custom lists of confidence
+        levels. Both lists have an invalid ID level in them, one uses "any" while the other has a typo
+
+        Test fails if any errors except for the explicitly caught ones are raised
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+    try:
+        # the custom list has "any" in it
+        add_feature_ids(dset, [0.05, 0.5, 5.], level=['any', 'theo_mz_rt', 'theo_mz'])
+    except ValueError:
+        pass
+    try:
+        # the custom list has a typo
+        add_feature_ids(dset, [0.05, 0.5, 5.], level=['theo_mz__ccs', 'theo_mz_rt', 'theo_mz'])
+    except ValueError:
+        pass
+
     return True
 
 
@@ -205,7 +232,7 @@ predict_rt_notencodable
 
 def predict_rt_ignencerr():
     """
-predict_er_ignencerr
+predict_rt_ignencerr
     description:
         predicts HILIC RT for a couple of lipids that are not encodable, but uses the ignore_encoding_errors flag to
         ignore that and predict RT anyways. There should not be any errors
@@ -217,3 +244,20 @@ predict_er_ignencerr
 
     return True
 
+
+# references to al of the test functions to be run, and order to run them in
+all_tests = [
+    add_feature_ids_any_real1,
+    add_feature_ids_custom_real1,
+    add_feature_ids_badcustom_real1,
+    add_feature_ids_any_real1_tstamp,
+    add_feature_ids_real1_bad_tstamp,
+    predict_ccs_noerrs,
+    predict_ccs_notencodable,
+    predict_ccs_ignencerr,
+    predict_rt_noerrs,
+    predict_rt_notencodable,
+    predict_rt_ignencerr
+]
+if __name__ == '__main__':
+    run_tests(all_tests)

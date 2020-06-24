@@ -11,6 +11,7 @@
 import os
 import numpy as np
 
+from lipydomics.test import run_tests
 from lipydomics.data import Dataset
 from lipydomics.stats import add_pca3
 from lipydomics.identification import add_feature_ids
@@ -210,3 +211,18 @@ dataset_export_analyzed_xlsx_real1
     # remove the exported file
     os.remove(out)
     return True
+
+
+# references to al of the test functions to be run, and order to run them in
+all_tests = [
+    dataset_init_mock1,
+    dataset_normalize_mock1,
+    dataset_getgroup_mock1,
+    dataset_assign_groups_using_replicates_real1,
+    dataset_save_load_bin_mock1,
+    dataset_export_feature_data_real1,
+    dataset_export_xlsx_real1,
+    dataset_export_analyzed_xlsx_real1
+]
+if __name__ == '__main__':
+    run_tests(all_tests)

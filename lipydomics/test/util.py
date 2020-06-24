@@ -10,11 +10,11 @@
 
 import os
 
+from lipydomics.test import run_tests
 from lipydomics.data import Dataset
 from lipydomics.stats import add_log2fc
 from lipydomics.identification import add_feature_ids
 from lipydomics.util import abbreviate_sheet, fetch_lipid_class_log2fc
-from lipydomics.plotting import heatmap_lipid_class_log2fc
 
 
 def abbrev_xl_sheet_names():
@@ -82,3 +82,11 @@ fetch_lipid_class_log2fa_real1
 
     return nc is not None and nu is not None and log2fa is not None
 
+
+# references to al of the test functions to be run, and order to run them in
+all_tests = [
+    abbrev_xl_sheet_names,
+    fetch_lipid_class_log2fa_real1
+]
+if __name__ == '__main__':
+    run_tests(all_tests)

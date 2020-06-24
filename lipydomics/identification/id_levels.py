@@ -423,7 +423,10 @@ id_feat_custom
     }
     # check that the identification levels are defined
     for lvl in levels:
-        if lvl not in level_to_id_func:
+        if lvl == 'any':
+            m = 'id_feat_custom: the special "any" ID level is invalid in a custom ID level list'
+            raise ValueError(m)
+        elif lvl not in level_to_id_func:
             m = 'id_feat_custom: identification level "{}" is not defined'
             raise ValueError(m.format(lvl))
     id_funcs = [level_to_id_func[lvl] for lvl in levels]
