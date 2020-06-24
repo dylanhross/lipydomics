@@ -27,8 +27,9 @@ from lipydomics.test.plotting import (
     heatmap_lipid_class_log2fc_real1
 )
 from lipydomics.test.identification import (
-    add_feature_ids_any_real1, add_feature_ids_any_real1_tstamp, add_feature_ids_real1_bad_tstamp, predict_ccs_noerrs,
-    predict_ccs_notencodable, predict_ccs_ignencerr, predict_rt_noerrs, predict_rt_notencodable, predict_rt_ignencerr
+    add_feature_ids_any_real1, add_feature_ids_custom_real1, add_feature_ids_any_real1_tstamp,
+    add_feature_ids_real1_bad_tstamp, predict_ccs_noerrs, predict_ccs_notencodable, predict_ccs_ignencerr,
+    predict_rt_noerrs, predict_rt_notencodable, predict_rt_ignencerr
 )
 from lipydomics.test.rt_calibration import (
     get_ref_rt_lipids1, rtcal_init_mismatch_len, rtcal_calibrate_rtc1_c12, rtcal_calibrate_rtc1_c13,
@@ -78,6 +79,7 @@ run_all_tests
         heatmap_lipid_class_log2fc_real1,
         # test/identification
         add_feature_ids_any_real1,
+        add_feature_ids_custom_real1,
         add_feature_ids_any_real1_tstamp,
         add_feature_ids_real1_bad_tstamp,
         predict_ccs_noerrs,

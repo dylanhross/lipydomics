@@ -389,3 +389,47 @@ id_feat_any
             return fid, lvl, scr
 
     return '', '', []
+
+
+def id_feat_custom(levels, cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
+    """
+id_feat_custom
+    description:
+        Goes through identification levels specified in a custom list and attempts to identify lipid feature. The
+        identification levels are attempted in the order that they are provided until an identification is made.
+    parameters:
+        levels (list(str)) -- list of identification levels to try, will be attempted in the order they are provided
+        cursor (sqlite3.Cursor) -- cursor for querying lipids.db
+        mz (float) -- m/z to match
+        rt (float) -- retention time to match
+        ccs (float) -- CCS to match
+        tol_mz (float) -- tolerance for m/z
+        tol_rt (float) -- tolerance for retention time
+        tol_ccs (float) -- tolerance for CCS
+        esi_mode (str) -- filter results by ionization mode: 'neg', 'pos', or None for unspecified
+        [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
+    returns:
+        (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
+"""
+    level_to_id_func = {
+        'meas_mz_rt_ccs': id_feat_meas_mz_rt_ccs,
+        'theo_mz_rt_ccs': id_feat_theo_mz_rt_ccs,
+        'meas_mz_rt': id_feat_meas_mz_rt,
+        'theo_mz_rt': id_feat_theo_mz_rt,
+        'meas_mz_ccs': id_feat_meas_mz_ccs,
+        'theo_mz_ccs': id_feat_theo_mz_ccs,
+        'meas_mz': id_feat_meas_mz,
+        'theo_mz': id_feat_theo_mz
+    }
+    # check that the identification levels are defined
+    for lvl in levels:
+        if lvl not in level_to_id_func:
+            m = 'id_feat_custom: identification level "{}" is not defined'
+            raise ValueError(m.format(lvl))
+    id_funcs = [level_to_id_func[lvl] for lvl in levels]
+    for f in id_funcs:
+        fid, lvl, scr = f(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm=norm)
+        if fid:
+            return fid, lvl, scr
+
+    return '', '', []
