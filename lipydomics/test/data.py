@@ -213,6 +213,79 @@ dataset_export_analyzed_xlsx_real1
     return True
 
 
+def dataset_drop_features_real1():
+    """
+dataset_drop_features_real1
+    description:
+        Loads a dataset (real_data_1.csv) then calls the drop_features(...) with a few parameter combinations
+
+        Test fails if any errors occur
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    np.random.seed(69)
+    stat1 = np.random.random((773,))
+    stat3 = np.random.random((3, 773))
+    stat3t = np.random.random((773, 3))
+    try_params = [
+        ('mintensity', {'normed': False, 'lower_bound': 1000}),
+        ('meantensity', {'normed': False, 'lower_bound': 50}),
+        ('meantensity', {'normed': False, 'lower_bound': 50, 'upper_bound': 5000}),
+        ('mock_stat_1column', {'lower_bound': 0.1}),
+        ('mock_stat_1column', {'lower_bound': 0.1, 'upper_bound': 0.9}),
+        ('mock_stat_3column', {'lower_bound': 0.1, 'upper_bound': 0.9, 'axis': 0}),
+        ('mock_stat_3column', {'lower_bound': 0.1, 'upper_bound': 0.9, 'axis': 2}),
+        ('mock_stat_3column_T', {'lower_bound': 0.1, 'upper_bound': 0.9, 'axis': 0}),
+        ('mock_stat_3column_T', {'lower_bound': 0.1, 'upper_bound': 0.9, 'axis': 2}),
+    ]
+    for c, kw in try_params:
+        # load the data
+        dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+        # add in some mock statistics
+        dset.stats['mock_stat_1column'] = stat1
+        dset.stats['mock_stat_3column'] = stat3
+        dset.stats['mock_stat_3column_T'] = stat3t
+        # drop features
+        #print(c, kw)
+        dset.drop_features(c, **kw)
+        # validate that the drop worked by checking the resulting shapes
+
+    return True
+
+
+def dataset_drop_features_badparams_real1():
+    """
+dataset_drop_features_badparams_real1
+    description:
+        Loads a dataset (real_data_1.csv) then calls the drop_features(...) method with a bunch of bad parameters meant
+        to trigger ValueErrors
+
+        Test fails if any uncaught errors occur
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    # add in some mock statistics
+    dset.stats['mock_stat_1column'] = np.random.random((dset.n_features,))
+    dset.stats['mock_stat_3column'] = np.random.random((3, dset.n_features))
+    try_params = [
+        ('kitten', {}),
+        ('meantensity', {}),
+        ('mintensity', {'normed': False}),
+        ('mintensity', {'normed': False, 'upper_bound': 100}),
+        ('meantensity', {'normed': True, 'lower_bound': 100}),
+        ('mock_stat_1column', {}),
+        ('mock_stat_3column', {'lower_bound': 100}),
+    ]
+    for c, kw in try_params:
+        try:
+            dset.drop_features(c, **kw)
+        except ValueError as ve:
+            #print(ve)
+            pass
+    return True
+
+
 # references to al of the test functions to be run, and order to run them in
 all_tests = [
     dataset_init_mock1,
@@ -222,7 +295,9 @@ all_tests = [
     dataset_save_load_bin_mock1,
     dataset_export_feature_data_real1,
     dataset_export_xlsx_real1,
-    dataset_export_analyzed_xlsx_real1
+    dataset_export_analyzed_xlsx_real1,
+    dataset_drop_features_real1,
+    dataset_drop_features_badparams_real1
 ]
 if __name__ == '__main__':
     run_tests(all_tests)

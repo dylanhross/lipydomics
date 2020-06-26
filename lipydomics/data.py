@@ -64,6 +64,7 @@ Dataset.__init__
         # store an external variable (for regression)
         self.ext_var = None
 
+
     @staticmethod
     def load_bin(bin_path):
         """
@@ -82,6 +83,7 @@ Dataset.load_bin
         with open(bin_path, 'rb') as pf:
             return pickle.load(pf)
 
+
     def save_bin(self, bin_path):
         """
 Dataset.save_bin
@@ -92,6 +94,7 @@ Dataset.save_bin
 """
         with open(bin_path, 'wb') as pf:
             pickle.dump(self, pf)
+
 
     def assign_groups(self, group_indices):
         """
@@ -120,6 +123,7 @@ Dataset.assign_groups
         for group_name in group_indices:
             self.group_indices[group_name] = group_indices[group_name]
 
+
     def assign_groups_with_replicates(self, groups, n_replicates):
         """
 Dataset.assign_groups_with_replicates
@@ -141,6 +145,7 @@ Dataset.assign_groups_with_replicates
                 group_indices[group].append(i)
                 i += 1
         self.assign_groups(group_indices)
+
 
     def get_data_bygroup(self, group_names, normed=False):
         """
@@ -185,6 +190,7 @@ Dataset.get_data_bygroup
             e += "(got type: {})".format(type(group_names))
             raise TypeError(e)
 
+
     def normalize(self, norm_weights):
         """
 Dataset.normalize
@@ -204,6 +210,7 @@ Dataset.normalize
             raise ValueError(e)
         # apply normalization
         self.normed_intensities = np.multiply(self.intensities, norm_weights)
+
 
     def __repr__(self):
         """
@@ -239,6 +246,7 @@ Dataset.__repr__
             s += '\t}\n'
         s += ')'
         return s
+
 
     def select_feature_data(self, in_csv, out_csv, tolerance=(0.01, 0.1, 3.0)):
         """
@@ -286,6 +294,7 @@ Dataset.select_feature_data
             return True
         else:
             return False
+
 
     def export_xlsx(self, xlsx_path):
         """
@@ -360,6 +369,7 @@ Dataset.export_xlsx
             identification_df.to_excel(writer, sheet_name='Identifications')
         writer.save()
 
+
     def drop_features_helper(self, target):
         """
 Dataset.drop_features_helper
@@ -374,8 +384,14 @@ Dataset.drop_features_helper
         if target.shape != (self.n_features,):
             m = 'Dataset: drop_features_helper: target array has shape {} but expected shape ({},)'
             raise ValueError(m.format(target.shape, self.n_features))
+        #print(target)
+        #print(self.intensities[target])
+        print(self.intensities.shape)
+        print(len([_ for _ in target if _]))
+        print(self.intensities[target].shape)
 
-    def drop_features(self, criteria, lower_bound=None, upper_bound=None, normed=None, idx=None):
+
+    def drop_features(self, criteria, lower_bound=None, upper_bound=None, normed=None, axis=None):
         """
 Dataset.drop_features
     description:
@@ -383,11 +399,12 @@ Dataset.drop_features
             * "mintensity" - filtering such that at least one sample must have an intensity >= the specified lower_bound
                 (the normed kwarg must be set to a boolean to indicate whether to use normalized or raw intensities)
             * "meantensity" - filtering such that mean intensity across all samples must be >= the specified lower_bound
+                or <= the specified upper_bound, or both
                 (the normed kwarg must be set to a boolean to indicate whether to use normalized or raw intensities)
             * any column-data (i.e. feature-length) statistic defined in Dataset.stats - The entry must be column data,
                 meaning that at least one dimension must be Dataset.n_features in length. If the statistic has more than
-                1 dimension, the idx kwarg must be set to the index to use. Either lower_bound, upper_bound, or both
-                must be set.
+                1 dimension, the axis kwarg must be set to the index of the column to use. Either lower_bound,
+                upper_bound, or both must be set.
     parameters:
         criteria (str) -- specifies the criteria to filter on, which is used in conjunction with the upper_bound,
                             lower_bound, or both kwargs. Valid options include 'mintensity' and 'meantensity' for
@@ -395,19 +412,19 @@ Dataset.drop_features
         [lower_bound (None or float)] -- [optional, default=None]
         [upper_bound (None or float)] -- [optional, default=None]
         [normed (None or bool)] -- when relevant, whether to use normalized intensity data [optional, default=None]
-        [idx (None or int)] -- when filtering on a statistic with more than one column (e.g. loadings from 3 component
-                                PCA), the idx kwarg indicates which column to use (e.g. idx=0 for PC1 in loadings from
+        [axis (None or int)] -- when filtering on a statistic with more than one column (e.g. loadings from 3 component
+                                PCA), the axis kwarg indicates which column to use (e.g. axis=0 for PC1 in loadings from
                                 a 3 compounent PCA) [optional, default=None]
 """
         # first ensure valid parameters
         if criteria not in ['mintensity', 'meantensity']:
             stats_ok = True
-            if self.stats is None:
-                stats_ok = False
-                m2 = 'no statistics have been computed yet'
-            elif criteria not in self.stats.keys():
+            if criteria not in self.stats.keys():
                 stats_ok = False
                 m2 = 'criteria not defined in Dataset.stats'
+            elif self.stats[criteria].shape != (self.n_features,) and axis is None:
+                stats_ok = False
+                m2 = 'the statistic has multiple columns but axis was not specified'
             if not stats_ok:
                 m = 'Dataset: drop_features: invalid criteria "{}" ({})'.format(criteria, m2)
                 raise ValueError(m)
@@ -415,6 +432,10 @@ Dataset.drop_features
             # the criteria is "mintensity" or "meantensity" so normed must be set to a boolean
             if normed is None:
                 m = 'Dataset: drop_features: criteria is "mintensity" or "meantensity" so normed kwarg must be set'
+                raise ValueError(m)
+            if criteria == 'mintensity' and lower_bound is None:
+                # lower_bound must be set for mintensity
+                m = 'Dataset: drop_features: criteria "mintensity" requires lower_bound to be set'
                 raise ValueError(m)
         if lower_bound is None and upper_bound is None:
             # at least one of lower_bound or upper_bound must be set, regardless of the criteria being used
@@ -425,3 +446,41 @@ Dataset.drop_features
             if lower_bound >= upper_bound:
                 m = 'Dataset: drop_features: lower_bound must be < upper_bound'
                 raise ValueError(m)
+        if normed and self.normed_intensities is None:
+            # if normed is set, then normalized intensities must be available
+            m = 'Dataset: drop_features: normed set to True, but no normalization has been performed'
+            raise ValueError(m)
+
+        # mintensity
+        if criteria == 'mintensity':
+            # fetch intensities
+            i = self.normed_intensities if normed else self.intensities
+            # max is used here because AT LEAST ONE FEATURE must be >= to lower_bound NOT ALL FEATURES
+            target = np.max(i, axis=1) >= lower_bound
+            self.drop_features_helper(target)
+        # meantensity
+        elif criteria == 'meantensity':
+            # fetch intensities
+            i = self.normed_intensities if normed else self.intensities
+            # set the bounds
+            lb = lower_bound if lower_bound is not None else 0
+            ub = upper_bound if upper_bound is not None else np.inf
+            target = np.logical_and((np.mean(i, axis=1) > lb), (np.mean(i, axis=1) < ub))
+            self.drop_features_helper(target)
+        # stats
+        else:
+            # fetch the desired statistic
+            stat = self.stats[criteria]
+            stat = stat if type(stat) == np.ndarray else np.array(stat)  # ensure the statistic is a numpy array
+            # set the bounds
+            lb = lower_bound if lower_bound is not None else 0
+            ub = upper_bound if upper_bound is not None else np.inf
+            # deal with multiple axes in statistic
+            if stat.shape != (self.n_features,):
+                # determine orientation of the statistic array, it may need to be transposed before indexing
+                if stat.shape[0] == self.n_features:
+                    stat = stat.T
+                # index to get a single column
+                stat = stat[axis]
+            target = np.logical_and((stat > lb), (stat < ub))
+            self.drop_features_helper(target)
