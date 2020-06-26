@@ -242,7 +242,9 @@ Dataset.__repr__
         else:    
             s += '\tstats={\n'
             for stat in self.stats:
-                s += '\t\t"{}"\n'.format(stat)
+                x = self.stats[stat]
+                x = np.array(x) if type(x) is not np.ndarray else x
+                s += '\t\t"{}" {}\n'.format(stat, x.shape)
             s += '\t}\n'
         s += ')'
         return s
