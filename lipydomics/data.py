@@ -386,11 +386,43 @@ Dataset.drop_features_helper
         if target.shape != (self.n_features,):
             m = 'Dataset: drop_features_helper: target array has shape {} but expected shape ({},)'
             raise ValueError(m.format(target.shape, self.n_features))
-        #print(target)
-        #print(self.intensities[target])
-        print(self.intensities.shape)
-        print(len([_ for _ in target if _]))
-        print(self.intensities[target].shape)
+
+        # first drop features from the intensities matrix (and normalized intensities if present)
+        self.intensities = self.intensities[target]
+        if self.normed_intensities is not None:
+            self.normed_intensities = self.normed_intensities[target]
+
+        # drop features from the labels
+        self.labels = self.labels[target]
+
+        # drop identifications (if present)
+        # these are lists with some mixed types, so need to iterate through them together with target
+        if self.feat_ids is not None:
+            feat_ids, feat_id_levels, feat_id_scores = [], [], []
+            for fid, fidl, fids, keep in zip(self.feat_ids, self.feat_id_levels, self.feat_id_scores, target):
+                if keep:
+                    feat_ids.append(fid)
+                    feat_id_levels.append(fidl)
+                    feat_id_scores.append(fids)
+            self.feat_ids = feat_ids
+            self.feat_id_levels = feat_id_levels
+            self.feat_id_scores = feat_id_scores
+
+        # drop features from stats entries, we can assume they are all already numpy.ndarrays
+        for stat_label in self.stats:
+            # check that the statistic has column data
+            stat_data = self.stats[stat_label]
+            if self.n_features in stat_data.shape:
+                if stat_data.shape[0] != self.n_features:
+                    # need to transpose before indexing, then transpose back to preserve the shape
+                    stat_data = stat_data.T[target].T
+                else:
+                    stat_data = stat_data[target]
+                # update self.stats with the dropped feature data
+                self.stats[stat_label] = stat_data
+
+        # finally update counts of samples and features
+        self.n_features, self.n_samples = self.intensities.shape
 
 
     def drop_features(self, criteria, lower_bound=None, upper_bound=None, normed=None, axis=None):
@@ -473,7 +505,6 @@ Dataset.drop_features
         else:
             # fetch the desired statistic
             stat = self.stats[criteria]
-            stat = stat if type(stat) == np.ndarray else np.array(stat)  # ensure the statistic is a numpy array
             # set the bounds
             lb = lower_bound if lower_bound is not None else 0
             ub = upper_bound if upper_bound is not None else np.inf

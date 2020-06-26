@@ -13,7 +13,7 @@ import numpy as np
 
 from lipydomics.test import run_tests
 from lipydomics.data import Dataset
-from lipydomics.stats import add_pca3
+from lipydomics.stats import add_pca3, add_plsra
 from lipydomics.identification import add_feature_ids
 
 
@@ -213,13 +213,13 @@ dataset_export_analyzed_xlsx_real1
     return True
 
 
-def dataset_drop_features_real1():
+def dataset_drop_features_goodparams_real1():
     """
-dataset_drop_features_real1
+dataset_drop_features_goodparams_real1
     description:
         Loads a dataset (real_data_1.csv) then calls the drop_features(...) with a few parameter combinations
 
-        Test fails if any errors occur
+        Test fails if any errors occur or if any of the resulting arrays are not of the expected shape
     returns:
         (bool) -- test pass (True) or fail (False)
 """
@@ -246,10 +246,14 @@ dataset_drop_features_real1
         dset.stats['mock_stat_3column'] = stat3
         dset.stats['mock_stat_3column_T'] = stat3t
         # drop features
-        #print(c, kw)
         dset.drop_features(c, **kw)
         # validate that the drop worked by checking the resulting shapes
-
+        assert dset.n_features < 773
+        assert dset.intensities.shape == (dset.n_features, dset.n_samples)
+        assert dset.labels.shape == (dset.n_features, 3)
+        assert dset.stats['mock_stat_1column'].shape == (dset.n_features,)
+        assert dset.stats['mock_stat_3column'].shape == (3, dset.n_features)
+        assert dset.stats['mock_stat_3column_T'].shape == (dset.n_features, 3)
     return True
 
 
@@ -286,6 +290,46 @@ dataset_drop_features_badparams_real1
     return True
 
 
+def dataset_drop_features_real1():
+    """
+dataset_drop_features_real1
+    description:
+        Loads a dataset (real_data_1.csv), works up the data by identifying lipids and computing statistics, then calls
+        the drop_features(...) method (using meantensity with two bounds)
+
+        Test fails if any errors occur or if any of the components of the Dataset are not the expected shape after the
+        transformation
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+    dset.assign_groups_with_replicates(['A', 'B', 'C', 'D', 'E'], 4)
+    add_pca3(dset, ['A', 'B', 'C', 'D', 'E'])
+    y = []
+    for i in range(5):
+        for j in range(4):
+            y.append(float(i))
+    y = np.array(y)
+    add_plsra(dset, ['A', 'B', 'C', 'D', 'E'], y)
+    add_feature_ids(dset, [0.05, 0.2, 0.1], level='theo_mz_rt')
+    #print(dset)
+    dset.drop_features('meantensity', normed=False, lower_bound=50, upper_bound=1000)
+    #print(dset)
+    # validate that the dropping worked by checking some shapes
+    assert dset.n_features < 773
+    assert dset.intensities.shape == (dset.n_features, dset.n_samples)
+    assert dset.labels.shape == (dset.n_features, 3)
+    assert dset.stats['PCA3_A-B-C-D-E_loadings_raw'].shape == (3, dset.n_features)
+    assert dset.stats['PCA3_A-B-C-D-E_projections_raw'].shape == (dset.n_samples, 3)
+    assert dset.ext_var.shape == (dset.n_samples,)
+    assert dset.stats['PLS-RA_A-B-C-D-E_loadings_raw'].shape == (dset.n_features, 2)
+    assert dset.stats['PLS-RA_A-B-C-D-E_projections_raw'].shape == (dset.n_samples, 2)
+    assert len(dset.feat_ids) == dset.n_features
+    assert len(dset.feat_id_levels) == dset.n_features
+    assert len(dset.feat_id_scores) == dset.n_features
+    return True
+
+
 # references to al of the test functions to be run, and order to run them in
 all_tests = [
     dataset_init_mock1,
@@ -296,8 +340,9 @@ all_tests = [
     dataset_export_feature_data_real1,
     dataset_export_xlsx_real1,
     dataset_export_analyzed_xlsx_real1,
-    dataset_drop_features_real1,
-    dataset_drop_features_badparams_real1
+    dataset_drop_features_goodparams_real1,
+    dataset_drop_features_badparams_real1,
+    dataset_drop_features_real1
 ]
 if __name__ == '__main__':
     run_tests(all_tests)
