@@ -108,6 +108,37 @@ description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groups&nbsp;(list(str))&nbsp;--&nbsp;list&nbsp;of&nbsp;group&nbsp;names<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n_replicates&nbsp;(int)&nbsp;--&nbsp;number&nbsp;of&nbsp;samples&nbsp;in&nbsp;each&nbsp;group</tt></dd></dl>
 
+<dl><dt><a name="Dataset-drop_features"><strong>drop_features</strong></a>(self, criteria, lower_bound=None, upper_bound=None, normed=None, axis=None)</dt><dd><tt><a href="#Dataset">Dataset</a>.drop_features<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uses&nbsp;user-specified&nbsp;criteria&nbsp;to&nbsp;selectively&nbsp;remove&nbsp;features&nbsp;from&nbsp;the&nbsp;<a href="#Dataset">Dataset</a>.&nbsp;Valid&nbsp;criteria&nbsp;are:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;"mintensity"&nbsp;-&nbsp;filtering&nbsp;such&nbsp;that&nbsp;at&nbsp;least&nbsp;one&nbsp;sample&nbsp;must&nbsp;have&nbsp;an&nbsp;intensity&nbsp;&gt;=&nbsp;the&nbsp;specified&nbsp;lower_bound<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(the&nbsp;normed&nbsp;kwarg&nbsp;must&nbsp;be&nbsp;set&nbsp;to&nbsp;a&nbsp;boolean&nbsp;to&nbsp;indicate&nbsp;whether&nbsp;to&nbsp;use&nbsp;normalized&nbsp;or&nbsp;raw&nbsp;intensities)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;"meantensity"&nbsp;-&nbsp;filtering&nbsp;such&nbsp;that&nbsp;mean&nbsp;intensity&nbsp;across&nbsp;all&nbsp;samples&nbsp;must&nbsp;be&nbsp;&gt;=&nbsp;the&nbsp;specified&nbsp;lower_bound<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;&lt;=&nbsp;the&nbsp;specified&nbsp;upper_bound,&nbsp;or&nbsp;both<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(the&nbsp;normed&nbsp;kwarg&nbsp;must&nbsp;be&nbsp;set&nbsp;to&nbsp;a&nbsp;boolean&nbsp;to&nbsp;indicate&nbsp;whether&nbsp;to&nbsp;use&nbsp;normalized&nbsp;or&nbsp;raw&nbsp;intensities)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;any&nbsp;column-data&nbsp;(i.e.&nbsp;feature-length)&nbsp;statistic&nbsp;defined&nbsp;in&nbsp;<a href="#Dataset">Dataset</a>.stats&nbsp;-&nbsp;The&nbsp;entry&nbsp;must&nbsp;be&nbsp;column&nbsp;data,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;meaning&nbsp;that&nbsp;at&nbsp;least&nbsp;one&nbsp;dimension&nbsp;must&nbsp;be&nbsp;<a href="#Dataset">Dataset</a>.n_features&nbsp;in&nbsp;length.&nbsp;If&nbsp;the&nbsp;statistic&nbsp;has&nbsp;more&nbsp;than<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;dimension,&nbsp;the&nbsp;axis&nbsp;kwarg&nbsp;must&nbsp;be&nbsp;set&nbsp;to&nbsp;the&nbsp;index&nbsp;of&nbsp;the&nbsp;column&nbsp;to&nbsp;use.&nbsp;Either&nbsp;lower_bound,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;upper_bound,&nbsp;or&nbsp;both&nbsp;must&nbsp;be&nbsp;set.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;criteria&nbsp;(str)&nbsp;--&nbsp;specifies&nbsp;the&nbsp;criteria&nbsp;to&nbsp;filter&nbsp;on,&nbsp;which&nbsp;is&nbsp;used&nbsp;in&nbsp;conjunction&nbsp;with&nbsp;the&nbsp;upper_bound,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lower_bound,&nbsp;or&nbsp;both&nbsp;kwargs.&nbsp;Valid&nbsp;options&nbsp;include&nbsp;'mintensity'&nbsp;and&nbsp;'meantensity'&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intensity-based&nbsp;filtering,&nbsp;or&nbsp;any&nbsp;feature-length&nbsp;statistic&nbsp;already&nbsp;defined&nbsp;in&nbsp;<a href="#Dataset">Dataset</a>.stats<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[lower_bound&nbsp;(None&nbsp;or&nbsp;float)]&nbsp;--&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[upper_bound&nbsp;(None&nbsp;or&nbsp;float)]&nbsp;--&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(None&nbsp;or&nbsp;bool)]&nbsp;--&nbsp;when&nbsp;relevant,&nbsp;whether&nbsp;to&nbsp;use&nbsp;normalized&nbsp;intensity&nbsp;data&nbsp;[optional,&nbsp;default=None]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[axis&nbsp;(None&nbsp;or&nbsp;int)]&nbsp;--&nbsp;when&nbsp;filtering&nbsp;on&nbsp;a&nbsp;statistic&nbsp;with&nbsp;more&nbsp;than&nbsp;one&nbsp;column&nbsp;(e.g.&nbsp;loadings&nbsp;from&nbsp;3&nbsp;component<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PCA),&nbsp;the&nbsp;axis&nbsp;kwarg&nbsp;indicates&nbsp;which&nbsp;column&nbsp;to&nbsp;use&nbsp;(e.g.&nbsp;axis=0&nbsp;for&nbsp;PC1&nbsp;in&nbsp;loadings&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;3&nbsp;compounent&nbsp;PCA)&nbsp;[optional,&nbsp;default=None]</tt></dd></dl>
+
+<dl><dt><a name="Dataset-drop_features_helper"><strong>drop_features_helper</strong></a>(self, target)</dt><dd><tt><a href="#Dataset">Dataset</a>.drop_features_helper<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;helper&nbsp;function&nbsp;that&nbsp;updates&nbsp;all&nbsp;relevant&nbsp;data&nbsp;arrays&nbsp;(i.e.&nbsp;any&nbsp;feature-length&nbsp;arrays)&nbsp;in&nbsp;the&nbsp;<a href="#Dataset">Dataset</a>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dropping&nbsp;all&nbsp;of&nbsp;the&nbsp;features&nbsp;set&nbsp;to&nbsp;False&nbsp;in&nbsp;the&nbsp;target&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target&nbsp;(np.array(bool))&nbsp;--&nbsp;a&nbsp;boolean&nbsp;array&nbsp;of&nbsp;shape&nbsp;(self.<strong>n_features</strong>)&nbsp;indicating&nbsp;which&nbsp;features&nbsp;(rows)&nbsp;should<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;kept&nbsp;in&nbsp;the&nbsp;<a href="#Dataset">Dataset</a>&nbsp;(indicated&nbsp;by&nbsp;True)</tt></dd></dl>
+
 <dl><dt><a name="Dataset-export_xlsx"><strong>export_xlsx</strong></a>(self, xlsx_path)</dt><dd><tt><a href="#Dataset">Dataset</a>.export_xlsx<br>
 &nbsp;&nbsp;&nbsp;&nbsp;description:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Exports&nbsp;this&nbsp;<a href="#Dataset">Dataset</a>&nbsp;instance&nbsp;into&nbsp;an&nbsp;Excel&nbsp;Spreadsheet<br>

@@ -12,6 +12,7 @@ import os
 from csv import reader
 from numpy import array, mean, sqrt
 
+from lipydomics.test import run_tests
 from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
 from lipydomics.util import parse_lipid
 
@@ -175,3 +176,16 @@ rtcal_calibrate_rtc1_c13
     if rmse > 0.2:
         return False
     return True
+
+
+# references to al of the test functions to be run, and order to run them in
+all_tests = [
+    get_ref_rt_lipids1,
+    rtcal_init_mismatch_len,
+    rtcal_calibrate_rtc1_c12,
+    rtcal_calibrate_rtc1_c13,
+    rtcal_calibrate_rtc2_c12,
+    rtcal_calibrate_rtc2_c13
+]
+if __name__ == '__main__':
+    run_tests(all_tests)

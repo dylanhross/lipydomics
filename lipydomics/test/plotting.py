@@ -12,6 +12,7 @@ import os
 import numpy as np
 from csv import reader
 
+from lipydomics.test import run_tests
 from lipydomics.data import Dataset
 from lipydomics.stats import add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc
 from lipydomics.plotting import (
@@ -269,3 +270,17 @@ fetch_lipid_class_log2fa_real1
         os.remove(fig_path)
 
     return True
+
+
+# references to al of the test functions to be run, and order to run them in
+all_tests = [
+    barplot_feature_bygroup_mock1,
+    batch_barplot_feature_bygroup_real1,
+    scatter_pca3_projections_bygroup_mock1,
+    scatter_plsda_projections_bygroup_mock1,
+    splot_plsda_pcorr_bygroup_mock1,
+    scatter_plsra_projections_bygroup_real1,
+    heatmap_lipid_class_log2fc_real1
+]
+if __name__ == '__main__':
+    run_tests(all_tests)

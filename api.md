@@ -1,12 +1,73 @@
-# API (version 1.4.x)
+# API (version 1.6.x)
 The following is a brief overview of the package API with usage examples, organized by module.
 
 **Complete documentation for all modules is available in HTML format under `lipydomics/doc/lipydomics.html`.**
+
+__Modules:__
+* [Data](#data)
+* [Stats](#stats)
+* [Plotting](#plotting)
+* [Identification](#identification)
+
 
 ## Data
 The `lipydomics.data` module contains the `Dataset` object, which organizes all of the relevant data from a lipidomics 
 analysis together. This includes raw data, normalized data, group assignments, experimental metadata, computed 
 statistics, retention time calibration, and compound identifications. 
+
+### The `Dataset` Object
+The `Dataset` object stores all data and metadata relevant to a lipidomics data analysis. This data is accessible through
+the instance variables described below.
+* `Dataset.csv` (_str_) - name of the .csv file used to initialize the `Dataset`
+* `Dataset.esi_mode` (_str_) - used for lipid identification, "pos" for positive mode data, "neg" for negative mode data
+* `Dataset.n_features` (_int_) - number of features (_i.e._ rows)
+* `Dataset.n_samples` (_int_) - number of samples (_i.e._ columns)
+* `Dataset.labels` (_numpy.ndarray_) - feature labels [[mz, rt, ccs], ... ], shape = (n_features, 3)
+* `Dataset.intensities` (_numpy.ndarray_) - feature intensities (raw) [[i0, i1, ... ], ... ], shape = (n_features, n_samples)
+* `Dataset.normed_intensities` (_numpy.ndarray_) - feature intensities (normalized) [[i0, i1, ... ], ... ], shape = 
+(n_features, n_samples), set by the [`Dataset.normalize(...)`](#data-normalization) method
+* `Dataset.group_indices` (_dict[str : list(int)]_) - dictionary mapping sample group names to their corresponding indices 
+in the `Dataset.intensities` matrix, set by the [`Dataset.assign_groups(...)`](#assigning-groups) or 
+[`Dataset.assign_groups_with_replicates(...)`](#assigning-groups) methods
+* `Dataset.stats` (_dict[str : numpy.ndarray]_) - dictionary mapping statistic labels to their corresponding data arrays,
+entries are added via calls to functions defined in the [`lipydomics.stats`](#stats) module
+* `Dataset.feat_ids` (_list(list(str))_) - a list of putative lipid identifications in descending order of confidence 
+for each feature (or a single string indicating an unidentified feature), set using the [`lipydomics.identification`](#identification)
+module
+* `Dataset.feat_id_levels` (_list(str)_) - indicates the confidence level of lipid identifications made for each feature,
+set using the [`lipydomics.identification`](#identification) module
+* `Dataset.feat_id_scores` (list(list(float))) - confidence scores of all putative lipid identifications for each feature,
+set using the [`lipydomics.identification`](#identification) module
+* `Dataset.ext_var` (_numpy.ndarray_) - a feature-length array containing an external variable, set when performing 
+[PLS-Regression Analysis](#partial-least-squares-regression-analysis)
+
+The current state (group assignments, computed statistics, lipid identifications, _etc._) of a `Dataset` instance can be 
+investigated with the informative `__repr__` method build into the object. An example of the output of a call to `print(dset)`:  
+```
+Dataset(
+	csv="/Users/DylanRoss/Documents/GitHub/lipydomics/lipydomics/test/real_data_1.csv",
+	esi_mode="neg",
+	samples=20,
+	features=313,
+	identified=102,
+	normalized=False,
+	rt_calibrated=False,
+	ext_var=True,
+	group_indices={
+		"A": [0, 1, 2, 3]
+		"B": [4, 5, 6, 7]
+		"C": [8, 9, 10, 11]
+		"D": [12, 13, 14, 15]
+		"E": [16, 17, 18, 19]
+	},
+	stats={
+		"PCA3_A-B-C-D-E_loadings_raw" (3, 313)
+		"PCA3_A-B-C-D-E_projections_raw" (20, 3)
+		"PLS-RA_A-B-C-D-E_loadings_raw" (313, 2)
+		"PLS-RA_A-B-C-D-E_projections_raw" (20, 2)
+	}
+)
+```
 
 ### Initialization
 A `Dataset` instance may either be initialized using a `.csv` file containing feature labels 
@@ -131,6 +192,39 @@ identifications, and computed statistics.
 ```python
 dset.export_xlsx('exported_dataset.xlsx')
 ```
+
+
+### Dropping Features 
+Features may be dropped from a `Dataset` instance according to user-defined criteria. Any feature not meeting the
+specified criteria is removed from the `Dataset`, along with all corresponding identifications, statistics, _etc_. Valid
+options for criteria are "mintensity", "meantensity", or any feature-length statistic already present in `Dataset.stats`.
+For all criteria, one or both of the `upper_bound` and `lower_bound` kwargs must be set to reflect the desired selection.
+The "mintensity" and "meantensity" criteria are two different intensity-based filtering techniques:
+* "mintensity" - filtering such that at least one sample must have an intensity >= the specified `lower_bound` (the 
+`normed` kwarg must be set to a boolean to indicate whether to use normalized or raw intensities)
+* "meantensity" - filtering such that mean intensity across all samples must be >= the specified `lower_bound` or <= the 
+specified `upper_bound`, or both
+
+For filtering by the value of a computed statistic that contains more than 1 dimension, there is an additional kwarg 
+(`axis`) which can be used to select the specific column to use. 
+
+_Example:_ 
+```python
+# drop features that do not have at least one sample with normalized intensity > 1e3
+dset.drop_features('mintensity', lower_bound=1e3, normed=True)
+
+# drop features with average raw intensity < 1e3 or > 1e5
+dset.drop_features('meantensity', lower_bound=1e3, upper_bound=1e5, normed=False)
+
+# drop features with an ANOVA p-value > 0.05
+dset.drop_features('ANOVA_A-B-C-D_normed', upper_bound=0.05)
+
+# drop features that have a loading coefficient < 500 for principal component 2
+dset.drop_features('PCA3_A-B-C-D_loadings_normed', lower_bound=500, axis=1)
+```
+
+**IMPORTANT:** *Dropping features cannot be undone, it is advisable to save the instance using `Dataset.save_bin(...)` 
+prior to calling `Dataset.drop_features(...)` to be able to roll back the changes if needed.*
 
 
 ### Saving to File
@@ -366,6 +460,11 @@ tol = [0.02, 0.2, 2.0]  # tol must be a list
 # identify features at the highest level possible
 add_feature_ids(dset, tol, level='any')
 ```
+While this example demonstrates the use of the `any` identification level, any other single identification level
+may be specified with the `level` kwarg to perform identifications only using a single confidence level. The `level` 
+kwarg can also be a list of identification levels, which are tried in the order specified until an identification made
+(essentially a custom version of the `any` identification level).
+
 The resulting lipid identifications are stored in the `Dataset.feat_ids` instance variable as lists of putative IDs for 
 each feature. The `Dataset.feat_id_levels` instance variable holds the identification level for each feature, and the 
 `Dataset.feat_id_scores` instance variable holds the scores for each putative lipid ID. Multiple calls to 
