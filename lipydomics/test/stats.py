@@ -13,7 +13,9 @@ import numpy as np
 
 from lipydomics.test import run_tests
 from lipydomics.data import Dataset
-from lipydomics.stats import add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc
+from lipydomics.stats import (
+    add_anova_p, add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc, add_2group_pvalue
+)
 
 
 def addanovap_mock1():
@@ -342,7 +344,62 @@ addlog2fc_real1
             m = 'addlog2fc_real1: "log2fc_..._raw" should have shape (773,), has shape: {}'
             raise RuntimeError(m.format(dset.stats['LOG2FC_{}_raw'.format('-'.join(pair))].shape))
 
-    return dset
+    return True
+
+
+def add2grouppvalue_real1():
+    """
+add2grouppvalue_real1
+    description:
+        Uses the raw data from real_data_1.csv to compute p-values for 2 group comparisons on a bunch of pairs of
+        groups and using all 3 stats tests
+
+        Test fails if there are any errors or if the shape of any of the following stats entries are incorrect:
+            dset.stats['{stats_test}_..._raw'].shape = (773,)
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    dset.assign_groups({
+        'Par': [0, 1, 2, 3],
+        'Dap2': [4, 5, 6, 7],
+        'Dal2': [8, 9, 10, 11],
+        'Van4': [12, 13, 14, 15],
+        'Van8': [16, 17, 18, 19]
+    })
+
+    # pairs of groups to compute log2fc on
+    pairs = [
+        ['Par', 'Dap2'],
+        ['Par', 'Dal2'],
+        ['Par', 'Van4'],
+        ['Par', 'Van8']
+    ]
+
+    for pair in pairs:
+        for stats_test in ['students', 'welchs', 'mann-whitney']:
+            #print('testing {} with {}'.format(pair, stats_test))
+            add_2group_pvalue(dset, pair, stats_test)
+            stest_abbrev = {'students': 'studentsP', 'welchs': 'welchsP', 'mann-whitney': 'mannwhitP'}[stats_test]
+            if dset.stats['{}_{}_raw'.format(stest_abbrev, '-'.join(pair))].shape != (773,):
+                m = 'add2grouppvalue_real1: "{}_..._raw" should have shape (773,), has shape: {}'
+                raise RuntimeError(m.format(dset.stats['LOG2FC_{}_raw'.format(stest_abbrev, '-'.join(pair))].shape))
+
+    # diagnostic printing stuff
+    """
+    print(dset)
+    for s, w, m in zip(dset.stats["studentsP_Par-Dap2_raw"] <= 0.05,
+                       dset.stats["welchsP_Par-Dap2_raw"] <= 0.05,
+                       dset.stats["mannwhitP_Par-Dap2_raw"] <= 0.05):
+        if s and w and m:
+            print(True)
+        elif not s and not w and not m:
+            print(False)
+        else:
+            print(s, w, m)
+    """
+
+    return True
 
 
 # references to al of the test functions to be run, and order to run them in
@@ -358,7 +415,8 @@ all_tests = [
     add2groupcorr_3groups_mock1,
     add2groupcorr_real1,
     addplsra_real1,
-    addlog2fc_real1
+    addlog2fc_real1,
+    add2grouppvalue_real1
 ]
 if __name__ == '__main__':
     run_tests(all_tests)
