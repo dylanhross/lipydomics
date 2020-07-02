@@ -16,7 +16,7 @@
 
 
 import numpy as np
-from scipy.stats import f_oneway, pearsonr
+from scipy.stats import f_oneway, pearsonr, ttest_ind, mannwhitneyu
 from sklearn.decomposition import PCA
 from sklearn.cross_decomposition import PLSRegression
 import warnings
@@ -281,3 +281,64 @@ add_log2fc
     # add the statistics into the Dataset
     dataset.stats['LOG2FC_{}_{}'.format('-'.join(group_names), 'normed' if normed else 'raw')] = log2fc
 
+
+def  add_2group_pvalue(dataset, group_names, stats_test, normed=False):
+    """
+add_2group_pvalue
+    description:
+        Adds p-values from a two group comparison to Dataset.stats. The stats_test arg determines which statistical
+        test to apply to get the p-values, valid options are:
+            "students" - parametric, Student's two-sided t-test assuming equal variance and normal distribution for
+                         both populations
+            "welchs" - parametric, Welch's two-sided t-test assuming unequal variance and normal distribution for
+                        both populations
+            "mann-whitney" - nonparametric, two-sided test assuming two non-normally distributed populations, ideally
+                                both samples should contain >20 observations
+
+        The p-values are added to Dataset.stats with the label '{stat}_A-B_{raw/normed}'.
+            where stat is "studentsP" for students, "welchsP" for welchs, or "mannwhitP" for mann-whitney
+        If the Dataset.stats entry is already present, then it will be overridden.
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- groups to use to compute fold-change, only 2 groups allowed
+        stats_test (str) -- specify the statistical test to apply
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+"""
+    # validate input
+    if stats_test not in ['students', 'welchs', 'mann-whitney']:
+        m = 'add_2group_pvalue: stats_test "{}" not valid'.format(stats_test)
+        raise ValueError(m)
+    if len(group_names) != 2:
+        m = 'add_2group_pvalue: 2 group names must be specified for 2 group p-value, {} group names specified'
+        raise ValueError(m.format(len(group_names)))
+
+    # compute the statistic
+    group_data = np.array([_ for _ in dataset.get_data_bygroup(group_names, normed=normed)])
+    if stats_test in ['students', 'welchs']:
+        eqv = stats_test == 'students'
+        # this raises warnings with zero means, ignore the warnings since the resulting p-values end up getting set
+        # to NaN when the ttest function runs and then 1. below
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            stat, pvalue = ttest_ind(*group_data, axis=1, equal_var=eqv)
+    else:
+        # mann-whitney
+        pv = []
+        for feature in zip(*group_data):
+            try:
+                u, p = mannwhitneyu(*feature, alternative='two-sided')
+            except ValueError:
+                # this happens when both samples are equal (typically all zeros)
+                p = np.nan
+            pv.append(p)
+        pvalue = np.array(pv)
+
+    # the pvalue arrays may contain NaNs, convert those to 1.
+    pvalue = np.nan_to_num(pvalue, nan=1.)
+
+    # add to Dataset.stats
+    normed = 'normed' if normed else 'raw'
+    stat_abbrev = {'students': 'studentsP', 'welchs': 'welchsP', 'mann-whitney': 'mannwhitP'}[stats_test]
+    label = "{}_".format(stat_abbrev) + '-'.join(group_names) + "_" + normed
+    # add the statistic into the Dataset
+    dataset.stats[label] = pvalue

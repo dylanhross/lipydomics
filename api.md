@@ -321,6 +321,18 @@ from lipydomics.stats import add_log2fc
 add_log2fc(dset, ['Grog', 'Scanlan'])
 ```
 
+### Two-Group p-value
+Computes the p-value from a comparison of two groups using a user-specified statistical test. The statistical test may
+be a Student's t-test (`students`), Welch's t-test (`welchs`), or Mann-Whitney u-test (`mann-whitney`) depending on the
+type of comparison and associated assumtions the user is willing to make about the two populations. 
+
+```python
+from lipydomics.stats import add_2group_pvalue
+
+# compute p-values from a Welch's t-test using normalized data
+add_2group_pvalue(dset, ['red', 'blue'], 'welchs', normed=True)
+```
+
 ## Plotting
 The `lipydomics.plotting` module contains several functions for generating plots from the data stored in a `Dataset` 
 instance. All plotting  functions have a similar interface, taking a reference to the `Dataset` instance, a list of 
