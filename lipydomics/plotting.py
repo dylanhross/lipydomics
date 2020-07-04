@@ -419,3 +419,75 @@ heatmap_lipid_class_log2fc
 
     # everything worked
     return True
+
+
+def volcano_2group(dataset, group_names, stats_test, img_dir, normed=False, p_upper_bound=0.01):
+    """
+heatmap_lipid_class_log2fc
+    description:
+        generates a volcano plot (Log2(FC) vs. -Log10(p-value)) for a two-group comparison and saves the image to a
+        specified directory. The filename of the image is:
+            'volcano_{group_name1}-{group_name2}_{stats_test}_{raw or normed}.png'
+        * The same group names (in the same order) as were used in the call to add_log2fc(...) and the call to
+          add_2group_pvalue(...) must be used. *
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        group_names (list(str)) -- groups to use to compute fold-change, only 2 groups allowed
+        stats_test (str) -- specify the statistical test that was used
+        img_dir (str) -- directory to save the image under
+        [normed (bool)] -- Use normalized data (True) or raw (False) [optional, default=False]
+        [p_lower_bound (float)] -- upper limit for p-value, lower p-values get colors [optional, default=0.01]
+    returns:
+        (bool) -- found data for the specified lipid class
+"""
+    if len(group_names) != 2:
+        m = 'volcano_2group: 2 group names must be specified for volcano plot, {} group names specified'
+        raise ValueError(m.format(len(group_names)))
+
+    # grab the pvalues, take the negative log10
+    nrm = 'normed' if normed else 'raw'
+    stat_abbrev = {'students': 'studentsP', 'welchs': 'welchsP', 'mann-whitney': 'mannwhitP'}[stats_test]
+    pv_label = "{}_".format(stat_abbrev) + '-'.join(group_names) + "_" + nrm
+    pv = dataset.stats[pv_label]
+    l10pv = np.log10(pv) * -1.
+
+    # grab the log2(fc)
+    log2fa_label = 'LOG2FC_{}_{}'.format('-'.join(group_names), nrm)
+    l2fc = dataset.stats[log2fa_label]
+
+    # generate the path to save the figure under
+    fig_name = 'volcano_{}_{}_{}.png'.format('-'.join(group_names), stats_test, nrm)
+    fig_path = os.path.join(img_dir, fig_name)
+
+    # make the plot
+    fig = plt.figure(figsize=(3, 3))
+    ax = fig.add_subplot(111)
+
+    # color each of the points according to their values
+    c = []
+    p_ub = -1. * np.log10(p_upper_bound)
+    for l2fc_, l10pv_ in zip(l2fc, l10pv):
+        # any p-value greater than 0.05 is grey
+        if l10pv_ < p_ub:
+            c.append('grey')
+        else:
+            if l2fc_ > 0:
+                # increased features are red
+                c.append('r')
+            else:
+                # decreased features are blue
+                c.append('b')
+
+    ax.axvline(lw=0.5, ls='--', c='k', zorder=0)
+    ax.axhline(p_ub, lw=0.5, ls='--', c='grey', zorder=0)
+
+    ax.scatter(l2fc, l10pv, s=4, c=c, edgecolors='none')
+
+    ax.set_xlabel(r'$Log_2(FC)$', fontsize=8)
+    ax.set_ylabel(r'$-Log_{10}(Pvalue)$', fontsize=8)
+    ax.set_title('{} vs. {}'.format(*group_names), fontsize=8, fontweight='bold')
+    plt.tight_layout()
+    plt.savefig(fig_path, dpi=IMG_RES, bbox_inches='tight')
+    plt.close()
+
+
