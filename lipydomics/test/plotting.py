@@ -14,11 +14,11 @@ from csv import reader
 
 from lipydomics.test import run_tests
 from lipydomics.data import Dataset
-from lipydomics.stats import add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc
+from lipydomics.stats import add_pca3, add_plsda, add_2group_corr, add_plsra, add_log2fc, add_2group_pvalue
 from lipydomics.plotting import (
     barplot_feature_bygroup, batch_barplot_feature_bygroup, scatter_pca3_projections_bygroup,
     scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup,
-    heatmap_lipid_class_log2fc
+    heatmap_lipid_class_log2fc, volcano_2group
 )
 from lipydomics.identification import add_feature_ids
 
@@ -272,6 +272,82 @@ fetch_lipid_class_log2fa_real1
     return True
 
 
+def volcano_2group_real1():
+    """
+volcano_2group_real1
+    description:
+        Tests the function that makes a volcano plot
+
+        Test fails if there are any errors or the image file is not created
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    # setup
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+    dset.assign_groups({
+        'Par': [0, 1, 2, 3],
+        'Dap2': [4, 5, 6, 7]
+    })
+    add_log2fc(dset, ['Par', 'Dap2'])
+    add_2group_pvalue(dset, ['Par', 'Dap2'], 'students')
+
+    img_dir = os.path.dirname(__file__)
+    fig_path = os.path.join(img_dir, 'volcano_Par-Dap2_students_raw.png')
+    volcano_2group(dset, ['Par', 'Dap2'], 'students', img_dir)
+
+    if not os.path.isfile(fig_path):
+        m = 'volcano_2group_real1: image file {} not found'
+        raise RuntimeError(m.format(fig_path))
+    else:
+        # delete the image file
+        os.remove(fig_path)
+
+    return True
+
+
+def volcano_2group_badstats_real1():
+    """
+volcano_2group_badstats_real1
+    description:
+        Tests the function that makes a volcano plot by giving it bad information, expects ValueErrors
+
+        Test fails if there are any errors other than the expected ValueErrors
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    # setup
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+    dset.assign_groups({
+        'Par': [0, 1, 2, 3],
+        'Dap2': [4, 5, 6, 7]
+    })
+    img_dir = os.path.dirname(__file__)
+    fig_path = os.path.join(img_dir, 'volcano_Par-Dap2_students_raw.png')
+    # first try using 3 group names
+    try:
+        volcano_2group(dset, ['Par', 'Dap2', 'Dal2'], 'students', img_dir)
+    except ValueError:
+        pass
+    # now use the correct two groups without p-value calculated
+    try:
+        volcano_2group(dset, ['Par', 'Dap2'], 'students', img_dir)
+    except ValueError:
+        pass
+    add_2group_pvalue(dset, ['Par', 'Dap2'], 'students')
+    # now use the correct two groups and wrong stats test for p-value
+    try:
+        volcano_2group(dset, ['Par', 'Dap2'], 'welchs', img_dir)
+    except ValueError:
+        pass
+    # now use the correct two groups with correct p-value and no log2fc
+    try:
+        volcano_2group(dset, ['Par', 'Dap2'], 'students', img_dir)
+    except ValueError:
+        pass
+
+    return True
+
+
 # references to al of the test functions to be run, and order to run them in
 all_tests = [
     barplot_feature_bygroup_mock1,
@@ -280,7 +356,9 @@ all_tests = [
     scatter_plsda_projections_bygroup_mock1,
     splot_plsda_pcorr_bygroup_mock1,
     scatter_plsra_projections_bygroup_real1,
-    heatmap_lipid_class_log2fc_real1
+    heatmap_lipid_class_log2fc_real1,
+    volcano_2group_real1,
+    volcano_2group_badstats_real1
 ]
 if __name__ == '__main__':
     run_tests(all_tests)

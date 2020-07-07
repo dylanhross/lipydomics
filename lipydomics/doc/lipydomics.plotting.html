@@ -133,6 +133,22 @@ of&nbsp;the&nbsp;CSV&nbsp;file&nbsp;(which&nbsp;can&nbsp;span&nbsp;multiple&nbsp
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;pick&nbsp;groups&nbsp;to&nbsp;plot&nbsp;against<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img_dir&nbsp;(str)&nbsp;--&nbsp;directory&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]</tt></dd></dl>
+ <dl><dt><a name="-volcano_2group"><strong>volcano_2group</strong></a>(dataset, group_names, stats_test, img_dir, normed=False, p_upper_bound=0.01)</dt><dd><tt>heatmap_lipid_class_log2fc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generates&nbsp;a&nbsp;volcano&nbsp;plot&nbsp;(Log2(FC)&nbsp;vs.&nbsp;-Log10(p-value))&nbsp;for&nbsp;a&nbsp;two-group&nbsp;comparison&nbsp;and&nbsp;saves&nbsp;the&nbsp;image&nbsp;to&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specified&nbsp;directory.&nbsp;The&nbsp;filename&nbsp;of&nbsp;the&nbsp;image&nbsp;is:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'volcano_{group_name1}-{group_name2}_{stats_test}_{raw&nbsp;or&nbsp;normed}.png'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;The&nbsp;same&nbsp;group&nbsp;names&nbsp;(in&nbsp;the&nbsp;same&nbsp;order)&nbsp;as&nbsp;were&nbsp;used&nbsp;in&nbsp;the&nbsp;call&nbsp;to&nbsp;add_log2fc(...)&nbsp;and&nbsp;the&nbsp;call&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_2group_pvalue(...)&nbsp;must&nbsp;be&nbsp;used.&nbsp;*<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;(lipydomics.data.Dataset)&nbsp;--&nbsp;lipidomics&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_names&nbsp;(list(str))&nbsp;--&nbsp;groups&nbsp;to&nbsp;use&nbsp;to&nbsp;compute&nbsp;fold-change,&nbsp;only&nbsp;2&nbsp;groups&nbsp;allowed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stats_test&nbsp;(str)&nbsp;--&nbsp;specify&nbsp;the&nbsp;statistical&nbsp;test&nbsp;that&nbsp;was&nbsp;used<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;img_dir&nbsp;(str)&nbsp;--&nbsp;directory&nbsp;to&nbsp;save&nbsp;the&nbsp;image&nbsp;under<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[normed&nbsp;(bool)]&nbsp;--&nbsp;Use&nbsp;normalized&nbsp;data&nbsp;(True)&nbsp;or&nbsp;raw&nbsp;(False)&nbsp;[optional,&nbsp;default=False]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[p_lower_bound&nbsp;(float)]&nbsp;--&nbsp;upper&nbsp;limit&nbsp;for&nbsp;p-value,&nbsp;lower&nbsp;p-values&nbsp;get&nbsp;colors&nbsp;[optional,&nbsp;default=0.01]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(bool)&nbsp;--&nbsp;found&nbsp;data&nbsp;for&nbsp;the&nbsp;specified&nbsp;lipid&nbsp;class</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

@@ -447,6 +447,23 @@ else:
 ```
 
 
+### Volcano plot (Log2(fold-change) _vs._ Log10(p-value))
+A volcano plot is a visualization that gives an indication of the features in a two group comparison that have both a
+high magnitude of difference between the groups in addition to high statistical significance. This plot requires two 
+statistics to be computed ahead of time: two group Log2(fold-change) and two group p-value (computed using one of the
+available 2 group stats tests). 
+
+```python
+from lipydomics.plotting import volcano_2group
+
+# Groups: Red, Blue
+# stats test: Student's t-test
+# Save in Dir: ./analysis/plots/
+# Data: raw
+volcano_2group(dset, ['Red', 'Blue'], 'students', 'analysis/plots/')
+```
+
+
 ## Identification
 The `lipydomics.identification` module allows lipid features to be identified on the basis of their m/z, retention time,
 and CCS. Lipid identifications are produced by comparison against a database of experimentally observed lipids, as well
