@@ -448,11 +448,17 @@ heatmap_lipid_class_log2fc
     nrm = 'normed' if normed else 'raw'
     stat_abbrev = {'students': 'studentsP', 'welchs': 'welchsP', 'mann-whitney': 'mannwhitP'}[stats_test]
     pv_label = "{}_".format(stat_abbrev) + '-'.join(group_names) + "_" + nrm
+    if pv_label not in dataset.stats:
+        m = 'volcano_2group: p-value data ("{}") not present in Dataset.stats'
+        raise ValueError(m.format(pv_label))
     pv = dataset.stats[pv_label]
     l10pv = np.log10(pv) * -1.
 
     # grab the log2(fc)
     log2fa_label = 'LOG2FC_{}_{}'.format('-'.join(group_names), nrm)
+    if log2fa_label not in dataset.stats:
+        m = 'volcano_2group: Log2(FC) data ("{}") not present in Dataset.stats'
+        raise ValueError(m.format(log2fa_label))
     l2fc = dataset.stats[log2fa_label]
 
     # generate the path to save the figure under

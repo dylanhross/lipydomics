@@ -278,7 +278,7 @@ volcano_2group_real1
     description:
         Tests the function that makes a volcano plot
 
-        Test fails if there are any errors, if the data is not  found, or the image file is not created
+        Test fails if there are any errors or the image file is not created
     returns:
         (bool) -- test pass (True) or fail (False)
 """
@@ -291,22 +291,59 @@ volcano_2group_real1
     add_log2fc(dset, ['Par', 'Dap2'])
     add_2group_pvalue(dset, ['Par', 'Dap2'], 'students')
 
-
-    # plot the PGs
-    #img_dir = os.path.dirname(__file__)
-    #fig_path = os.path.join(img_dir, 'PG_Par-Dap2_log2fc_raw.png')
-    img_dir = '/Users/DylanRoss/Desktop/'
-    fig_path = '/Users/DylanRoss/Desktop/test.png'
+    img_dir = os.path.dirname(__file__)
+    fig_path = os.path.join(img_dir, 'volcano_Par-Dap2_students_raw.png')
     volcano_2group(dset, ['Par', 'Dap2'], 'students', img_dir)
 
-    """
     if not os.path.isfile(fig_path):
-        m = 'heatmap_lipid_class_log2fc_real1: image file {} not found'
+        m = 'volcano_2group_real1: image file {} not found'
         raise RuntimeError(m.format(fig_path))
     else:
         # delete the image file
         os.remove(fig_path)
+
+    return True
+
+
+def volcano_2group_badstats_real1():
     """
+volcano_2group_badstats_real1
+    description:
+        Tests the function that makes a volcano plot by giving it bad information, expects ValueErrors
+
+        Test fails if there are any errors other than the expected ValueErrors
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    # setup
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+    dset.assign_groups({
+        'Par': [0, 1, 2, 3],
+        'Dap2': [4, 5, 6, 7]
+    })
+    img_dir = os.path.dirname(__file__)
+    fig_path = os.path.join(img_dir, 'volcano_Par-Dap2_students_raw.png')
+    # first try using 3 group names
+    try:
+        volcano_2group(dset, ['Par', 'Dap2', 'Dal2'], 'students', img_dir)
+    except ValueError:
+        pass
+    # now use the correct two groups without p-value calculated
+    try:
+        volcano_2group(dset, ['Par', 'Dap2'], 'students', img_dir)
+    except ValueError:
+        pass
+    add_2group_pvalue(dset, ['Par', 'Dap2'], 'students')
+    # now use the correct two groups and wrong stats test for p-value
+    try:
+        volcano_2group(dset, ['Par', 'Dap2'], 'welchs', img_dir)
+    except ValueError:
+        pass
+    # now use the correct two groups with correct p-value and no log2fc
+    try:
+        volcano_2group(dset, ['Par', 'Dap2'], 'students', img_dir)
+    except ValueError:
+        pass
 
     return True
 
@@ -319,7 +356,9 @@ all_tests = [
     scatter_plsda_projections_bygroup_mock1,
     splot_plsda_pcorr_bygroup_mock1,
     scatter_plsra_projections_bygroup_real1,
-    heatmap_lipid_class_log2fc_real1
+    heatmap_lipid_class_log2fc_real1,
+    volcano_2group_real1,
+    volcano_2group_badstats_real1
 ]
 if __name__ == '__main__':
     run_tests(all_tests)
