@@ -1,7 +1,8 @@
 # API (version 1.6.x)
 The following is a brief overview of the package API with usage examples, organized by module.
 
-**Complete documentation for all modules is available in HTML format under `lipydomics/doc/lipydomics.html`.**
+**Complete documentation for all modules is available in HTML format under `lipydomics/doc/lipydomics.html`. All individual class/function/method documentation is 
+also accessible through Python's built-in `help()` function**
 
 __Modules:__
 * [Data](#data)
@@ -447,10 +448,10 @@ else:
 ```
 
 
-### Volcano plot (Log2(fold-change) _vs._ Log10(p-value))
+### Volcano plot: Log2(fold-change) _vs._ Log10(p-value)
 A volcano plot is a visualization that gives an indication of the features in a two group comparison that have both a
 high magnitude of difference between the groups in addition to high statistical significance. This plot requires two 
-statistics to be computed ahead of time: two group Log2(fold-change) and two group p-value (computed using one of the
+statistics to be computed ahead of time: [two group Log2(fold-change)](#two-group-log2fold-change) and [two group p-value](#two-group-p-value) (computed using one of the
 available 2 group stats tests). 
 
 ```python
@@ -522,7 +523,7 @@ rt = predict_rt('PC', 34, 3, fa_mod='p')
 ### Retention Time Calibration
 All of the retention times (measured or theoretical) in the lipid database correspond to a reference HILIC method 
 (Hines, _et al. J. Lipid Res._ **58**, 2017). The `lipydomics.identification.rt_calibration` module allows comparison 
-between retention times measured on other (HILIC) methods via the `add_rt_calibration` method:
+between retention times measured on other (HILIC) methods via the `add_rt_calibration` function:
 
 ```python
 from lipydomics.identification.rt_calibration import add_rt_calibration
