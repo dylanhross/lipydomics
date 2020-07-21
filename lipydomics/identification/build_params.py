@@ -20,7 +20,8 @@ include_ref_dsets = [
     'blaz0818',
     'vasi0120_pos',
     'vasi0120_neg',
-    'tsug0220'
+    'tsug0220',
+    'hine0520'
 ]
 
 
@@ -33,6 +34,7 @@ ccs_pred_ref_dsets = [
     'leap0219',
     'blaz0818',
     'vasi0120_pos',
-    'tsug0220'
+    'tsug0220',
+    'hine0520'
 ]
 

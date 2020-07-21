@@ -105,7 +105,8 @@ def main(tstamp):
         'blaz0818': {'type': 'DT', "method": 'single field'},
         'vasi0120_pos': {'type': 'TIMS', 'method': 'calibrated with 4 ions from ESI LC/MS tuning mix (Agilent)'},
         'vasi0120_neg': {'type': 'TIMS', 'method': 'calibrated with 4 ions from ESI LC/MS tuning mix (Agilent)'},
-        'tsug0220': {'type': 'TIMS', 'method': 'single field, calibrated'}
+        'tsug0220': {'type': 'TIMS', 'method': 'single field, calibrated'},
+        'hine0520': {'type': 'TW', 'method': 'calibrated with phosphatidylcholines (ESI+) and phosphatidylethanolamines (ESI-)'}
     }
 
     # add each src dataset
