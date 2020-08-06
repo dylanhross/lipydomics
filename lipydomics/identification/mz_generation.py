@@ -79,15 +79,12 @@ enumerate_all_lipids
     for l in enumerate_lipid_class(TG, (24, 72), (0, 24), ['[M+NH4]+', '[M+Na]+', '[M+K]+']):
         yield l
 
-
     # diacyl-glycerophospholipids (with plasmalogen and ether derivatives)
     diagpls = [PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG, AlanylPG]
     diagpl_adducts = ['[M+H]+', '[M+Na]+', '[M+NH4]+', '[M-H]-', '[M+HCOO]-', '[M+K]+', '[M+CH3COO]-', '[M+2Na-H]+',
                       '[M+Cl]-']
     for lc in diagpls:
         for fa_mod in [None, 'p', 'o']:
-            # for plasmalogen lipids, minimum unsaturation must be 1
-            diacyl_nu_ = (1, 12) if fa_mod == 'p' else diacyl_nu
             for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu_, diagpl_adducts, fa_mod=fa_mod):
                 yield l
 
@@ -105,8 +102,7 @@ enumerate_all_lipids
     lgpl_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-']
     for lc in lgpls:
         for fa_mod in [None, 'p', 'o']:
-            # for plasmalogen lipids, minimum unsaturation must be 1
-            lgpl_nu = (1, 6) if fa_mod == 'p' else (0, 6)
+            lgpl_nu = (0, 6)
             for l in enumerate_lipid_class(lc, (12, 24), lgpl_nu, lgpl_adducts, fa_mod=fa_mod):
                 yield l
 
