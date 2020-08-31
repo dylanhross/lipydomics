@@ -4,7 +4,7 @@
     2019/10/08
 
     description:
-        Trains a predictive model for generating theoretical CCS values
+        Trains a predictive model for generating predicted CCS values
 
         * requires scikit-learn v0.21.3 ! *
 """
@@ -186,15 +186,15 @@ def main(tstamp):
         print('... ok')
         print('... ok', file=bl)
 
-        # add theoretical CCS to the database
+        # add predicted CCS to the database
         print_and_log('\nadding predicted CCS to database ...', bl, end=' ')
-        qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz FROM theoretical_mz'
+        qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz FROM predicted_mz'
         tid_to_ccs = {}
         for tid, lc, lnc, lnu, fam, add, m in cur.execute(qry).fetchall():
             if int(sum(c_encoder.transform([[lc]])[0])) != 0:  # make sure lipid class is encodable
                 x = [featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder)]
                 tid_to_ccs[int(tid)] = model.predict(scaler.transform(x))[0]
-        qry = 'INSERT INTO theoretical_ccs VALUES (?, ?)'
+        qry = 'INSERT INTO predicted_ccs VALUES (?, ?)'
         for tid in tid_to_ccs:
             cur.execute(qry, (tid, tid_to_ccs[tid]))
         print_and_log('ok\n', bl)

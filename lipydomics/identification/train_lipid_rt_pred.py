@@ -4,7 +4,7 @@
     2019/12/03
 
     description:
-        Trains a predictive model for generating theoretical RT values
+        Trains a predictive model for generating predicted RT values
 
         * requires scikit-learn v0.21.3 ! *
 """
@@ -155,15 +155,15 @@ def main(tstamp):
         model, scaler = train_new_model(cur, bl)
         print_and_log('... ok', bl)
 
-        # add theoretical RT to the database
+        # add predicted RT to the database
         print_and_log('\nadding predicted RT to database ...', bl, end=' ')
-        qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod FROM theoretical_mz'
+        qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod FROM predicted_mz'
         tid_to_rt = {}
         for tid, lc, lnc, lnu, fam in cur.execute(qry).fetchall():
             if int(sum(c_encoder.transform([[lc]])[0])) != 0: # make sure lipid class is encodable
                 x = np.array([featurize(lc, lnc, lnu, fam, c_encoder, f_encoder)]).reshape(1, -1)
                 tid_to_rt[int(tid)] = model.predict(scaler.transform(x))[0]
-        qry = 'INSERT INTO theoretical_rt VALUES (?, ?)'
+        qry = 'INSERT INTO predicted_rt VALUES (?, ?)'
         for tid in tid_to_rt:
             cur.execute(qry, (tid, tid_to_rt[tid]))
         print_and_log('ok\n', bl)

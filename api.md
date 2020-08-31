@@ -468,17 +468,17 @@ volcano_2group(dset, ['Red', 'Blue'], 'students', 'analysis/plots/')
 ## Identification
 The `lipydomics.identification` module allows lipid features to be identified on the basis of their m/z, retention time,
 and CCS. Lipid identifications are produced by comparison against a database of experimentally observed lipids, as well
-as a database of theoretical values. Different levels of identification can be specified as follows:
+as a database of predicted values. Different levels of identification can be specified as follows:
 
 | identification level | description |
 | :---: | :--- |
-| `theo_mz` | match only on theoretical m/z |
+| `pred_mz` | match only on predicted m/z |
 | `meas_mz` | match only on measured m/z |
-| `theo_mz_ccs` | match on theoretical m/z and CCS |
+| `pred_mz_ccs` | match on predicted m/z and CCS |
 | `meas_mz_ccs` | match on measured m/z and CCS |
-| `theo_mz_rt` | match on theoretical m/z and HILIC retention time |
+| `pred_mz_rt` | match on predicted m/z and HILIC retention time |
 | `measured_mz_rt` | match on measured m/z and HILIC retention time |
-| `theo_mz_rt_ccs` | match on theoretical m/z, HILIC retention time, and CCS |
+| `pred_mz_rt_ccs` | match on predicted m/z, HILIC retention time, and CCS |
 | `meas_mz_rt_ccs` | match on measured m/z, HILIC retention time, and CCS |
 | `any` | start at the highest level (`meas_mz_rt_ccs`) then work down until an identification can be made |
 
@@ -504,7 +504,7 @@ each feature. The `Dataset.feat_id_levels` instance variable holds the identific
 
 
 ### CCS and HILIC retention time prediction
-The theoretical lipid database consists of CCS and HILIC retention time values generated using predictive models trianed
+The predicted lipid database consists of CCS and HILIC retention time values generated using predictive models trianed
 on experimental reference values. These predictive models are directly accessible via two convenience functions: 
 `predict_ccs` and `predict_rt`. Both functions take as input a lipid (as defined by lipid class, fatty acid sum 
 composition, fatty acid modifier, and MS adduct if relevant). Example:
@@ -521,7 +521,7 @@ rt = predict_rt('PC', 34, 3, fa_mod='p')
 
 
 ### Retention Time Calibration
-All of the retention times (measured or theoretical) in the lipid database correspond to a reference HILIC method 
+All of the retention times (measured or predicted) in the lipid database correspond to a reference HILIC method 
 (Hines, _et al. J. Lipid Res._ **58**, 2017). The `lipydomics.identification.rt_calibration` module allows comparison 
 between retention times measured on other (HILIC) methods via the `add_rt_calibration` function:
 

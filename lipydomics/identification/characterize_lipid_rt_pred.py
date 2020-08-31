@@ -4,7 +4,7 @@
     2019/12/03
 
     description:
-        Characterizes performance of the predictive model for generating theoretical RT values by generating plots
+        Characterizes performance of the predictive model for generating predicted RT values by generating plots
         of predicted vs. measured RT
 """
 
@@ -26,23 +26,23 @@ def single_class_plot(cursor, lipid_class, fa_mod=None):
     """
 single_class_plot
     description:
-        generates a plot comparing theoretical RT values against experimentally measured ones for a given lipid class
+        generates a plot comparing predicted RT values against experimentally measured ones for a given lipid class
         (accounting for fa_mod if present). Saves the plot as a figure in the rt_pred_perf/ directory
     parameters:
         cursor (sqlite3.cursor) -- cursor for querying lipids.db
         lipid_class (str) -- lipid class
         [fa_mod (None or str)] -- fatty acid modifier [optional, default=None]
 """
-    # theoretical and measured retention time
+    # predicted and measured retention time
     rt_t, rt_m = [], []
 
-    # fetch the theoretical data
+    # fetch the predicted data
     if fa_mod in rt_fa_mods:
-        qry = 'SELECT rt FROM theoretical_mz JOIN theoretical_rt ON theoretical_mz.t_id=theoretical_rt.t_id '
+        qry = 'SELECT rt FROM predicted_mz JOIN predicted_rt ON predicted_mz.t_id=predicted_rt.t_id '
         qry += 'WHERE lipid_class="{}" AND fa_mod=="{}"'
         qry = qry.format(lipid_class, fa_mod)
     else:
-        qry = 'SELECT rt FROM theoretical_mz JOIN theoretical_rt ON theoretical_mz.t_id=theoretical_rt.t_id '
+        qry = 'SELECT rt FROM predicted_mz JOIN predicted_rt ON predicted_mz.t_id=predicted_rt.t_id '
         qry += 'WHERE lipid_class="{}" AND fa_mod IS NULL'
         qry = qry.format(lipid_class)
     for rt in cursor.execute(qry).fetchall():
@@ -87,7 +87,7 @@ single_class_plot
         ax.set_xlim([0, 3])
         ax.set_xticks([1, 2])
         ax.set_ylim([rt_middle - 0.7, rt_middle + 0.7])
-        ax.set_xticklabels(['theo', 'meas (n={})'.format(len(rt_m))], rotation=45)
+        ax.set_xticklabels(['pred', 'meas (n={})'.format(len(rt_m))], rotation=45)
         ax.set_ylabel('retention time (min)')
         ax.set_title('{}{}'.format(lipid_class, fa_mod if fa_mod else ''))
 

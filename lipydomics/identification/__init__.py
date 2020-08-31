@@ -15,8 +15,8 @@ import pickle
 
 
 from lipydomics.identification.id_levels import (
-    id_feat_any, id_feat_meas_mz_rt_ccs, id_feat_theo_mz_rt_ccs, id_feat_meas_mz_rt, id_feat_theo_mz_rt,
-    id_feat_meas_mz_ccs, id_feat_theo_mz_ccs, id_feat_meas_mz, id_feat_theo_mz, id_feat_custom
+    id_feat_any, id_feat_meas_mz_rt_ccs, id_feat_pred_mz_rt_ccs, id_feat_meas_mz_rt, id_feat_pred_mz_rt,
+    id_feat_meas_mz_ccs, id_feat_pred_mz_ccs, id_feat_meas_mz, id_feat_pred_mz, id_feat_custom
 )
 from lipydomics.identification.encoder_params import (
     ccs_lipid_classes, ccs_ms_adducts, ccs_fa_mods, rt_lipid_classes, rt_fa_mods
@@ -43,13 +43,13 @@ add_feature_ids
         
         The method for making identifications is specified by the `level` param:
             (low)
-            'theo_mz' -- simple matching based on theoretical m/z
+            'pred_mz' -- simple matching based on predicted m/z
             'meas_mz' -- simple matching based on measured m/z
-            'theo_mz_ccs' -- match on theoretical m/z and CCS\
+            'pred_mz_ccs' -- match on predicted m/z and CCS\
             'meas_mz_ccs' -- match on measured m/z and CCS
-            'theo_mz_rt' -- match on theoretical m/z and rt
+            'pred_mz_rt' -- match on predicted m/z and rt
             'meas_mz_rt' -- match on measured m/z and rt
-            'theo_mz_rt_ccs' -- match on theoretical m/z, rt, and CCS
+            'pred_mz_rt_ccs' -- match on predicted m/z, rt, and CCS
             'meas_mz_rt_ccs' -- match on m/z, rt, and CCS
             (high)
             'any' -- start at the highest level, then work downward
@@ -86,8 +86,8 @@ add_feature_ids
         [use_rt (bool)] -- whether to use identification levels that involve retention time, ignored unless used with
                             the 'any' identification level [optional, default=True]
 """
-    if level not in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any',
-                     'meas_mz', 'meas_mz_rt', 'theo_mz_rt'] and type(level) is not list:
+    if level not in ['pred_mz', 'pred_mz_ccs', 'pred_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any',
+                     'meas_mz', 'meas_mz_rt', 'pred_mz_rt'] and type(level) is not list:
         m = 'add_feature_ids: identification level "{}" not recognized'
         raise ValueError(m.format(level))
 
@@ -104,13 +104,13 @@ add_feature_ids
     id_funcs = {
         'any': id_feat_any,
         'meas_mz_rt_ccs': id_feat_meas_mz_rt_ccs,
-        'theo_mz_rt_ccs': id_feat_theo_mz_rt_ccs,
+        'pred_mz_rt_ccs': id_feat_pred_mz_rt_ccs,
         'meas_mz_rt': id_feat_meas_mz_rt,
-        'theo_mz_rt': id_feat_theo_mz_rt,
+        'pred_mz_rt': id_feat_pred_mz_rt,
         'meas_mz_ccs': id_feat_meas_mz_ccs,
-        'theo_mz_ccs': id_feat_theo_mz_ccs,
+        'pred_mz_ccs': id_feat_pred_mz_ccs,
         'meas_mz': id_feat_meas_mz,
-        'theo_mz': id_feat_theo_mz
+        'pred_mz': id_feat_pred_mz
     } 
 
     # ESI mode from Dataset
@@ -172,7 +172,7 @@ def predict_ccs(lipid_class, lipid_nc, lipid_nu, adduct, mz='generate', fa_mod=N
     """
 predict_ccs
     description:
-        Predicts a theoretical CCS of a lipid as defined by lipid class, fatty acid sum composition and MS adduct. If
+        Predicts a predicted CCS of a lipid as defined by lipid class, fatty acid sum composition and MS adduct. If
         any of the parameters are not specifically encoded (i.e. not present in the training data) a ValueError is
         raised. This behavior can be overridden by the ignore_encoding_errors flag in order to get the prediction to be
         made regardless, although such predictions are subject to a high degree of error.
@@ -233,7 +233,7 @@ def predict_rt(lipid_class, lipid_nc, lipid_nu, fa_mod=None, ignore_encoding_err
     """
 predict_ccs
     description:
-        Predicts a theoretical HILIC retention time of a lipid as defined by lipid class and fatty acid sum composition.
+        Predicts a predicted HILIC retention time of a lipid as defined by lipid class and fatty acid sum composition.
         If any of the parameters are not specifically encoded (i.e. not present in the training data) a ValueError is
         raised. This behavior can be overridden by the ignore_encoding_errors flag in order to get the prediction to be
         made regardless, although such predictions are subject to a high degree of error.

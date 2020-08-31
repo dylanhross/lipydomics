@@ -4,7 +4,7 @@
     2019/10/04
 
     description:
-        utilities to generate theoretical m/z data for lipids
+        utilities to generate predicted m/z data for lipids
 """
 
 
@@ -85,7 +85,7 @@ enumerate_all_lipids
                       '[M+Cl]-']
     for lc in diagpls:
         for fa_mod in [None, 'p', 'o']:
-            for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu_, diagpl_adducts, fa_mod=fa_mod):
+            for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu, diagpl_adducts, fa_mod=fa_mod):
                 yield l
 
     # AcylPG, AcylPE, CL, and LCL
@@ -115,7 +115,7 @@ enumerate_all_lipids
             yield l
 
     # fatty acids
-    for l in enumerate_lipid_class(FA, (10, 40), (0, 6), ['[M-H]-']):
+    for l in enumerate_lipid_class(FA, (10, 42), (0, 6), ['[M-H]-']):
         yield l
 
 

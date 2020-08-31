@@ -11,11 +11,11 @@
 from lipydomics.util import get_score
 
 
-def id_feat_theo_mz(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm=None):
+def id_feat_pred_mz(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm=None):
     """
-id_feat_theo_mz
+id_feat_pred_mz
     description:
-        identifies a feature on the basis of theoretical m/z
+        identifies a feature on the basis of predicted m/z
     parameters:
         cursor (sqlite3.Cursor) -- cursor for querying lipids.db
         mz (float) -- m/z to match
@@ -29,7 +29,7 @@ id_feat_theo_mz
     returns:
         (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
 """
-    qry = 'SELECT name, adduct, mz FROM theoretical_mz WHERE mz BETWEEN ? AND ?'
+    qry = 'SELECT name, adduct, mz FROM predicted_mz WHERE mz BETWEEN ? AND ?'
     if esi_mode == 'pos':
         qry += ' AND adduct LIKE "%+"'
     elif esi_mode == 'neg':
@@ -44,7 +44,7 @@ id_feat_theo_mz
         putative_scores.append(get_score(tol_mz, tol_rt, tol_ccs, mz_q=mz, mz_x=mz_x))
 
     if putative_ids:
-        return putative_ids, 'theo_mz', putative_scores
+        return putative_ids, 'pred_mz', putative_scores
     else:
         return '', '', []
 
@@ -82,16 +82,16 @@ id_feat_meas_mz
         putative_scores.append(get_score(tol_mz, tol_rt, tol_ccs, mz_q=mz, mz_x=mz_x))
 
     if putative_ids:
-        return putative_ids, 'theo_mz', putative_scores
+        return putative_ids, 'pred_mz', putative_scores
     else:
         return '', '', []
 
 
-def id_feat_theo_mz_rt(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
+def id_feat_pred_mz_rt(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
     """
-id_feat_theo_mz_rt
+id_feat_pred_mz_rt
     description:
-        identifies a feature on the basis of theoretical m/z and retention time
+        identifies a feature on the basis of predicted m/z and retention time
     parameters:
         cursor (sqlite3.Cursor) -- cursor for querying lipids.db
         mz (float) -- m/z to match
@@ -105,8 +105,8 @@ id_feat_theo_mz_rt
     returns:
         (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
 """
-    qry = 'SELECT name, adduct, mz, rt FROM theoretical_mz JOIN theoretical_rt ON ' \
-            + 'theoretical_mz.t_id=theoretical_rt.t_id WHERE mz BETWEEN ? AND ? AND rt BETWEEN ? and ?'
+    qry = 'SELECT name, adduct, mz, rt FROM predicted_mz JOIN predicted_rt ON ' \
+            + 'predicted_mz.t_id=predicted_rt.t_id WHERE mz BETWEEN ? AND ? AND rt BETWEEN ? and ?'
     if esi_mode == 'pos':
         qry += ' AND adduct LIKE "%+"'
     elif esi_mode == 'neg':
@@ -123,16 +123,16 @@ id_feat_theo_mz_rt
         putative_scores.append(get_score(tol_mz, tol_rt, tol_ccs, mz_q=mz, rt_q=rt, mz_x=mz_x, rt_x=rt_x))
 
     if putative_ids:
-        return putative_ids, 'theo_mz_rt', putative_scores
+        return putative_ids, 'pred_mz_rt', putative_scores
     else:
         return '', '', []
 
 
-def id_feat_theo_mz_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
+def id_feat_pred_mz_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
     """
-id_feat_theo_mz_ccs
+id_feat_pred_mz_ccs
     description:
-        identifies a feature on the basis of theoretical m/z and CCS
+        identifies a feature on the basis of predicted m/z and CCS
     parameters:
         cursor (sqlite3.Cursor) -- cursor for querying lipids.db
         mz (float) -- m/z to match
@@ -146,8 +146,8 @@ id_feat_theo_mz_ccs
     returns:
         (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
 """
-    qry = 'SELECT name, adduct, mz, ccs FROM theoretical_mz JOIN theoretical_ccs ON ' \
-            + 'theoretical_mz.t_id=theoretical_ccs.t_id WHERE mz BETWEEN ? AND ? AND ccs BETWEEN ? and ?'
+    qry = 'SELECT name, adduct, mz, ccs FROM predicted_mz JOIN predicted_ccs ON ' \
+            + 'predicted_mz.t_id=predicted_ccs.t_id WHERE mz BETWEEN ? AND ? AND ccs BETWEEN ? and ?'
     if esi_mode == 'pos':
         qry += ' AND adduct LIKE "%+"'
     elif esi_mode == 'neg':
@@ -164,16 +164,16 @@ id_feat_theo_mz_ccs
         putative_scores.append(get_score(tol_mz, tol_rt, tol_ccs, mz_q=mz, ccs_q=ccs, mz_x=mz_x, ccs_x=ccs_x))
 
     if putative_ids:
-        return putative_ids, 'theo_mz_ccs', putative_scores
+        return putative_ids, 'pred_mz_ccs', putative_scores
     else:
         return '', '', []
 
 
-def id_feat_theo_mz_rt_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
+def id_feat_pred_mz_rt_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
     """
-id_feat_theo_mz_rt_ccs
+id_feat_pred_mz_rt_ccs
     description:
-        identifies a feature on the basis of theoretical m/z, retention time, and CCS
+        identifies a feature on the basis of predicted m/z, retention time, and CCS
     parameters:
         cursor (sqlite3.Cursor) -- cursor for querying lipids.db
         mz (float) -- m/z to match
@@ -187,9 +187,9 @@ id_feat_theo_mz_rt_ccs
     returns:
         (str or list(str)), (str) -- putative identification(s) (or '' for no matches), identification level
 """
-    qry = 'SELECT name, adduct, mz, rt, ccs FROM theoretical_mz JOIN theoretical_ccs ON ' \
-            + 'theoretical_mz.t_id=theoretical_ccs.t_id JOIN theoretical_rt ON ' \
-            + 'theoretical_mz.t_id=theoretical_rt.t_id WHERE mz BETWEEN ? AND ? AND ccs BETWEEN ? AND ? AND ' \
+    qry = 'SELECT name, adduct, mz, rt, ccs FROM predicted_mz JOIN predicted_ccs ON ' \
+            + 'predicted_mz.t_id=predicted_ccs.t_id JOIN predicted_rt ON ' \
+            + 'predicted_mz.t_id=predicted_rt.t_id WHERE mz BETWEEN ? AND ? AND ccs BETWEEN ? AND ? AND ' \
             + 'rt BETWEEN ? AND ?'
     if esi_mode == 'pos':
         qry += ' AND adduct LIKE "%+"'
@@ -212,14 +212,14 @@ id_feat_theo_mz_rt_ccs
                                          mz_x=mz_x, rt_x=rt_x, ccs_x=ccs_x))
 
     if putative_ids:
-        return putative_ids, 'theo_mz_rt_ccs', putative_scores
+        return putative_ids, 'pred_mz_rt_ccs', putative_scores
     else:
         return '', '', []
 
 
 def id_feat_meas_mz_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
     """
-id_feat_theo_meas_mz_ccs
+id_feat_pred_meas_mz_ccs
     description:
         identifies a feature by matching a reference value on m/z, and CCS within tolerances
     parameters:
@@ -293,14 +293,14 @@ id_feat_meas_mz_rt
         putative_scores.append(get_score(tol_mz, tol_rt, tol_ccs, mz_q=mz, rt_q=rt, mz_x=mz_x, rt_x=rt_x))
 
     if putative_ids:
-        return putative_ids, 'theo_mz_rt', putative_scores
+        return putative_ids, 'pred_mz_rt', putative_scores
     else:
         return '', '', []
 
 
 def id_feat_meas_mz_rt_ccs(cursor, mz, rt, ccs, tol_mz, tol_rt, tol_ccs, esi_mode, norm='l2'):
     """
-id_feat_theo_meas_mz_rt_ccs
+id_feat_pred_meas_mz_rt_ccs
     description:
         identifies a feature by matching a reference value on m/z, rt, and CCS within tolerances
     parameters:
@@ -367,20 +367,20 @@ id_feat_any
     if use_rt:
         id_funcs = [
             id_feat_meas_mz_rt_ccs,
-            id_feat_theo_mz_rt_ccs,
+            id_feat_pred_mz_rt_ccs,
             id_feat_meas_mz_rt,
-            id_feat_theo_mz_rt,
+            id_feat_pred_mz_rt,
             id_feat_meas_mz_ccs,
-            id_feat_theo_mz_ccs,
+            id_feat_pred_mz_ccs,
             id_feat_meas_mz,
-            id_feat_theo_mz
+            id_feat_pred_mz
         ]
     else:
         id_funcs = [
             id_feat_meas_mz_ccs,
-            id_feat_theo_mz_ccs,
+            id_feat_pred_mz_ccs,
             id_feat_meas_mz,
-            id_feat_theo_mz
+            id_feat_pred_mz
         ]
 
     for f in id_funcs:
@@ -413,13 +413,13 @@ id_feat_custom
 """
     level_to_id_func = {
         'meas_mz_rt_ccs': id_feat_meas_mz_rt_ccs,
-        'theo_mz_rt_ccs': id_feat_theo_mz_rt_ccs,
+        'pred_mz_rt_ccs': id_feat_pred_mz_rt_ccs,
         'meas_mz_rt': id_feat_meas_mz_rt,
-        'theo_mz_rt': id_feat_theo_mz_rt,
+        'pred_mz_rt': id_feat_pred_mz_rt,
         'meas_mz_ccs': id_feat_meas_mz_ccs,
-        'theo_mz_ccs': id_feat_theo_mz_ccs,
+        'pred_mz_ccs': id_feat_pred_mz_ccs,
         'meas_mz': id_feat_meas_mz,
-        'theo_mz': id_feat_theo_mz
+        'pred_mz': id_feat_pred_mz
     }
     # check that the identification levels are defined
     for lvl in levels:
