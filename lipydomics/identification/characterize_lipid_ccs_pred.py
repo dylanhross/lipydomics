@@ -90,7 +90,7 @@ single_class_plot
         for mzt, ccst, nct, nut in zip(mz_t, ccs_t, nc_t, nu_t):
             if nc == nct and nu == nut:
                 mz_resid.append(mzm)
-                ccs_resid.append(ccst - ccsm)
+                ccs_resid.append(100. * (ccst - ccsm) / ccsm)
 
     this_dir = os.path.dirname(__file__)
     fig_fname = 'ccs_pred_perf/{}_{}{}_{}.png'.format(len(ccs_m), lipid_class, fa_mod if fa_mod else '', adduct)
@@ -117,12 +117,19 @@ single_class_plot
 
     # residuals
     ax2.scatter(mz_resid, ccs_resid, marker='.', s=4, c='red', edgecolor='none')
-    ax2.axhline(ls='--', linewidth=0.5, c='grey')
+    ax2.axhline(ls='--', linewidth=0.3, c='grey', zorder=-1)
+    #ax2.axhline(y=5, ls='-', linewidth=0.3, c='lightgrey', zorder=-1)
+    #ax2.axhline(y=-5, ls='-', linewidth=0.3, c='lightgrey', zorder=-1)
+    ax2.axhline(y=3, ls='--', linewidth=0.3, c='lightgrey', zorder=-1)
+    ax2.axhline(y=-3, ls='--', linewidth=0.3, c='lightgrey', zorder=-1)
+    ax2.axhline(y=1, ls='-', linewidth=0.3, c='lightgrey', zorder=-1)
+    ax2.axhline(y=-1, ls='-', linewidth=0.3, c='lightgrey', zorder=-1)
     for d in ['top', 'bottom', 'right']:
         ax2.spines[d].set_visible(False)
     ax2.set_ylim([-5, 5])
-    ax2.set_ylabel(r'resid. CCS ($\AA^2$)')
+    ax2.set_ylabel('CCS error (%)')
     ax2.set_xticks([])
+    ax2.set_yticks([-5, -3, -1, 0, 1, 3, 5])
 
     fig.set_tight_layout(True)
     plt.savefig(fig_path, dpi=400, bbox_inches='tight')
