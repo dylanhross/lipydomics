@@ -136,6 +136,55 @@ train_new_model
     return model, scaler
 
 
+def dump_split_data_to_files(savedir):
+    """
+dump_split_data_to_files
+    description:
+        assembles training/test datasets just as would be done for actual model training then dumps those into
+        separate .csv files: 'train.csv' and 'test.csv'
+    parameters:
+        savedir (str) -- directory to save the dumped files into
+"""
+    # connect to database
+    db_path = os.path.join(os.path.dirname(__file__), 'lipids.db')
+    con = connect(db_path)
+    cur = con.cursor()
+
+    # prepare encoders
+    c_encoder, f_encoder = prep_encoders()
+
+    # get the raw data and featurize (encode lipid_class, fa_mod, and adduct)
+    qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, rt FROM measured WHERE rt IS NOT NULL'
+    X, y, l = [], [], []
+    for lc, lnc, lnu, fam, c in cur.execute(qry).fetchall():
+        # only use the classes and fa_mods that are explicitly encoded
+        lc_ok = lc in rt_lipid_classes
+        fam_ok = fam is None or fam in rt_fa_mods
+        if lc_ok and fam_ok:
+            X.append(featurize(lc, lnc, lnu, fam, c_encoder, f_encoder))
+            y.append(float(c))
+            l.append('{}({}{}:{})'.format(lc, fam if fam is not None else '', lnc, lnu))
+    X, y, l = np.array(X), np.array(y), np.array(l)
+
+    # split into test/train sets, scale data (do not center)
+    SSplit = ShuffleSplit(n_splits=1, test_size=0.2, random_state=1236)
+    for train_index, test_index in SSplit.split(X):
+        X_train, X_test = X[train_index], X[test_index]
+        y_train, y_test = y[train_index], y[test_index]
+        l_train, l_test = l[train_index], l[test_index]
+
+    # dump each array to file
+    np.savetxt(os.path.join(savedir, 'X_train.csv'), X_train, delimiter=',')
+    np.savetxt(os.path.join(savedir, 'y_train.csv'), y_train, delimiter=',')
+    np.savetxt(os.path.join(savedir, 'l_train.csv'), l_train, delimiter=',', fmt='%s')
+    np.savetxt(os.path.join(savedir, 'X_test.csv'), X_test, delimiter=',')
+    np.savetxt(os.path.join(savedir, 'y_test.csv'), y_test, delimiter=',')
+    np.savetxt(os.path.join(savedir, 'l_test.csv'), l_test, delimiter=',', fmt='%s')
+
+    # close db connection
+    con.close()
+
+
 def main(tstamp):
     """ main build function """
 
