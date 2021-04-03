@@ -508,6 +508,8 @@ identify_lipids
           " spaces\n\t* example: '0.01 0.5 3.0'\n\t* CCS tolerance is a percentage, not an absolute value")
     tolerance = input('> ').split()
     tol = [float(t) for t in tolerance]
+    print('What type of tolerance should be used for m/z (Da/ppm) ?')
+    mz_tol_type = input('> ')
     print("Please specify an identification level")
     print("\t'theo_mz' - match on theoretical m/z")
     print("\t'theo_mz_rt' - match on theoretical m/z and retention time")
@@ -522,7 +524,7 @@ identify_lipids
     if option in ['theo_mz', 'theo_mz_rt', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
         # make the identifications
         try:
-            add_feature_ids(dset, tol, level=option)
+            add_feature_ids(dset, tol, level=option, mz_tol_type=mz_tol_type)
             n_identified = len([_ for _ in dset.feat_ids if type(_) == list])
             print("! INFO: Lipid identifications added successfully ({} lipids identified)".format(n_identified))
         except ValueError as ve:

@@ -34,6 +34,26 @@ add_feature_ids_any_real1
     return True
 
 
+def add_feature_ids_any_ppm_real1():
+    """
+add_feature_ids_any_ppm_real1
+    description:
+        Uses the raw data from real_data_1.csv to make compound identifications at any level of confidence using ppm as
+        the m/z tolerance. This should
+        be a good all-around test for the various identification functions since there are several features in this
+        dataset that should not be able to be identified at any level (and thus will run through all of the functions).
+
+        Test fails if there are any errors
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+
+    add_feature_ids(dset, [50., 0.5, 5.], mz_tol_type='ppm')
+
+    return True
+
+
 def add_feature_ids_custom_real1():
     """
 add_feature_ids_custom_real1
@@ -248,6 +268,7 @@ predict_rt_ignencerr
 # references to al of the test functions to be run, and order to run them in
 all_tests = [
     add_feature_ids_any_real1,
+    add_feature_ids_any_ppm_real1,
     add_feature_ids_custom_real1,
     add_feature_ids_badcustom_real1,
     add_feature_ids_any_real1_tstamp,

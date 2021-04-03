@@ -18,7 +18,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='lipydomics',
-    version='1.6.5.rv4',
+    version='1.6.5.rv5',
     author='Dylan H. Ross',
     author_email='dhross92@uw.edu',
     description='a library for streamlining lipidomics data analysis',
@@ -38,7 +38,7 @@ setuptools.setup(
         'matplotlib>=3.1.3',
         'numpy>=1.18.1',
         'pandas>=1.0.1',
-        'scikit-learn>=0.22.1',
+        'scikit-learn>=0.24.1',
         'scipy>=1.4.1'
     ]
 )

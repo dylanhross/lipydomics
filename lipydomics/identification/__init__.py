@@ -10,7 +10,6 @@
 
 from sqlite3 import connect
 import os
-import warnings
 import pickle
 
 
@@ -30,7 +29,7 @@ from lipydomics.identification.train_lipid_rt_pred import (
 )
 
 
-def add_feature_ids(dataset, tol, level='any', norm='l2', db_version_tstamp=None, use_rt=True):
+def add_feature_ids(dataset, tol, level='any', norm='l2', mz_tol_type='Da', db_version_tstamp=None, use_rt=True):
     """
 add_feature_ids
     description:
@@ -81,6 +80,8 @@ add_feature_ids
         [level (str or list(str))] -- specify a single level of confidence for identifications, a list of confidence
                                         levels, or 'any' to use a tiered approach [optional, default='any']
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
+        [mz_tol_type (str)] -- specify whether to use Da or ppm for m/z search tolerance, 'Da' or 'ppm' [optional,
+                                default='Da']
         [db_version_tstamp (str or None)] -- use a specific time-stamped version of the lipids database instead of the
                                              default (most recent build) [optional, default=None]
         [use_rt (bool)] -- whether to use identification levels that involve retention time, ignored unless used with
@@ -100,6 +101,10 @@ add_feature_ids
         m = 'add_feature_ids: unable to find lipid database ({})'.format(db_path)
         raise RuntimeError(m)
 
+    if mz_tol_type not in ['Da', 'ppm']:
+        m = 'add_feature_ids: mz_tol_type must be either "Da" or "ppm" (was: "{}")'.format(mz_tol_type)
+        raise ValueError(m)
+
     # available identification functions
     id_funcs = {
         'any': id_feat_any,
@@ -111,7 +116,7 @@ add_feature_ids
         'pred_mz_ccs': id_feat_pred_mz_ccs,
         'meas_mz': id_feat_meas_mz,
         'pred_mz': id_feat_pred_mz
-    } 
+    }
 
     # ESI mode from Dataset
     esi = dataset.esi_mode
@@ -123,14 +128,19 @@ add_feature_ids
     feat_ids, feat_id_levels, feat_id_scores = [], [], []
     for mz, rt, ccs in dataset.labels:
 
+        mzt, rtt, ccst = tol
+
         # use calibrated retention time if a retention time calibration has been set up
         rt = dataset.rt_calibration.get_calibrated_rt(rt) if dataset.rt_calibration is not None else rt
 
         # convert the CCS tolerance into an absolute from the percentage
-        tol2 = tol
-        with warnings.catch_warnings():  # ignore a warning that happens with this division
-            warnings.simplefilter("ignore")
-            tol2[2] = tol2[2] / 100. * ccs
+        ccst = (ccst / 100.) * ccs
+
+        # m/z tolerance may be either Da or ppm, if ppm calculate the equivalent Da
+        if mz_tol_type == 'ppm':
+            mzt = mzt * mz / 1000000.
+
+        tol2 = [mzt, rtt, ccst]
 
         # try to get identification(s)
         if type(level) is list:
@@ -145,7 +155,7 @@ add_feature_ids
             feat_id, feat_id_level, feat_id_score = id_funcs[level](cur, mz, rt, ccs, *tol2, esi, norm=norm)
 
         if feat_id:
-            if len (feat_id) > 1:
+            if len(feat_id) > 1:
                 # sort feat_id and feat_id_score in order of descending score
                 feat_id, feat_id_score = [list(x) for x in zip(*sorted(zip(feat_id, feat_id_score), 
                                                                        key=lambda pair: pair[1], reverse=True))]
