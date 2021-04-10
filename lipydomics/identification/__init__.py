@@ -283,3 +283,66 @@ predict_ccs
     # featurize, scale, and predict RT
     x = [rt_featurize(lipid_class, lipid_nc, lipid_nu, fa_mod, c_encoder, f_encoder)]
     return model.predict(scaler.transform(x))[0]
+
+
+def remove_potential_nonlipids(dataset, bounds=(10., -10.)):
+    """
+remove_potential_nonlipids
+    description:
+        Goes through the list of features that have been identified at any level that DOES NOT include CCS
+        (e.g. pred_mz_rt) and removes annotations if the MEASURED CCS of the feature is outside of the specified
+        bounds (in percent, default is +/- 10%) relative to the CCS expected given its MEASURED M/Z. The expected CCS is
+        determined by global fits of the CCS vs. m/z data in the measured database (separate fits computed for
+        positive/negative mode data). Requires that add_feature_ids(...) has been used to identify lipid features in
+        this dataset already.
+
+        * the default fits are only relevant for singly-charged species in positive or negative ESI mode, if you expect
+         to have doubly-charged species in your dataset consider expanding upper-bound accordingly *
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        [bounds (tuple(float))] -- upper and lower bounds for filtering bad CCS values (in percent), default is +/- 10%
+                                    [optional, default=(10., -10.)]
+    returns:
+        (int) -- number of identifications removed
+"""
+    # only works with 'pos' or 'neg' ESI mode specified
+    if dataset.esi_mode not in ['neg', 'pos']:
+        m = 'remove_potential_nonlipids: esi_mode must be "pos" or "neg"'
+        raise ValueError(m)
+
+    # make sure identification has been performed before
+    if dataset.feat_ids is None:
+        m = 'remove_potential_nonlipids: lipid identification (add_feature_ids) must be performed first'
+        raise RuntimeError(m)
+
+    # power function: CCS = A * m/z ^ B  + C
+    # this packs the already-fit parameters into a power function with a single paramter (mz)
+    def get_pf(A, B, C):
+        def f(x):
+            return A * x ** B + C
+        return f
+    # pre-fit power function parameters for positive and negative modes
+    params = {'pos': [5.41617109,  0.58680119, 21.89186606], 'neg': [1.50301879,  0.73943564, 72.3738431]}
+    # get the function with params
+    pf = get_pf(*params[dataset.esi_mode])
+
+    # convert the bounds from percentages to multiplicative factors (e.g. +10% -> 1.1, -10% -> 0.9)
+    upper = (100. + bounds[0]) / 100.
+    lower = (100. + bounds[1]) / 100.
+
+    # iterate through all of the identifications
+    n_removed = 0
+    for i in range(dataset.n_features):
+        if dataset.feat_id_levels[i] in ['pred_mz', 'meas_mz', 'meas_mz_rt', 'pred_mz_rt']:
+            mz, rt, ccs = dataset.labels[i]
+            fit_ccs = pf(mz)
+            if ccs > upper * fit_ccs or ccs < lower * fit_ccs:
+                # measured CCS is outside of bounds, remove the identification
+                dataset.feat_ids[i] = 'UNK_{:09.4f}_{:05.2f}_{:06.2f}'.format(mz, rt, ccs)
+                dataset.feat_id_levels[i] = ''
+                dataset.feat_id_scores[i] = []
+                n_removed += 1
+
+    # return how many identifications were removed
+    return n_removed
+

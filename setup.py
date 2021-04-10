@@ -18,7 +18,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='lipydomics',
-    version='1.6.5.rv6',
+    version='1.6.5.rv7',
     author='Dylan H. Ross',
     author_email='dhross92@uw.edu',
     description='a library for streamlining lipidomics data analysis',
@@ -33,7 +33,7 @@ setuptools.setup(
         'Operating System :: OS Independent'
     ],
     include_package_data=True,  # include any data files within the package when building the distribution
-    python_requires='>=3.5',  # support Python3.5 and up
+    python_requires='>=3.8',  # support Python3.8 and up
     install_requires=[  # install or upgrade dependencies
         'matplotlib>=3.1.3',
         'numpy>=1.18.1',

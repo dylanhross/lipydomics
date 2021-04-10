@@ -1,8 +1,7 @@
 # API (version 1.6.x)
 The following is a brief overview of the package API with usage examples, organized by module.
 
-**Complete documentation for all modules is available in HTML format under `lipydomics/doc/lipydomics.html`. All individual class/function/method documentation is 
-also accessible through Python's built-in `help()` function**
+**All detailed individual class/function/method documentation is accessible through Python's built-in `help()` function**
 
 __Modules:__
 * [Data](#data)
@@ -539,4 +538,17 @@ add_rt_calibration(dset, lipids, meas_rt, ref_rt)
 
 **Once a retention time calibration has been set up, `add_feature_ids` automatically uses calibrated retention times 
 when trying to identify lipids**
+
+### _LipidMass_ Subpackage
+The `lipydomics.identification` module contains a subpackage, `LipidMass`, which is used for the prediction of accurate 
+lipid masses based on head group chemistry, fatty acid composition, and ionization state. The following example
+illustrates how to generate an _m/z_ value for a single lipid using the `get_lipid_mz` helper function:
+```python
+from lipydomics.identification.mz_generation import get_lipid_mz
+
+mz = get_lipid_mz('PC', 34, 1, '[M+H]+')
+```
+ 
+Complete subpackage documentation
+is available in: [lipydomics/identification/LipidMass/README.md](lipydomics/identification/LipidMass/README.md).
 

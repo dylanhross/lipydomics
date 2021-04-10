@@ -12,7 +12,7 @@ import os
 
 from lipydomics.test import run_tests
 from lipydomics.data import Dataset
-from lipydomics.identification import add_feature_ids, predict_ccs, predict_rt
+from lipydomics.identification import add_feature_ids, predict_ccs, predict_rt, remove_potential_nonlipids
 
 
 def add_feature_ids_any_real1():
@@ -265,7 +265,60 @@ predict_rt_ignencerr
     return True
 
 
-# references to al of the test functions to be run, and order to run them in
+def remove_potential_nonlipids_bad_esi_mode():
+    """
+remove_potential_nonlipids_bad_esi_mode
+    description:
+        ESI mode of the dataset is not 'pos' or 'neg'
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'))
+    try:
+        remove_potential_nonlipids(dset)
+    except ValueError:
+        return True
+    return False
+
+
+def remove_potential_nonlipids_features_not_identified():
+    """
+remove_potential_nonlipids_features_not_identified
+    description:
+        tries to remove features without actually running feature identification first
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+    try:
+        remove_potential_nonlipids(dset)
+    except RuntimeError:
+        return True
+    return False
+
+
+def remove_potential_nonlipids_features_noerr():
+    """
+remove_potential_nonlipids_features_noerr
+    description:
+        performs identifications at 3 levels and each time tries to remove features. There should be no errors
+    returns:
+        (bool) -- test pass (True) or fail (False)
+"""
+    dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
+    add_feature_ids(dset, [0.05, 0.5, 5.], 'any')
+    n_any = remove_potential_nonlipids(dset)
+    add_feature_ids(dset, [0.05, 0.5, 5.], 'pred_mz_rt')
+    n_pred_mz_rt = remove_potential_nonlipids(dset)
+    add_feature_ids(dset, [0.05, 0.5, 5.], 'pred_mz')
+    n_pred_mz = remove_potential_nonlipids(dset)
+    #print('\nany:', n_any, flush=True)
+    #print('pred_mz_rt:', n_pred_mz_rt, flush=True)
+    #print('pred_mz:', n_pred_mz, flush=True)
+    return True
+
+
+# references to all of the test functions to be run, and order to run them in
 all_tests = [
     add_feature_ids_any_real1,
     add_feature_ids_any_ppm_real1,
@@ -278,7 +331,10 @@ all_tests = [
     predict_ccs_ignencerr,
     predict_rt_noerrs,
     predict_rt_notencodable,
-    predict_rt_ignencerr
+    predict_rt_ignencerr,
+    remove_potential_nonlipids_bad_esi_mode,
+    remove_potential_nonlipids_features_not_identified,
+    remove_potential_nonlipids_features_noerr
 ]
 if __name__ == '__main__':
     run_tests(all_tests)

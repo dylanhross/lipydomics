@@ -21,19 +21,21 @@ run_tests
 """
     # run the tests
     failed = False
-    print("running all tests ... ", end="")
+    print("running all tests ... ", flush=True)
     for test in tests:
         try:
+            print('\t', test.__name__, '...', end='', flush=True)
             passed = test()
+            print(' ok', flush=True)
         except Exception as e:
-            print('\n', test.__doc__, 'TEST FAILED WITH EXEPTION!\n', e)
+            print('\n', test.__doc__, 'TEST FAILED WITH EXEPTION!\n', e, flush=True)
             print(traceback.format_exc())
             failed = True
             break
         if not passed:
-            print('\n', test.__doc__, 'TEST FAILED!\n')
+            print('\n', test.__doc__, 'TEST FAILED!\n', flush=True)
             failed = True
             break
     if not failed:
-        print("passed")
+        print("passed", flush=True)
 
