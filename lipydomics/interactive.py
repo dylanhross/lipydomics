@@ -19,7 +19,7 @@ from lipydomics.plotting import (
     scatter_plsda_projections_bygroup, splot_plsda_pcorr_bygroup, scatter_plsra_projections_bygroup,
     heatmap_lipid_class_log2fc
 )
-from lipydomics.identification import add_feature_ids
+from lipydomics.identification import add_feature_ids, remove_potential_nonlipids
 from lipydomics.identification.rt_calibration import get_ref_rt, RTCalibration
 from lipydomics.util import filter_d, parse_lipid
 
@@ -511,18 +511,19 @@ identify_lipids
     print('What type of tolerance should be used for m/z (Da/ppm) ?')
     mz_tol_type = input('> ')
     print("Please specify an identification level")
-    print("\t'theo_mz' - match on theoretical m/z")
-    print("\t'theo_mz_rt' - match on theoretical m/z and retention time")
-    print("\t'theo_mz_ccs' - match on theoretical m/z and CCS")
-    print("\t'theo_mz_rt_ccs' - match on theoretical m/z, retention time, and CCS")
+    print("\t'pred_mz' - match on predicted m/z")
+    print("\t'pred_mz_rt' - match on predicted m/z and retention time")
+    print("\t'pred_mz_ccs' - match on predicted m/z and CCS")
+    print("\t'pred_mz_rt_ccs' - match on predicted m/z, retention time, and CCS")
     print("\t'meas_mz_ccs' - match on measured m/z and CCS")
     print("\t'meas_mz_rt_ccs' - match on measured m/z, retention time, and CCS")
     print("\t'any' - try all criteria (highest confidence first)")
     print("\t'back' to go back")
     option = input('> ')
 
-    if option in ['theo_mz', 'theo_mz_rt', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
+    if option in ['pred_mz', 'pred_mz_rt', 'pred_mz_ccs', 'pred_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any']:
         # make the identifications
+        n_identified = None
         try:
             add_feature_ids(dset, tol, level=option, mz_tol_type=mz_tol_type)
             n_identified = len([_ for _ in dset.feat_ids if type(_) == list])
@@ -530,6 +531,14 @@ identify_lipids
         except ValueError as ve:
             print('! ERROR:', ve)
             print("! ERROR: Unable to make lipid identifications")
+
+        # optionally filter out dubious identifications after identifying
+        if n_identified is not None and option in ['pred_mz', 'pred_mz_rt', 'any']:
+            print('Would you like to remove identifications that do not look like lipids (based on CCS vs. m/z trend)?')
+            option2 = input('> ')
+            if option2 in ['y', 'Y', 'yes', 'YES', 'Yes']:
+                n = remove_potential_nonlipids(dset)
+                print('! INFO: removed {} identifications with CCS beyond +/-10% from global lipid trend'.format(n))
 
     elif option == 'back':
         # return None to finish
