@@ -39,8 +39,8 @@ CREATE TABLE measured (
 """
 
 theo_mz = """
--- table to store theoretical masses from enumeration on composition and MS adducts
-CREATE TABLE theoretical_mz (
+-- table to store predicted masses from enumeration on composition and MS adducts
+CREATE TABLE predicted_mz (
     -- unique integer identifier
     t_id INTEGER UNIQUE NOT NULL,
     -- lipid name
@@ -53,27 +53,27 @@ CREATE TABLE theoretical_mz (
     fa_mod TEXT,
     -- MS adduct
     adduct TEXT NOT NULL,
-    -- theoretical m/z
+    -- predicted m/z
     mz REAL NOT NULL
 );
 """
 
 theo_ccs = """
--- table to store theoretical CCS values, associated with theoretical m/z values
-CREATE TABLE theoretical_ccs (
+-- table to store predicted CCS values, associated with predicted m/z values
+CREATE TABLE predicted_ccs (
     -- unique integer identifier
     t_id INTEGER UNIQUE NOT NULL,
-    -- theoretical CCS
+    -- predicted CCS
     ccs REAL NOT NULL
 );
 """
 
 theo_rt = """
--- table to store theoretical retention time values, associated with theoretical m/z values
-CREATE TABLE theoretical_rt (
+-- table to store predicted retention time values, associated with predicted m/z values
+CREATE TABLE predicted_rt (
     -- unique integer identifier
     t_id INTEGER UNIQUE NOT NULL,
-    -- theoretical retention time
+    -- predicted retention time
     rt REAL NOT NULL
 );
 """

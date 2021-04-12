@@ -194,9 +194,10 @@ Glycerophospholipid.__init__
             elif fa_mod == 'p':
                 # remove 1 oxygen, make sure there is at least 1 unsaturation
                 self.add_to_formula({'O': -1})
-                if sum_unsaturation < 1:
-                    msg = 'Glycerophospholipid: __init__: sum composition ({}:{}) is unusual for plasmalogen'
-                    warn(msg.format(sum_carbon, sum_unsaturation))
+                # no more warning for 0 unsaturations in plasmalogen, LIPID MAPS has them
+                #if sum_unsaturation < 1:
+                #    msg = 'Glycerophospholipid: __init__: sum composition ({}:{}) is unusual for plasmalogen'
+                #    warn(msg.format(sum_carbon, sum_unsaturation))
 
 
 class Lysoglycerophospholipid(Lipid):
@@ -243,9 +244,10 @@ Lysoglycerophospholipid.__init__
             elif fa_mod == 'p':
                 # remove 1 oxygen, make sure there is at least 1 unsaturation
                 self.add_to_formula({'O': -1})
-                if sum_unsaturation < 1:
-                    msg = 'Lysoglycerophospholipid: __init__: sum composition ({}:{}) is unusual for plasmalogen'
-                    warn(msg.format(sum_carbon, sum_unsaturation))
+                # no more warning for 0 unsaturations in plasmalogen, LIPID MAPS has them
+                #if sum_unsaturation < 1:
+                #    msg = 'Lysoglycerophospholipid: __init__: sum composition ({}:{}) is unusual for plasmalogen'
+                #    warn(msg.format(sum_carbon, sum_unsaturation))
 
 
 class Sphingolipid(Lipid):

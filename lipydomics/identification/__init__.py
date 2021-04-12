@@ -10,13 +10,12 @@
 
 from sqlite3 import connect
 import os
-import warnings
 import pickle
 
 
 from lipydomics.identification.id_levels import (
-    id_feat_any, id_feat_meas_mz_rt_ccs, id_feat_theo_mz_rt_ccs, id_feat_meas_mz_rt, id_feat_theo_mz_rt,
-    id_feat_meas_mz_ccs, id_feat_theo_mz_ccs, id_feat_meas_mz, id_feat_theo_mz, id_feat_custom
+    id_feat_any, id_feat_meas_mz_rt_ccs, id_feat_pred_mz_rt_ccs, id_feat_meas_mz_rt, id_feat_pred_mz_rt,
+    id_feat_meas_mz_ccs, id_feat_pred_mz_ccs, id_feat_meas_mz, id_feat_pred_mz, id_feat_custom
 )
 from lipydomics.identification.encoder_params import (
     ccs_lipid_classes, ccs_ms_adducts, ccs_fa_mods, rt_lipid_classes, rt_fa_mods
@@ -30,7 +29,7 @@ from lipydomics.identification.train_lipid_rt_pred import (
 )
 
 
-def add_feature_ids(dataset, tol, level='any', norm='l2', db_version_tstamp=None, use_rt=True):
+def add_feature_ids(dataset, tol, level='any', norm='l2', mz_tol_type='Da', db_version_tstamp=None, use_rt=True):
     """
 add_feature_ids
     description:
@@ -43,13 +42,13 @@ add_feature_ids
         
         The method for making identifications is specified by the `level` param:
             (low)
-            'theo_mz' -- simple matching based on theoretical m/z
+            'pred_mz' -- simple matching based on predicted m/z
             'meas_mz' -- simple matching based on measured m/z
-            'theo_mz_ccs' -- match on theoretical m/z and CCS\
+            'pred_mz_ccs' -- match on predicted m/z and CCS\
             'meas_mz_ccs' -- match on measured m/z and CCS
-            'theo_mz_rt' -- match on theoretical m/z and rt
+            'pred_mz_rt' -- match on predicted m/z and rt
             'meas_mz_rt' -- match on measured m/z and rt
-            'theo_mz_rt_ccs' -- match on theoretical m/z, rt, and CCS
+            'pred_mz_rt_ccs' -- match on predicted m/z, rt, and CCS
             'meas_mz_rt_ccs' -- match on m/z, rt, and CCS
             (high)
             'any' -- start at the highest level, then work downward
@@ -81,13 +80,15 @@ add_feature_ids
         [level (str or list(str))] -- specify a single level of confidence for identifications, a list of confidence
                                         levels, or 'any' to use a tiered approach [optional, default='any']
         [norm (str)] -- specify l1 or l2 norm for computing scores [optional, default='l2']
+        [mz_tol_type (str)] -- specify whether to use Da or ppm for m/z search tolerance, 'Da' or 'ppm' [optional,
+                                default='Da']
         [db_version_tstamp (str or None)] -- use a specific time-stamped version of the lipids database instead of the
                                              default (most recent build) [optional, default=None]
         [use_rt (bool)] -- whether to use identification levels that involve retention time, ignored unless used with
                             the 'any' identification level [optional, default=True]
 """
-    if level not in ['theo_mz', 'theo_mz_ccs', 'theo_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any',
-                     'meas_mz', 'meas_mz_rt', 'theo_mz_rt'] and type(level) is not list:
+    if level not in ['pred_mz', 'pred_mz_ccs', 'pred_mz_rt_ccs', 'meas_mz_ccs', 'meas_mz_rt_ccs', 'any',
+                     'meas_mz', 'meas_mz_rt', 'pred_mz_rt'] and type(level) is not list:
         m = 'add_feature_ids: identification level "{}" not recognized'
         raise ValueError(m.format(level))
 
@@ -100,18 +101,22 @@ add_feature_ids
         m = 'add_feature_ids: unable to find lipid database ({})'.format(db_path)
         raise RuntimeError(m)
 
+    if mz_tol_type not in ['Da', 'ppm']:
+        m = 'add_feature_ids: mz_tol_type must be either "Da" or "ppm" (was: "{}")'.format(mz_tol_type)
+        raise ValueError(m)
+
     # available identification functions
     id_funcs = {
         'any': id_feat_any,
         'meas_mz_rt_ccs': id_feat_meas_mz_rt_ccs,
-        'theo_mz_rt_ccs': id_feat_theo_mz_rt_ccs,
+        'pred_mz_rt_ccs': id_feat_pred_mz_rt_ccs,
         'meas_mz_rt': id_feat_meas_mz_rt,
-        'theo_mz_rt': id_feat_theo_mz_rt,
+        'pred_mz_rt': id_feat_pred_mz_rt,
         'meas_mz_ccs': id_feat_meas_mz_ccs,
-        'theo_mz_ccs': id_feat_theo_mz_ccs,
+        'pred_mz_ccs': id_feat_pred_mz_ccs,
         'meas_mz': id_feat_meas_mz,
-        'theo_mz': id_feat_theo_mz
-    } 
+        'pred_mz': id_feat_pred_mz
+    }
 
     # ESI mode from Dataset
     esi = dataset.esi_mode
@@ -123,14 +128,19 @@ add_feature_ids
     feat_ids, feat_id_levels, feat_id_scores = [], [], []
     for mz, rt, ccs in dataset.labels:
 
+        mzt, rtt, ccst = tol
+
         # use calibrated retention time if a retention time calibration has been set up
         rt = dataset.rt_calibration.get_calibrated_rt(rt) if dataset.rt_calibration is not None else rt
 
         # convert the CCS tolerance into an absolute from the percentage
-        tol2 = tol
-        with warnings.catch_warnings():  # ignore a warning that happens with this division
-            warnings.simplefilter("ignore")
-            tol2[2] = tol2[2] / 100. * ccs
+        ccst = (ccst / 100.) * ccs
+
+        # m/z tolerance may be either Da or ppm, if ppm calculate the equivalent Da
+        if mz_tol_type == 'ppm':
+            mzt = mzt * mz / 1000000.
+
+        tol2 = [mzt, rtt, ccst]
 
         # try to get identification(s)
         if type(level) is list:
@@ -145,7 +155,7 @@ add_feature_ids
             feat_id, feat_id_level, feat_id_score = id_funcs[level](cur, mz, rt, ccs, *tol2, esi, norm=norm)
 
         if feat_id:
-            if len (feat_id) > 1:
+            if len(feat_id) > 1:
                 # sort feat_id and feat_id_score in order of descending score
                 feat_id, feat_id_score = [list(x) for x in zip(*sorted(zip(feat_id, feat_id_score), 
                                                                        key=lambda pair: pair[1], reverse=True))]
@@ -172,7 +182,7 @@ def predict_ccs(lipid_class, lipid_nc, lipid_nu, adduct, mz='generate', fa_mod=N
     """
 predict_ccs
     description:
-        Predicts a theoretical CCS of a lipid as defined by lipid class, fatty acid sum composition and MS adduct. If
+        Predicts a predicted CCS of a lipid as defined by lipid class, fatty acid sum composition and MS adduct. If
         any of the parameters are not specifically encoded (i.e. not present in the training data) a ValueError is
         raised. This behavior can be overridden by the ignore_encoding_errors flag in order to get the prediction to be
         made regardless, although such predictions are subject to a high degree of error.
@@ -233,7 +243,7 @@ def predict_rt(lipid_class, lipid_nc, lipid_nu, fa_mod=None, ignore_encoding_err
     """
 predict_ccs
     description:
-        Predicts a theoretical HILIC retention time of a lipid as defined by lipid class and fatty acid sum composition.
+        Predicts a predicted HILIC retention time of a lipid as defined by lipid class and fatty acid sum composition.
         If any of the parameters are not specifically encoded (i.e. not present in the training data) a ValueError is
         raised. This behavior can be overridden by the ignore_encoding_errors flag in order to get the prediction to be
         made regardless, although such predictions are subject to a high degree of error.
@@ -273,3 +283,66 @@ predict_ccs
     # featurize, scale, and predict RT
     x = [rt_featurize(lipid_class, lipid_nc, lipid_nu, fa_mod, c_encoder, f_encoder)]
     return model.predict(scaler.transform(x))[0]
+
+
+def remove_potential_nonlipids(dataset, bounds=(10., -10.)):
+    """
+remove_potential_nonlipids
+    description:
+        Goes through the list of features that have been identified at any level that DOES NOT include CCS
+        (e.g. pred_mz_rt) and removes annotations if the MEASURED CCS of the feature is outside of the specified
+        bounds (in percent, default is +/- 10%) relative to the CCS expected given its MEASURED M/Z. The expected CCS is
+        determined by global fits of the CCS vs. m/z data in the measured database (separate fits computed for
+        positive/negative mode data). Requires that add_feature_ids(...) has been used to identify lipid features in
+        this dataset already.
+
+        * the default fits are only relevant for singly-charged species in positive or negative ESI mode, if you expect
+         to have doubly-charged species in your dataset consider expanding upper-bound accordingly *
+    parameters:
+        dataset (lipydomics.data.Dataset) -- lipidomics dataset
+        [bounds (tuple(float))] -- upper and lower bounds for filtering bad CCS values (in percent), default is +/- 10%
+                                    [optional, default=(10., -10.)]
+    returns:
+        (int) -- number of identifications removed
+"""
+    # only works with 'pos' or 'neg' ESI mode specified
+    if dataset.esi_mode not in ['neg', 'pos']:
+        m = 'remove_potential_nonlipids: esi_mode must be "pos" or "neg"'
+        raise ValueError(m)
+
+    # make sure identification has been performed before
+    if dataset.feat_ids is None:
+        m = 'remove_potential_nonlipids: lipid identification (add_feature_ids) must be performed first'
+        raise RuntimeError(m)
+
+    # power function: CCS = A * m/z ^ B  + C
+    # this packs the already-fit parameters into a power function with a single paramter (mz)
+    def get_pf(A, B, C):
+        def f(x):
+            return A * x ** B + C
+        return f
+    # pre-fit power function parameters for positive and negative modes
+    params = {'pos': [5.41617109,  0.58680119, 21.89186606], 'neg': [1.50301879,  0.73943564, 72.3738431]}
+    # get the function with params
+    pf = get_pf(*params[dataset.esi_mode])
+
+    # convert the bounds from percentages to multiplicative factors (e.g. +10% -> 1.1, -10% -> 0.9)
+    upper = (100. + bounds[0]) / 100.
+    lower = (100. + bounds[1]) / 100.
+
+    # iterate through all of the identifications
+    n_removed = 0
+    for i in range(dataset.n_features):
+        if dataset.feat_id_levels[i] in ['pred_mz', 'meas_mz', 'meas_mz_rt', 'pred_mz_rt']:
+            mz, rt, ccs = dataset.labels[i]
+            fit_ccs = pf(mz)
+            if ccs > upper * fit_ccs or ccs < lower * fit_ccs:
+                # measured CCS is outside of bounds, remove the identification
+                dataset.feat_ids[i] = 'UNK_{:09.4f}_{:05.2f}_{:06.2f}'.format(mz, rt, ccs)
+                dataset.feat_id_levels[i] = ''
+                dataset.feat_id_scores[i] = []
+                n_removed += 1
+
+    # return how many identifications were removed
+    return n_removed
+

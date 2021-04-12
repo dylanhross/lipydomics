@@ -17,7 +17,21 @@ from lipydomics.test.rt_calibration import all_tests as rt_calibration_all_tests
 from lipydomics.test.util import all_tests as util_all_tests
 
 
-# references to al of the test functions to be run, and order to run them in
-all_tests = data_all_tests + stats_all_tests + plotting_all_tests + identification_all_tests + \
-            rt_calibration_all_tests + util_all_tests
-run_tests(all_tests)
+# run through each module's tests
+print('(lipydomics.test.data) ', end='', flush=True)
+run_tests(data_all_tests)
+
+print('(lipydomics.test.stats) ', end='', flush=True)
+run_tests(stats_all_tests)
+
+print('(lipydomics.test.plotting) ', end='', flush=True)
+run_tests(plotting_all_tests)
+
+print('(lipydomics.test.identification) ', end='', flush=True)
+run_tests(identification_all_tests)
+
+print('(lipydomics.test.rt_calibration) ', end='', flush=True)
+run_tests(rt_calibration_all_tests)
+
+print('(lipydomics.test.util) ', end='', flush=True)
+run_tests(util_all_tests)

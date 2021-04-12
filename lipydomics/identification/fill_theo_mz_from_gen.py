@@ -3,7 +3,7 @@
     Dylan H. Ross
     2019/10/07
 
-        Fills the `theoretical_mz` table from lipids.db using enumeration over lipid classes, fatty acid composition, and
+        Fills the `predicted_mz` table from lipids.db using enumeration over lipid classes, fatty acid composition, and
         MS adducts. 
 """
 
@@ -26,7 +26,7 @@ add_src_dataset
 
     # query string
     # t_id, name, adduct, mz
-    qry = 'INSERT INTO theoretical_mz VALUES (?,?,?,?,?,?,?,?)'
+    qry = 'INSERT INTO predicted_mz VALUES (?,?,?,?,?,?,?,?)'
     # t_id starts at 0 and goes up from there
     t_id = 0
     for name, adduct, mz in enumerate_all_lipids():
@@ -49,7 +49,7 @@ def main(tstamp):
 
     build_log = os.path.join(os.path.dirname(__file__), 'builds/build_log_{}.txt'.format(tstamp))
     with open(build_log, 'a') as bl:
-        print_and_log('adding theoretical m/z into lipids.db ...', bl, end=' ')
+        print_and_log('adding predicted m/z into lipids.db ...', bl, end=' ')
         add_enumerated_mz(cur)
         print_and_log('ok\n', bl)
 

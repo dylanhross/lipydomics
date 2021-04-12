@@ -311,7 +311,7 @@ dataset_drop_features_real1
             y.append(float(i))
     y = np.array(y)
     add_plsra(dset, ['A', 'B', 'C', 'D', 'E'], y)
-    add_feature_ids(dset, [0.05, 0.2, 0.1], level='theo_mz_rt')
+    add_feature_ids(dset, [0.05, 0.2, 0.1], level='pred_mz_rt')
     #print(dset)
     dset.drop_features('meantensity', normed=False, lower_bound=50, upper_bound=1000)
     #print(dset)

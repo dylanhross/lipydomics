@@ -4,7 +4,7 @@
     2019/10/04
 
     description:
-        utilities to generate theoretical m/z data for lipids
+        utilities to generate predicted m/z data for lipids
 """
 
 
@@ -70,7 +70,7 @@ enumerate_all_lipids
 
     # diacyl-glyerolipids and glycolipids (DG, MGDG, DGDG, and GlcADG)
     diagls = [DG, MGDG, DGDG, GlcADG]
-    diagl_adducts = ['[M+NH4]+', '[M+Na]+', '[M+K]+', '[M-H]-', '[M+CH3COO]-', '[M+Cl]-', '[M+H-H2O]+']
+    diagl_adducts = ['[M+NH4]+', '[M+Na]+', '[M+K]+', '[M-H]-', '[M+HCOO]-', '[M+CH3COO]-', '[M+Cl]-', '[M+H-H2O]+']
     for lc in diagls:
         for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu, diagl_adducts):
             yield l
@@ -79,16 +79,13 @@ enumerate_all_lipids
     for l in enumerate_lipid_class(TG, (24, 72), (0, 24), ['[M+NH4]+', '[M+Na]+', '[M+K]+']):
         yield l
 
-
     # diacyl-glycerophospholipids (with plasmalogen and ether derivatives)
     diagpls = [PA, PC, PE, PG, PI, PIP, PIP2, PIP3, PS, LysylPG, AlanylPG]
     diagpl_adducts = ['[M+H]+', '[M+Na]+', '[M+NH4]+', '[M-H]-', '[M+HCOO]-', '[M+K]+', '[M+CH3COO]-', '[M+2Na-H]+',
                       '[M+Cl]-']
     for lc in diagpls:
         for fa_mod in [None, 'p', 'o']:
-            # for plasmalogen lipids, minimum unsaturation must be 1
-            diacyl_nu_ = (1, 12) if fa_mod == 'p' else diacyl_nu
-            for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu_, diagpl_adducts, fa_mod=fa_mod):
+            for l in enumerate_lipid_class(lc, diacyl_nc, diacyl_nu, diagpl_adducts, fa_mod=fa_mod):
                 yield l
 
     # AcylPG, AcylPE, CL, and LCL
@@ -102,24 +99,23 @@ enumerate_all_lipids
 
     # (monoacyl) lysoglycerophospholipids
     lgpls = [LPA, LPC, LPE, LPG, LPI, LPS]
-    lgpl_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-']
+    lgpl_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M+CH3COO]-', '[M-H]-']
     for lc in lgpls:
         for fa_mod in [None, 'p', 'o']:
-            # for plasmalogen lipids, minimum unsaturation must be 1
-            lgpl_nu = (1, 6) if fa_mod == 'p' else (0, 6)
+            lgpl_nu = (0, 6)
             for l in enumerate_lipid_class(lc, (12, 24), lgpl_nu, lgpl_adducts, fa_mod=fa_mod):
                 yield l
 
     # sphingolipids (Cer, HexCer, GlcCer, SM)
     sls = [Cer, HexCer, GlcCer, SM]
-    sls_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M-H]-', '[M+K]+', '[M+H-H2O]+']
+    sls_adducts = ['[M+H]+', '[M+Na]+', '[M+HCOO]-', '[M+CH3COO]-', '[M-H]-', '[M+K]+', '[M+H-H2O]+']
     for lc in sls:
         # our sphingolipids will all have the 'd' FA mod
         for l in enumerate_lipid_class(lc, (30, 44), (1, 7), sls_adducts, fa_mod='d'):
             yield l
 
     # fatty acids
-    for l in enumerate_lipid_class(FA, (10, 40), (0, 6), ['[M-H]-']):
+    for l in enumerate_lipid_class(FA, (10, 42), (0, 6), ['[M-H]-']):
         yield l
 
 

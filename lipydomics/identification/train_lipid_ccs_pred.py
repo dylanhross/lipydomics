@@ -4,7 +4,7 @@
     2019/10/08
 
     description:
-        Trains a predictive model for generating theoretical CCS values
+        Trains a predictive model for generating predicted CCS values
 
         * requires scikit-learn v0.21.3 ! *
 """
@@ -166,6 +166,57 @@ train_new_model
     return model, scaler
 
 
+def dump_split_data_to_files(savedir):
+    """
+dump_split_data_to_files
+    description:
+        assembles training/test datasets just as would be done for actual model training then dumps those into
+        separate .csv files: 'train.csv' and 'test.csv'
+    parameters:
+        savedir (str) -- directory to save the dumped files into
+"""
+    # connect to database
+    db_path = os.path.join(os.path.dirname(__file__), 'lipids.db')
+    con = connect(db_path)
+    cur = con.cursor()
+
+    # prepare encoders
+    c_encoder, f_encoder, a_encoder = prep_encoders()
+
+    qry = 'SELECT lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz, ccs, src_tag FROM measured'
+    X, y, l = [], [], []
+    for lc, lnc, lnu, fam, add, m, c, st in cur.execute(qry).fetchall():
+        # only use the classes, fa_mods and adducts that are explicitly encoded
+        lc_ok = lc in ccs_lipid_classes
+        fam_ok = fam is None or fam in ccs_fa_mods
+        add_ok = add in ccs_ms_adducts
+        # only include data from the designated sources
+        src_ok = st in ccs_pred_ref_dsets
+        if lc_ok and fam_ok and add_ok and src_ok:
+            X.append(featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder))
+            y.append(float(c))
+            l.append('{}({}{}:{})_{}'.format(lc, fam if fam is not None else '', lnc, lnu, add))
+    X, y, l = np.array(X), np.array(y), np.array(l)
+
+    # split into test/train sets, scale data (do not center)
+    SSplit = ShuffleSplit(n_splits=1, test_size=0.2, random_state=1234)
+    for train_index, test_index in SSplit.split(X):
+        X_train, X_test = X[train_index], X[test_index]
+        y_train, y_test = y[train_index], y[test_index]
+        l_train, l_test = l[train_index], l[test_index]
+
+    # dump each array to file
+    np.savetxt(os.path.join(savedir, 'X_train.csv'), X_train, delimiter=',')
+    np.savetxt(os.path.join(savedir, 'y_train.csv'), y_train, delimiter=',')
+    np.savetxt(os.path.join(savedir, 'l_train.csv'), l_train, delimiter=',', fmt='%s')
+    np.savetxt(os.path.join(savedir, 'X_test.csv'), X_test, delimiter=',')
+    np.savetxt(os.path.join(savedir, 'y_test.csv'), y_test, delimiter=',')
+    np.savetxt(os.path.join(savedir, 'l_test.csv'), l_test, delimiter=',', fmt='%s')
+
+    # close db connection
+    con.close()
+
+
 def main(tstamp):
     """ main build function """
 
@@ -186,15 +237,15 @@ def main(tstamp):
         print('... ok')
         print('... ok', file=bl)
 
-        # add theoretical CCS to the database
+        # add predicted CCS to the database
         print_and_log('\nadding predicted CCS to database ...', bl, end=' ')
-        qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz FROM theoretical_mz'
+        qry = 'SELECT t_id, lipid_class, lipid_nc, lipid_nu, fa_mod, adduct, mz FROM predicted_mz'
         tid_to_ccs = {}
         for tid, lc, lnc, lnu, fam, add, m in cur.execute(qry).fetchall():
             if int(sum(c_encoder.transform([[lc]])[0])) != 0:  # make sure lipid class is encodable
                 x = [featurize(lc, lnc, lnu, fam, add, float(m), c_encoder, f_encoder, a_encoder)]
                 tid_to_ccs[int(tid)] = model.predict(scaler.transform(x))[0]
-        qry = 'INSERT INTO theoretical_ccs VALUES (?, ?)'
+        qry = 'INSERT INTO predicted_ccs VALUES (?, ?)'
         for tid in tid_to_ccs:
             cur.execute(qry, (tid, tid_to_ccs[tid]))
         print_and_log('ok\n', bl)

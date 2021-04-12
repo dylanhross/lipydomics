@@ -1,8 +1,7 @@
 # API (version 1.6.x)
 The following is a brief overview of the package API with usage examples, organized by module.
 
-**Complete documentation for all modules is available in HTML format under `lipydomics/doc/lipydomics.html`. All individual class/function/method documentation is 
-also accessible through Python's built-in `help()` function**
+**All detailed individual class/function/method documentation is accessible through Python's built-in `help()` function**
 
 __Modules:__
 * [Data](#data)
@@ -468,17 +467,17 @@ volcano_2group(dset, ['Red', 'Blue'], 'students', 'analysis/plots/')
 ## Identification
 The `lipydomics.identification` module allows lipid features to be identified on the basis of their m/z, retention time,
 and CCS. Lipid identifications are produced by comparison against a database of experimentally observed lipids, as well
-as a database of theoretical values. Different levels of identification can be specified as follows:
+as a database of predicted values. Different levels of identification can be specified as follows:
 
 | identification level | description |
 | :---: | :--- |
-| `theo_mz` | match only on theoretical m/z |
+| `pred_mz` | match only on predicted m/z |
 | `meas_mz` | match only on measured m/z |
-| `theo_mz_ccs` | match on theoretical m/z and CCS |
+| `pred_mz_ccs` | match on predicted m/z and CCS |
 | `meas_mz_ccs` | match on measured m/z and CCS |
-| `theo_mz_rt` | match on theoretical m/z and HILIC retention time |
+| `pred_mz_rt` | match on predicted m/z and HILIC retention time |
 | `measured_mz_rt` | match on measured m/z and HILIC retention time |
-| `theo_mz_rt_ccs` | match on theoretical m/z, HILIC retention time, and CCS |
+| `pred_mz_rt_ccs` | match on predicted m/z, HILIC retention time, and CCS |
 | `meas_mz_rt_ccs` | match on measured m/z, HILIC retention time, and CCS |
 | `any` | start at the highest level (`meas_mz_rt_ccs`) then work down until an identification can be made |
 
@@ -504,7 +503,7 @@ each feature. The `Dataset.feat_id_levels` instance variable holds the identific
 
 
 ### CCS and HILIC retention time prediction
-The theoretical lipid database consists of CCS and HILIC retention time values generated using predictive models trianed
+The predicted lipid database consists of CCS and HILIC retention time values generated using predictive models trianed
 on experimental reference values. These predictive models are directly accessible via two convenience functions: 
 `predict_ccs` and `predict_rt`. Both functions take as input a lipid (as defined by lipid class, fatty acid sum 
 composition, fatty acid modifier, and MS adduct if relevant). Example:
@@ -521,7 +520,7 @@ rt = predict_rt('PC', 34, 3, fa_mod='p')
 
 
 ### Retention Time Calibration
-All of the retention times (measured or theoretical) in the lipid database correspond to a reference HILIC method 
+All of the retention times (measured or predicted) in the lipid database correspond to a reference HILIC method 
 (Hines, _et al. J. Lipid Res._ **58**, 2017). The `lipydomics.identification.rt_calibration` module allows comparison 
 between retention times measured on other (HILIC) methods via the `add_rt_calibration` function:
 
@@ -539,4 +538,17 @@ add_rt_calibration(dset, lipids, meas_rt, ref_rt)
 
 **Once a retention time calibration has been set up, `add_feature_ids` automatically uses calibrated retention times 
 when trying to identify lipids**
+
+### _LipidMass_ Subpackage
+The `lipydomics.identification` module contains a subpackage, `LipidMass`, which is used for the prediction of accurate 
+lipid masses based on head group chemistry, fatty acid composition, and ionization state. The following example
+illustrates how to generate an _m/z_ value for a single lipid using the `get_lipid_mz` helper function:
+```python
+from lipydomics.identification.mz_generation import get_lipid_mz
+
+mz = get_lipid_mz('PC', 34, 1, '[M+H]+')
+```
+ 
+Complete subpackage documentation
+is available in: [lipydomics/identification/LipidMass/README.md](lipydomics/identification/LipidMass/README.md).
 

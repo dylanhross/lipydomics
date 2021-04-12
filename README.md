@@ -33,5 +33,5 @@ If you have any questions or suggestions, or notice any bugs please feel free to
 
 ## License 
 This software is made available under the [MIT license](LICENSE). We ask that if you use this package in published
-work, please cite the appropriate literature. 
+work, please cite [our paper](https://pubs.acs.org/doi/10.1021/acs.analchem.0c02560). 
 
