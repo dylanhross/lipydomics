@@ -128,7 +128,7 @@ add_feature_ids_any_real1_tstamp
 """
     dset = Dataset(os.path.join(os.path.dirname(__file__), 'real_data_1.csv'), esi_mode='neg')
 
-    add_feature_ids(dset, [0.05, 0.5, 5.], db_version_tstamp='2008311027')
+    add_feature_ids(dset, [0.05, 0.5, 5.], db_version_tstamp='2104030953')
 
     return True
 
