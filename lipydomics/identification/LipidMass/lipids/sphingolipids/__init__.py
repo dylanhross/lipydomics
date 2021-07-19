@@ -1,5 +1,5 @@
 """
-    LipidMass/lipids/sphingolipids.py
+    LipidMass/lipids/sphingolipids/__init__.py
     Dylan H. Ross
     2019/07/23
 
@@ -8,7 +8,7 @@
 """
 
 
-from ..base import Sphingolipid
+from ...base import Sphingolipid
 
 
 class Cer(Sphingolipid):
