@@ -87,5 +87,5 @@ Ganglioside.__init__
         super().__init__(sum_carbon, sum_unsaturation, fa_mod=fa_mod)
         # the R-group is determined by the ganglioside name
         self.add_to_formula(self.ganglioside_to_r_group(ganglioside))
-        # lipid class is a bit messy
-        self.lipid_class = 'Ganglioside[{}]'.format(ganglioside)
+        # lipid class is the ganglioside type
+        self.lipid_class = ganglioside

@@ -15,6 +15,7 @@ from .LipidMass.lipids.glycerophospholipids import (
 )
 from .LipidMass.lipids.lysoglycerophospholipids import LPA, LPC, LPE, LPG, LPI, LPS, LCL
 from .LipidMass.lipids.sphingolipids import Cer, HexCer, GlcCer, SM
+from .LipidMass.lipids.sphingolipids.gangliosides import Ganglioside
 from .LipidMass.lipids.misc import FA
 
 
@@ -113,6 +114,14 @@ enumerate_all_lipids
         # our sphingolipids will all have the 'd' FA mod
         for l in enumerate_lipid_class(lc, (30, 44), (1, 7), sls_adducts, fa_mod='d'):
             yield l
+
+    # gangliosides (only the most common species observed in human brain)
+    for gs in ['GM1', 'GD1', 'GT1', 'GQ1']:
+        for nc in range(28, 42, 2):
+            for nu in range(1, 5):
+                for ad in ['[M-H]-', '[M-2H]2-', '[M-3H]3-']:
+                    lipid = Ganglioside(gs, nc, nu, fa_mod='d')
+                    yield lipid.name(), ad, lipid.ms_adduct_monoiso(ad)
 
     # fatty acids
     for l in enumerate_lipid_class(FA, (10, 42), (0, 6), ['[M-H]-']):

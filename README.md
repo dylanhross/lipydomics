@@ -1,4 +1,4 @@
-# LiPydomics 
+# LiPydomics (version 1.6.7)
 _Dylan H. Ross and Jang Ho Cho_
   
   
