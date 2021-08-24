@@ -116,10 +116,10 @@ enumerate_all_lipids
             yield l
 
     # gangliosides (only the most common species observed in human brain)
-    for gs in ['GM1', 'GD1', 'GT1', 'GQ1']:
+    for gs in ['GA1', 'GA2', 'GA3', 'GM1', 'GM2', 'GM3', 'GD1', 'GD2', 'GD3', 'GT1', 'GT2', 'GT3', 'GQ1']:
         for nc in range(28, 42, 2):
             for nu in range(1, 5):
-                for ad in ['[M-H]-', '[M-2H]2-', '[M-3H]3-']:
+                for ad in ['[M+H]+', '[M+2H]2+', '[M+3H]3+', '[M-H]-', '[M-2H]2-', '[M-3H]3-']:
                     lipid = Ganglioside(gs, nc, nu, fa_mod='d')
                     yield lipid.name(), ad, lipid.ms_adduct_monoiso(ad)
 

@@ -79,7 +79,9 @@ Lipid.ms_adduct_mass
         '[M-2H]2-': {'H': -2},
         '[M-3H]3-': {'H': -3},
         '[M+Cl]-': {'Cl': 1},
-        '[M+2Na-H]+': {'H': -1, 'Na': 2}
+        '[M+2Na-H]+': {'H': -1, 'Na': 2},
+        '[M+2H]2+': {'H': 2},
+        '[M+3H]3+': {'H': 3}
     }
     if adduct not in adduct_to_m:
         raise ValueError('ms_adduct_mass: MS adduct {} not available in adduct_to_m'.format(adduct))
@@ -98,6 +100,8 @@ Lipid.ms_adduct_mass
         '[M-2H]2-': -2, 
         '[M-3H]3-': -3,
         '[M+Cl]-': -1,
-        '[M+2Na-H]+': 1
+        '[M+2Na-H]+': 1,
+        '[M+2H]2+': 2,
+        '[M+3H]3+': 3
     }
     return (formula_mass(adduct_to_m[adduct]) + neutral_mass) / abs(adduct_to_z[adduct])
